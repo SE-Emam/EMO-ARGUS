@@ -14,3 +14,5 @@ TEx_config/
 dist/
 build/
 *.egg-info/
+argus-vscode-extension/node_modules/
+argus-vscode-extension/out/

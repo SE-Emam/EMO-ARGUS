@@ -18,12 +18,12 @@
 ```
 README.md  LICENSE  pyproject.toml  requirements.txt
 argus_search.py  argus_mcp.py  argus_bridge.py  ARGUS-banner.jpeg
-argus-chrome-extension/  docs/  scripts/  tests/  output/.gitkeep  .github/  .gitignore
+argus-chrome-extension/  argus-vscode-extension/  docs/  scripts/  tests/  output/.gitkeep  .github/  .gitignore
 ```
 
 أي ملف خارج هذه القائمة (`SHA256SUMS`, `dist/`, `*.egg-info/`, `__pycache__/`, `.pytest_cache/`, `.ruff_cache/`) يُرفض في الـ CI.
 
-> فيتو الإضافة (ملزم): مجلد `argus-chrome-extension/` مساعد مؤسسي فقط — `host_permissions` حلقة محلية حصرًا، Manifest V3 صارم، ممنوع أي قدرات جمع مقيّدة داخل المتصفح. يفرضها `check_extension_veto` في `scripts/check_hygiene.py`.
+> فيتو الإضافة (ملزم): مجلدا `argus-chrome-extension/` و `argus-vscode-extension/` مساعدان مؤسسيان فقط — `host_permissions` / `bridgeUrl` حلقة محلية حصرًا (`127.0.0.1:8765`)، Manifest V3 صارم للكروم، وتوكن VS Code في `SecretStorage` فقط، ممنوع أي قدرات جمع مقيّدة خارج الـ CLI. يفرضها `check_extension_veto` في `scripts/check_hygiene.py`.
 
 ## 2) لغة الزائر (ممنوع AI Slop)
 

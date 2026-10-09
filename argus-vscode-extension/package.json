@@ -1,0 +1,134 @@
+{
+  "name": "argus-vscode-companion",
+  "displayName": "ARGUS Analyst Companion",
+  "description": "Real-time research integrity linter via your local ARGUS core. Localhost only, no external network.",
+  "version": "0.1.0",
+  "publisher": "argus",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:argus.sidebar",
+    "onCommand:argus.checkBridge",
+    "onCommand:argus.verifySelection",
+    "onCommand:argus.analyzeSelection",
+    "onCommand:argus.insertTemplate"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "argus.checkBridge",
+        "title": "ARGUS: Check Bridge Connection"
+      },
+      {
+        "command": "argus.verifySelection",
+        "title": "ARGUS: Verify Selection (offline audit)"
+      },
+      {
+        "command": "argus.analyzeSelection",
+        "title": "ARGUS: Plan From Selection"
+      },
+      {
+        "command": "argus.insertTemplate",
+        "title": "ARGUS: Insert Report Template"
+      },
+      {
+        "command": "argus.setToken",
+        "title": "ARGUS: Set Bridge Token"
+      },
+      {
+        "command": "argus.clearToken",
+        "title": "ARGUS: Clear Bridge Token"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "argus",
+          "title": "ARGUS",
+          "icon": "resources/argus.svg"
+        }
+      ]
+    },
+    "views": {
+      "argus": [
+        {
+          "id": "argus.sidebar",
+          "name": "ARGUS Companion"
+        }
+      ]
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "argus.verifySelection",
+          "group": "argus",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "argus.analyzeSelection",
+          "group": "argus",
+          "when": "editorHasSelection"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "argus.checkBridge",
+          "when": "true"
+        },
+        {
+          "command": "argus.verifySelection",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "argus.analyzeSelection",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "argus.insertTemplate",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "argus.setToken",
+          "when": "true"
+        },
+        {
+          "command": "argus.clearToken",
+          "when": "true"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "argus.checkBridge",
+          "group": "navigation",
+          "when": "view == argus.sidebar"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "ARGUS",
+      "properties": {
+        "argus.bridgeUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8765",
+          "description": "Local ARGUS bridge URL. Must stay loopback (127.0.0.1). Changing it to a public host is blocked with a warning."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0"
+  }
+}

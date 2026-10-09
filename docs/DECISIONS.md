@@ -42,3 +42,12 @@
   3. Fail-safe offline: when the bridge is down the panel shows `ARGUS Core is offline` and sends data nowhere else; captured context lives in session storage only (cleared with the session), the token alone persists locally.
 - **Cost:** user runs one local command and pastes one token into the panel — acceptable, see `docs/EXTENSION.md`.
 - **Enforced by:** `check_extension_veto` in `scripts/check_hygiene.py` (scaffold presence, Manifest V3, exact loopback permission, `127.0.0.1` bind, restricted-tier terms never in extension/bridge).
+
+## ADR-6: VS Code companion as thin client — why no new collection logic?
+
+- **Decision:** the VS Code companion (`argus-vscode-extension/`) is a thin client over the same loopback bridge (`127.0.0.1:8765`): `GET /health`, `POST /analyze`, `POST /verify-snippet` only. It adds zero collection tiers, zero scraping, zero network destinations. Token lives in `vscode.SecretStorage` only (never settings/workspace); non-loopback `argus.bridgeUrl` values are refused with a warning + one-click reset; every transport failure fails safe as offline.
+- **Why:**
+  1. Editor is treated as an untrusted host, same as the browser — consent-gated tiers stay in the CLI/MCP.
+  2. Editor role is context auditing + skeleton only: selected text (capped at 2000 chars), offline verdict, 12-section report template mirroring core `build_report` locally.
+  3. Fail-safe offline: when the bridge is down every command shows `ARGUS Bridge is offline. Please start the local server.` and sends data nowhere else; sidebar log is in-memory only (max 20, cleared with the session).
+- **Enforced by:** `check_extension_veto` in `scripts/check_hygiene.py` (vscode scaffold presence, loopback `bridgeUrl` default + `DEFAULT_BRIDGE_URL` pin, `SecretStorage` token, `X-Argus-Token` header, `isLoopbackUrl` gate, offline message).

@@ -26,6 +26,7 @@ ALLOWED_ROOT = {
     "argus_bridge.py",
     "ARGUS-banner.jpeg",
     "argus-chrome-extension",
+    "argus-vscode-extension",
     "docs",
     "scripts",
     "tests",
@@ -64,9 +65,10 @@ SLOP_PATTERNS = [
 
 USER_FACING_GLOBS = ["*.py", "*.md", "*.toml", "*.txt", "*.yml"]
 USER_FACING_SKIP_DIRS = {
-    ".git", "__pycache__", ".pytest_cache", ".ruff_cache", ".venv", "venv", "dist", "build"}
+    ".git", "__pycache__", ".pytest_cache", ".ruff_cache", ".venv", "venv", "dist", "build",
+    "node_modules", "out", ".vscode"}
 # Extension + bridge files scanned too (visitor-facing institutional scope).
-USER_FACING_SUFFIXES = {"py", "md", "toml", "txt", "yml", "js", "json", "html"}
+USER_FACING_SUFFIXES = {"py", "md", "toml", "txt", "yml", "js", "json", "html", "ts"}
 # Sovereign features must NEVER appear in the browser extension or bridge.
 SOVEREIGN_PATTERNS = [
     r"dark[_ ]?web",
@@ -155,8 +157,9 @@ def check_slop() -> None:
 
 
 def check_extension_veto() -> None:
-    """Architectural veto: browser side stays institutional-only, loopback-only."""
+    """Architectural veto: browser + editor sides stay institutional-only, loopback-only."""
     ext = ROOT / "argus-chrome-extension"
+    vs = ROOT / "argus-vscode-extension"
     bridge = ROOT / "argus_bridge.py"
     ok = True
     if not ext.is_dir():
@@ -166,14 +169,28 @@ def check_extension_veto() -> None:
         if not (ext / name).is_file():
             fail(f"extension scaffold missing file: argus-chrome-extension/{name}")
             ok = False
+    if not vs.is_dir():
+        fail("vscode scaffold missing: argus-vscode-extension/")
+        return
+    for name in ("package.json", "tsconfig.json", "src/extension.ts",
+                 "src/bridgeClient.ts", "src/sidebarProvider.ts"):
+        if not (vs / name).is_file():
+            fail(f"vscode scaffold missing file: argus-vscode-extension/{name}")
+            ok = False
     if not bridge.is_file():
         fail("bridge missing: argus_bridge.py")
         ok = False
         return
-    # 1) Sovereign terms must never appear in extension or bridge.
+    # 1) Sovereign terms must never appear in extension, vscode, or bridge.
+    # Skip generated/vendor dirs (node_modules, out) — they are never shipped.
     compiled = [(p, re.compile(p, re.IGNORECASE)) for p in SOVEREIGN_PATTERNS]
-    for path in [bridge, *(ext.rglob("*") if ext.is_dir() else [])]:
+    skip_parts = {"node_modules", "out", ".vscode"}
+    scan_roots = [bridge, *(ext.rglob("*") if ext.is_dir() else []),
+                  *(vs.rglob("*") if vs.is_dir() else [])]
+    for path in scan_roots:
         if not path.is_file():
+            continue
+        if any(part in skip_parts for part in path.parts):
             continue
         if path.suffix.lstrip(".") not in USER_FACING_SUFFIXES:
             continue
@@ -205,6 +222,49 @@ def check_extension_veto() -> None:
         ok = False
     if manifest.get("manifest_version") != 3:
         fail("manifest must be Manifest V3")
+        ok = False
+    # 3) VS Code thin-client veto: loopback default + SecretStorage token.
+    if not ok:
+        # still run vscode checks to surface all failures at once
+        pass
+    try:
+        import json as _vjson
+        pkg = _vjson.loads((vs / "package.json").read_text(encoding="utf-8"))
+    except (ValueError, OSError):
+        pkg = {}
+    try:
+        vs_default = (pkg.get("contributes", {}).get("configuration", {})
+                      .get("properties", {}).get("argus.bridgeUrl", {}).get("default", ""))
+    except AttributeError:
+        vs_default = ""
+    if vs_default != "http://127.0.0.1:8765":
+        fail(f"vscode bridgeUrl default must be loopback, got {vs_default!r}")
+        ok = False
+    try:
+        bctext = (vs / "src" / "bridgeClient.ts").read_text(encoding="utf-8")
+        extext = (vs / "src" / "extension.ts").read_text(encoding="utf-8")
+        vstext = bctext + "\n" + extext
+    except OSError:
+        vstext = ""
+        bctext = ""
+        extext = ""
+    if "DEFAULT_BRIDGE_URL = 'http://127.0.0.1:8765'" not in bctext:
+        fail("vscode bridgeClient must pin DEFAULT_BRIDGE_URL to 127.0.0.1:8765")
+        ok = False
+    if "SecretStorage" not in extext and "secrets.store" not in extext:
+        fail("vscode token must live in SecretStorage (secrets.store)")
+        ok = False
+    if "workspaceState" in extext and "bridgeToken" in extext:
+        fail("vscode token must never live in workspaceState")
+        ok = False
+    if "X-Argus-Token" not in vstext:
+        fail("vscode must send X-Argus-Token header")
+        ok = False
+    if "isLoopbackUrl" not in vstext:
+        fail("vscode must gate non-loopback URLs via isLoopbackUrl")
+        ok = False
+    if "ARGUS Bridge is offline" not in vstext:
+        fail("vscode must fail-safe with offline message")
         ok = False
     if ok:
         print("[PASS] extension-veto: institutional-only, loopback-only, MV3 strict")

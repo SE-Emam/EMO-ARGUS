@@ -16,3 +16,12 @@ build/
 *.egg-info/
 argus-vscode-extension/node_modules/
 argus-vscode-extension/out/
+# Local-only: task/fix/session/delivery artifacts — never commit these
+TASK-*.md
+FIX-*.md
+*_TASK.md
+*_FIX.md
+*.log
+SHA256SUMS
+*.zip
+*.vsix

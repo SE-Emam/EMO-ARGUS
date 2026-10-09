@@ -1,10 +1,4 @@
-"""ARGUS core tests (stdlib + pytest only).
-
-Covers Phase 3 requirements: mode inference (7 triggers + default),
-compare splitting, slugify (Arabic/symbols/UUID fallback), gates,
-parse_limit clamping, wave resolution, channel validation, _safe_path,
-verify structure rejection, and report filename atomicity.
-"""
+"""ARGUS core tests (stdlib + pytest only)."""
 import re
 import sys
 from pathlib import Path
@@ -24,7 +18,7 @@ def test_infer_mode_all_triggers_and_default():
     assert core.infer_mode("timebox EU AI Act 2024-2026") == "timeboxed"
     assert core.infer_mode("region AI market in Africa") == "regional"
     assert core.infer_mode("narrow pricing of Stripe") == "narrow"
-    # ambiguous -> Deep default (documented in MODES.md)
+    # ambiguous -> Deep default
     assert core.infer_mode("something totally vague here") == "deep"
 
 
@@ -95,7 +89,7 @@ def test_verify_rejects_report_without_urls_or_consent():
 def test_report_filename_unique_and_atomic(tmp_path):
     f1 = core.report_filename("same query")
     f2 = core.report_filename("same query")
-    assert f1 != f2  # B6: no same-day overwrite collisions
+    assert f1 != f2  # no same-day overwrite collisions
     assert re.fullmatch(r"argus-report-.+-\d{8}-\d{6}-[0-9a-f]{6}\.md", f1)
     target = tmp_path / f1
     core.atomic_write_text(target, "hello")

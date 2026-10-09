@@ -1,6 +1,6 @@
-# ARGUS - Filters (10 Filters)
+# ARGUS — Filters & Language Presets
 
-> Reference: `SKILL.md` Step 1. Standalone filter detail.
+Narrow any research by language, time, region, and source — without losing verification.
 
 | Filter | Type | Default | Description |
 |--------|------|---------|-------------|

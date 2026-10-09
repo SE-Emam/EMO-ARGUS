@@ -221,7 +221,7 @@ Based on the mode and filters, route to these tools:
 
 ### Step 3: Plan Generation
 
-Generate sub-questions from the **per-mode template bank** below (mirrored in `argus_search.py plan` - same questions the CLI prints). Adapt names, numbers, and scope to the topic; do not fall back to generic 5W repetition.
+Generate sub-questions from the **per-mode template bank** below (mirrored in `argus plan` - same questions the CLI prints). Adapt names, numbers, and scope to the topic; do not fall back to generic 5W repetition.
 
 | Mode | Sub-questions | Template focus |
 |------|---------------|----------------|
@@ -602,7 +602,7 @@ The agent will:
 5. Get user approval
 6. Execute waves across all 14 languages
 7. Cross-verify including cross-language
-8. Run `argus_search.py verify <report>` and fix every FAIL before delivery
+8. Run `argus verify <report>` and fix every FAIL before delivery
 9. Deliver structured report with sources grouped by language
 
 ### Step 8: Verification Gate (mandatory before delivery)
@@ -610,8 +610,8 @@ The agent will:
 Run the offline audit on the finished report - do NOT deliver a report that FAILs:
 
 ```bash
-python argus_search.py verify ./output/argus-report-<slug>-<date>.md
-python argus_search.py verify ./output/argus-report-<slug>-<date>.md --offline  # structure/citations only
+argus verify ./output/argus-report-<slug>-<date>.md
+argus verify ./output/argus-report-<slug>-<date>.md --offline  # structure/citations only
 ```
 
 The gate checks, in order: 12-section structure -> no empty sections -> no TODO

@@ -1,6 +1,6 @@
-# ARGUS - Tools (Routing Matrix)
+# ARGUS — Tool Routing
 
-> Reference: `SKILL.md` Step 2. Rule: the right tool for the right task; restricted tools stay gated.
+The right tool for the right task. Restricted tools stay gated behind explicit consent.
 
 ## Routing Matrix
 

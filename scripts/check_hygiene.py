@@ -23,7 +23,9 @@ ALLOWED_ROOT = {
     "requirements.txt",
     "argus_search.py",
     "argus_mcp.py",
+    "argus_bridge.py",
     "ARGUS-banner.jpeg",
+    "argus-chrome-extension",
     "docs",
     "scripts",
     "tests",
@@ -61,7 +63,23 @@ SLOP_PATTERNS = [
 ]
 
 USER_FACING_GLOBS = ["*.py", "*.md", "*.toml", "*.txt", "*.yml"]
-USER_FACING_SKIP_DIRS = {".git", "__pycache__", ".pytest_cache", ".ruff_cache", ".venv", "venv", "dist", "build"}
+USER_FACING_SKIP_DIRS = {
+    ".git", "__pycache__", ".pytest_cache", ".ruff_cache", ".venv", "venv", "dist", "build"}
+# Extension + bridge files scanned too (visitor-facing institutional scope).
+USER_FACING_SUFFIXES = {"py", "md", "toml", "txt", "yml", "js", "json", "html"}
+# Sovereign features must NEVER appear in the browser extension or bridge.
+SOVEREIGN_PATTERNS = [
+    r"dark[_ ]?web",
+    r"\bTor\b",
+    r"\bonion\b",
+    r"SQLi",
+    r"XSS\s+payload",
+    r"reverse[_ ]shell",
+    r"privilege escalation",
+    r"metasploit",
+    r"\bnmap\b",
+    r"\bburp\b",
+]
 # These files document the banned list itself — skip them in the slop scan.
 SLOP_ALLOWLIST_FILES = {
     "docs/CONTRIBUTING.md",
@@ -117,7 +135,7 @@ def check_slop() -> None:
             continue
         if any(skip in path.parts for skip in USER_FACING_SKIP_DIRS):
             continue
-        if path.suffix.lstrip(".") not in {"py", "md", "toml", "txt", "yml"}:
+        if path.suffix.lstrip(".") not in USER_FACING_SUFFIXES:
             continue
         rel = path.relative_to(ROOT).as_posix()
         if rel in SLOP_ALLOWLIST_FILES:
@@ -134,6 +152,62 @@ def check_slop() -> None:
                 hits += 1
     if hits == 0:
         print("[PASS] slop-scan: no internal codes / AI slop in user-facing files")
+
+
+def check_extension_veto() -> None:
+    """Architectural veto: browser side stays institutional-only, loopback-only."""
+    ext = ROOT / "argus-chrome-extension"
+    bridge = ROOT / "argus_bridge.py"
+    ok = True
+    if not ext.is_dir():
+        fail("extension scaffold missing: argus-chrome-extension/")
+        return
+    for name in ("manifest.json", "background.js", "sidepanel.html", "sidepanel.js"):
+        if not (ext / name).is_file():
+            fail(f"extension scaffold missing file: argus-chrome-extension/{name}")
+            ok = False
+    if not bridge.is_file():
+        fail("bridge missing: argus_bridge.py")
+        ok = False
+        return
+    # 1) Sovereign terms must never appear in extension or bridge.
+    compiled = [(p, re.compile(p, re.IGNORECASE)) for p in SOVEREIGN_PATTERNS]
+    for path in [bridge, *(ext.rglob("*") if ext.is_dir() else [])]:
+        if not path.is_file():
+            continue
+        if path.suffix.lstrip(".") not in USER_FACING_SUFFIXES:
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        for raw, rx in compiled:
+            if rx.search(text):
+                fail(f"architectural veto: sovereign term `{raw}` in {rel}")
+                ok = False
+    # 2) Loopback-only: bridge binds 127.0.0.1, manifest allows only it.
+    try:
+        btext = bridge.read_text(encoding="utf-8")
+    except OSError:
+        btext = ""
+    if 'HOST = "127.0.0.1"' not in btext or "0.0.0.0" in btext:
+        fail("bridge must bind 127.0.0.1 only (never 0.0.0.0)")
+        ok = False
+    try:
+        import json as _json
+        manifest = _json.loads((ext / "manifest.json").read_text(encoding="utf-8"))
+    except (ValueError, OSError):
+        manifest = {}
+    hosts = manifest.get("host_permissions", [])
+    if hosts != ["http://127.0.0.1:8765/*"]:
+        fail(f"manifest host_permissions must be exactly loopback bridge, got {hosts}")
+        ok = False
+    if manifest.get("manifest_version") != 3:
+        fail("manifest must be Manifest V3")
+        ok = False
+    if ok:
+        print("[PASS] extension-veto: institutional-only, loopback-only, MV3 strict")
 
 
 def check_canonicals() -> None:
@@ -160,6 +234,7 @@ def main() -> int:
     print("== ARGUS hygiene gate ==")
     check_root_whitelist()
     check_slop()
+    check_extension_veto()
     check_canonicals()
     if failures:
         print(f"\nResult: {len(failures)} hygiene failure(s) — fix before PR")

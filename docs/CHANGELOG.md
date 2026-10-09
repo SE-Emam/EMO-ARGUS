@@ -2,6 +2,17 @@
 
 All notable changes documented here. Format follows Keep a Changelog, versioning follows SemVer.
 
+## [Unreleased] - Chrome companion scaffold (Secure Bridge Pattern)
+
+### ADD
+- Local bridge `argus_bridge.py` (stdlib only, entry point `argus-bridge`): binds `127.0.0.1:8765` only, per-boot token via `X-Argus-Token`, routes `GET /health`, `POST /analyze` (plan from captured context), `POST /verify-snippet` (offline audit, no live fetch).
+- Chrome companion scaffold `argus-chrome-extension/` (Manifest V3 strict): `manifest.json` (loopback host only, strict CSP), `background.js` (context menu + offline fail-safe), `sidepanel.html` + `sidepanel.js` (status, token box, Verify Snippet, ephemeral session log).
+- Bridge unit tests `tests/test_bridge.py` (4 tests: verification message, truncation, URL guard, offline audit shape).
+- Docs: `docs/EXTENSION.md` (setup + use + endpoints), ADR-5 in `docs/DECISIONS.md` (loopback-only bridge rationale).
+
+### SECURITY
+- Architectural veto enforced by new `check_extension_veto` gate in `scripts/check_hygiene.py`: Manifest V3 + exact loopback permission + `127.0.0.1` bind + restricted-tier terms never in extension/bridge. Browser role is context gathering + quick audit only.
+
 ## [1.1.0] - 2026-10-09 - Security and Stability Hardening
 
 ### SECURITY

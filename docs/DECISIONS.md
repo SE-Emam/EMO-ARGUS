@@ -32,3 +32,13 @@
 
 - **Decision:** every gate (scraping, forums, dark, restricted) defaults to `False`; non-interactive input maps to `False` automatically; MCP consents stay `False` unless passed explicitly after outside approval.
 - **Why:** least-privilege — no sensitive collection without a consent trace in the `Consent log:` section that `verify` checks.
+
+## ADR-5: Secure Bridge Pattern for the browser companion — why loopback-only?
+
+- **Decision:** the Chrome companion (`argus-chrome-extension/`, Manifest V3) never talks to the network except `http://127.0.0.1:8765/*`. A tiny stdlib bridge (`argus_bridge.py`, entry point `argus-bridge`) binds `127.0.0.1` only, checks a per-boot token (`X-Argus-Token` with constant-time compare), and exposes exactly three routes: `GET /health` (no auth), `POST /analyze` (plan from captured context), `POST /verify-snippet` (offline audit, no live fetch).
+- **Why:**
+  1. Browser is treated as an untrusted host — collection tiers with consent gates stay in the CLI/MCP, never in the extension.
+  2. Extension role is context gathering + quick audit only: selected text (capped at 2000 chars), page URL/title, offline structure/citation/URL-shape checks.
+  3. Fail-safe offline: when the bridge is down the panel shows `ARGUS Core is offline` and sends data nowhere else; captured context lives in session storage only (cleared with the session), the token alone persists locally.
+- **Cost:** user runs one local command and pastes one token into the panel — acceptable, see `docs/EXTENSION.md`.
+- **Enforced by:** `check_extension_veto` in `scripts/check_hygiene.py` (scaffold presence, Manifest V3, exact loopback permission, `127.0.0.1` bind, restricted-tier terms never in extension/bridge).

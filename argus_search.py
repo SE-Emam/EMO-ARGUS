@@ -259,7 +259,7 @@ def format_verdict(label: str) -> str:
 
 def report_filename(query: str, now: datetime.datetime | None = None) -> str:
     """Collision-proof name: argus-report-{slug}-{YYYYMMDD}-{HHMMSS}-{rand6}.md (B6)."""
-    ts = now or datetime.datetime.now()
+    ts = now or datetime.datetime.now(datetime.timezone.utc)
     stamp = ts.strftime("%Y%m%d-%H%M%S")
     rand = uuid.uuid4().hex[:6]
     return f"argus-report-{slugify(query)}-{stamp}-{rand}.md"
@@ -284,7 +284,7 @@ def _safe_output_path(base_dir: str | Path, filename: str) -> Path:
 
 def build_report(query: str, mode: str, langs: str, waves: list[str],
                  consents: dict[str, bool]) -> str:
-    date = datetime.date.today().isoformat()
+    date = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
     m = MODES[mode]
     consent_log = ", ".join(
         f"{k}={'Y' if v else 'N'}" for k, v in consents.items()
@@ -346,7 +346,7 @@ def fetch_telegram_preview(channel: str, limit: int = 20) -> list[str]:
     except (urllib.error.URLError, urllib.error.HTTPError,
             TimeoutError, OSError) as e:
         raise RuntimeError(f"fetch failed for t.me/s/{channel}: {e}") from e
-    raw = re.findall(r"tgme_widget_message_text[^>]*>(.*?)</div>", page, re.S)
+    raw = re.findall(r"tgme_widget_message_text[^>]*>(.*?)</div>", page, re.DOTALL)
     out = []
     for m in raw[:limit]:
         text = re.sub(r"<br\s*/?>", "\n", m)
@@ -426,7 +426,7 @@ def cmd_preview(args: argparse.Namespace) -> int:
 
 
 def cmd_modes(_: argparse.Namespace) -> int:
-    for key, m in MODES.items():
+    for m in MODES.values():
         print(f"{m['name']:12s} triggers={m['triggers']} waves={m['waves']} out={m['words']}")
     return 0
 

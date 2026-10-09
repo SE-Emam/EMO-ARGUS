@@ -50,7 +50,7 @@ def test_traversal_rejection() -> None:
                 core._safe_output_path(base, evil)
                 record("traversal-rejection", False, f"ACCEPTED evil path {evil!r}")
                 return
-            except ValueError as e:
+            except ValueError:
                 continue
         record("traversal-rejection", True,
                "ERROR refused all evil paths (outside project)")

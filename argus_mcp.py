@@ -45,7 +45,7 @@ def _safe_path(path: str | Path) -> Path:
 def list_modes() -> str:
     """List the 7 ARGUS research modes with waves and output size."""
     lines = []
-    for key, m in core.MODES.items():
+    for m in core.MODES.values():
         lines.append(
             f"{m['name']}: triggers={m['triggers']}, "
             f"waves={m['waves']}, output={m['words']} words"

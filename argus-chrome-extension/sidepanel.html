@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ARGUS — رفيق البحث الميداني</title>
+  <title>ARGUS — Field Companion</title>
   <style>
     :root { color-scheme: light dark; }
     body { font-family: system-ui, "Segoe UI", Tahoma, sans-serif; margin: 0; padding: 14px; font-size: 14px; }
@@ -25,23 +25,23 @@
   </style>
 </head>
 <body>
-  <h1>ARGUS — رفيق البحث الميداني</h1>
-  <div class="status"><span id="dot" class="dot"></span><span id="statusText">يفحص الاتصال بالجسر المحلي…</span></div>
+  <h1>ARGUS — Field Companion</h1>
+  <div class="status"><span id="dot" class="dot"></span><span id="statusText">Checking local bridge…</span></div>
 
-  <label for="token">رمز الجسر المحلي (X-Argus-Token)</label>
-  <input id="token" type="password" placeholder="الصقه من طرفية argus_bridge.py" autocomplete="off" />
-  <div class="hint">يُحفظ على جهازك فقط. لا يغادر المتصفح إلا نحو 127.0.0.1.</div>
+  <label for="token">Local bridge token (X-Argus-Token)</label>
+  <input id="token" type="password" placeholder="Paste it from the argus_bridge.py terminal" autocomplete="off" />
+  <div class="hint">Stored on this machine only. It never leaves the browser except toward 127.0.0.1.</div>
 
-  <label for="snippet">مقتطف للتدقيق السريع</label>
-  <textarea id="snippet" placeholder="الصق فقرة أو رابطًا من الصفحة…"></textarea>
+  <label for="snippet">Snippet for quick audit</label>
+  <textarea id="snippet" placeholder="Paste a paragraph or a URL from the page…"></textarea>
   <button id="verifyBtn">Verify Snippet</button>
-  <button id="refreshBtn">فحص الاتصال</button>
+  <button id="refreshBtn">Check connection</button>
 
-  <label>النتيجة</label>
+  <label>Result</label>
   <pre id="result">—</pre>
 
   <div class="log">
-    <label>السياق الملتقط (مؤقت — يُمسح مع الجلسة)</label>
+    <label>Captured context (ephemeral — cleared with the session)</label>
     <div id="log"></div>
   </div>
 

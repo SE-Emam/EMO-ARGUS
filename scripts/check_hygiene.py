@@ -3,7 +3,9 @@
 Fails (exit 1) on:
   1. Root whitelist violation (junk / temp / instruction files in root).
   2. AI-slop / internal codes in user-facing files.
+  2b. Language veto (non-Latin script outside allowlisted i18n data).
   3. Canonical install/command drift.
+  4. Extension veto (browser/editor stay loopback-only institutional assistants).
 
 Usage: python scripts/check_hygiene.py
 """
@@ -96,6 +98,19 @@ SLOP_ALLOWLIST_FILES = {
 SLOP_FILE_OVERRIDES: dict[str, set[str]] = {
     r"\[Y\]": {"docs/SKILL.md"},
     r"python\s+argus_search\.py": {".github/workflows/ci.yml"},
+}
+
+# 2b) Language veto: visitor UI stays English-only (Latin script).
+# Only allowlisted functional i18n data may carry non-Latin script:
+#   - argus_search.py (mode triggers + split regex — the product speaks 14 langs)
+#   - docs/SKILL.md (language table + trigger lists)
+#   - tests/test_core.py (i18n behaviour assertions)
+# Everything else must not contain Arabic or CJK characters.
+LANGUAGE_VETO_RE = re.compile(r"[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7AF]")
+LANGUAGE_VETO_ALLOW = {
+    "argus_search.py",
+    "docs/SKILL.md",
+    "tests/test_core.py",
 }
 
 failures: list[str] = []
@@ -270,6 +285,40 @@ def check_extension_veto() -> None:
         print("[PASS] extension-veto: institutional-only, loopback-only, MV3 strict")
 
 
+def check_language_veto() -> None:
+    """Visitor UI stays English-only: no Arabic/CJK outside allowlisted i18n data."""
+    ok = True
+    skip_dirs = USER_FACING_SKIP_DIRS | {".git", "output", "TEx_config"}
+    for path in ROOT.rglob("*"):
+        try:
+            rel = path.relative_to(ROOT)
+        except ValueError:
+            continue
+        if any(part in skip_dirs or part in FORBIDDEN_ANYWHERE for part in rel.parts):
+            continue
+        if not path.is_file():
+            continue
+        if str(rel) in LANGUAGE_VETO_ALLOW:
+            continue
+        if path.suffix.lower() not in (
+            ".py", ".md", ".toml", ".txt", ".yml", ".yaml",
+            ".js", ".json", ".html", ".ts",
+        ):
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        m = LANGUAGE_VETO_RE.search(text)
+        if m:
+            line = text[: m.start()].count("\n") + 1
+            fail(f"language veto: {rel}:{line} carries non-Latin script "
+                 f"(visitor UI is English-only; allowlisted: {sorted(LANGUAGE_VETO_ALLOW)})")
+            ok = False
+    if ok:
+        print("[PASS] language-veto: visitor UI English-only (i18n data allowlisted)")
+
+
 def check_canonicals() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
@@ -294,6 +343,7 @@ def main() -> int:
     print("== ARGUS hygiene gate ==")
     check_root_whitelist()
     check_slop()
+    check_language_veto()
     check_extension_veto()
     check_canonicals()
     if failures:

@@ -17,7 +17,7 @@ const MENU_ID = "argus-send-to-core";
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: MENU_ID,
-    title: "إرسال إلى ARGUS للتحليل",
+    title: "Send to ARGUS",
     contexts: ["selection"],
   });
   if (chrome.sidePanel && chrome.sidePanel.setPanelBehavior) {

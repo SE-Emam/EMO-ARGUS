@@ -37,7 +37,7 @@ ARGUS: region AI market in Latin America
 ARGUS: narrow pricing strategy of Stripe
 ```
 
-Arabic works too: `قارن`, `عميق`, `منطقة` and more.
+Non-English triggers are also supported (see `docs/SKILL.md` trigger lists for all 14 languages).
 
 ### Step 2 — Confirm 4 things
 
@@ -115,7 +115,7 @@ Red lines (even with consent): no private groups/DMs without per-group approval,
 | `argus: command not found` | Re-run `pip install emo-argus`, check PATH |
 | Weak result | Try a deeper mode, widen languages/region |
 | `preview` finds nothing | Channel name must be 5–64 chars `[A-Za-z0-9_]`, public only |
-| OCR misses Arabic | `brew install tesseract-lang` |
+| OCR misses non-Latin script | `brew install tesseract-lang` (add language data as needed) |
 | `exiftool not found` | `brew install exiftool` |
 
 ## 7. FAQ

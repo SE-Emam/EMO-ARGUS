@@ -18,7 +18,7 @@ All notable changes documented here. Format follows Keep a Changelog, versioning
 - `n` parameter honored in `generate_subquestions`.
 
 ### REFACTOR
-- God-function `verify_report_text` (115 lines) split into 5 focused functions: `check_structure` / `check_urls` / `check_citations` / `check_languages` / `check_consent` plus `_check_live_links` coordinator.
+- Long `verify_report_text` (115 lines) split into 5 focused functions: `check_structure` / `check_urls` / `check_citations` / `check_languages` / `check_consent` plus `_check_live_links` coordinator.
 - Shared DRY logic extracted: `resolve_waves()` / `parse_limit()` / `format_verdict()` used by CLI and MCP.
 - `ThreadPoolExecutor` moved to top-level import; bare `except Exception` replaced with specific exceptions (`URLError, HTTPError, TimeoutError, OSError`).
 

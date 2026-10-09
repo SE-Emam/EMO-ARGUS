@@ -92,7 +92,7 @@ def generate_report(
 ) -> str:
     """Write a report skeleton. ALL consents default False (SKIP).
 
-    Set a consent True ONLY after explicit user [Y] obtained outside MCP.
+    Set a consent True ONLY after explicit user approval obtained outside MCP.
     """
     key = (mode or core.infer_mode(query)).lower()
     if key not in core.MODES:

@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "ARGUS Field Companion",
+  "version": "0.1.0",
+  "description": "Field research companion: capture page context and quick-verify snippets via your local ARGUS core. Localhost only, no external network.",
+  "minimum_chrome_version": "114",
+  "permissions": ["contextMenus", "sidePanel", "storage"],
+  "host_permissions": ["http://127.0.0.1:8765/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "Open ARGUS companion"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'self'; connect-src http://127.0.0.1:8765; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self';"
+  }
+}

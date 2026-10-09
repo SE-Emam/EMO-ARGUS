@@ -17,11 +17,13 @@
 
 ```
 README.md  LICENSE  pyproject.toml  requirements.txt
-argus_search.py  argus_mcp.py  ARGUS-banner.jpeg
-docs/  scripts/  tests/  output/.gitkeep  .github/  .gitignore
+argus_search.py  argus_mcp.py  argus_bridge.py  ARGUS-banner.jpeg
+argus-chrome-extension/  docs/  scripts/  tests/  output/.gitkeep  .github/  .gitignore
 ```
 
 أي ملف خارج هذه القائمة (`SHA256SUMS`, `dist/`, `*.egg-info/`, `__pycache__/`, `.pytest_cache/`, `.ruff_cache/`) يُرفض في الـ CI.
+
+> فيتو الإضافة (ملزم): مجلد `argus-chrome-extension/` مساعد مؤسسي فقط — `host_permissions` حلقة محلية حصرًا، Manifest V3 صارم، ممنوع أي قدرات جمع مقيّدة داخل المتصفح. يفرضها `check_extension_veto` في `scripts/check_hygiene.py`.
 
 ## 2) لغة الزائر (ممنوع AI Slop)
 

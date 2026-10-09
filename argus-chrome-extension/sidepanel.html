@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ARGUS — رفيق البحث الميداني</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, "Segoe UI", Tahoma, sans-serif; margin: 0; padding: 14px; font-size: 14px; }
+    h1 { font-size: 16px; margin: 0 0 8px; }
+    .status { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; background: #f1f1f4; margin-bottom: 10px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #999; }
+    .dot.on { background: #1a9e54; } .dot.off { background: #c0392b; }
+    label { display: block; margin: 10px 0 4px; font-weight: 600; }
+    input, textarea, button { width: 100%; box-sizing: border-box; }
+    input, textarea { padding: 8px; border: 1px solid #bbb; border-radius: 8px; font: inherit; }
+    textarea { min-height: 110px; resize: vertical; }
+    button { margin-top: 8px; padding: 9px; border: 0; border-radius: 8px; font: inherit; font-weight: 700; cursor: pointer; }
+    #verifyBtn { background: #111; color: #fff; }
+    #refreshBtn { background: #e8e8ee; color: #111; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #0f0f12; color: #e8e8e8; padding: 10px; border-radius: 8px; max-height: 260px; overflow: auto; direction: ltr; text-align: left; }
+    .hint { color: #666; font-size: 12px; margin-top: 6px; }
+    .log { border-top: 1px solid #ddd; margin-top: 12px; padding-top: 8px; }
+    .entry { border: 1px solid #ddd; border-radius: 8px; padding: 8px; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <h1>ARGUS — رفيق البحث الميداني</h1>
+  <div class="status"><span id="dot" class="dot"></span><span id="statusText">يفحص الاتصال بالجسر المحلي…</span></div>
+
+  <label for="token">رمز الجسر المحلي (X-Argus-Token)</label>
+  <input id="token" type="password" placeholder="الصقه من طرفية argus_bridge.py" autocomplete="off" />
+  <div class="hint">يُحفظ على جهازك فقط. لا يغادر المتصفح إلا نحو 127.0.0.1.</div>
+
+  <label for="snippet">مقتطف للتدقيق السريع</label>
+  <textarea id="snippet" placeholder="الصق فقرة أو رابطًا من الصفحة…"></textarea>
+  <button id="verifyBtn">Verify Snippet</button>
+  <button id="refreshBtn">فحص الاتصال</button>
+
+  <label>النتيجة</label>
+  <pre id="result">—</pre>
+
+  <div class="log">
+    <label>السياق الملتقط (مؤقت — يُمسح مع الجلسة)</label>
+    <div id="log"></div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

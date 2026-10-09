@@ -18,6 +18,7 @@ mcp = ["mcp>=1.0,<2"]
 [project.scripts]
 argus = "argus_search:main"
 argus-mcp = "argus_mcp:main"
+argus-bridge = "argus_bridge:main"
 
 [project.urls]
 Homepage = "https://github.com/SE-Emam/EMO-ARGUS"
@@ -26,4 +27,4 @@ Repository = "https://github.com/SE-Emam/EMO-ARGUS.git"
 Changelog = "https://github.com/SE-Emam/EMO-ARGUS/blob/main/docs/CHANGELOG.md"
 
 [tool.setuptools]
-py-modules = ["argus_search", "argus_mcp"]
+py-modules = ["argus_search", "argus_mcp", "argus_bridge"]

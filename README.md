@@ -95,6 +95,7 @@ Run the MCP server on stdio/localhost only. It touches the filesystem by design.
 | Daily use, 5-step flow, FAQ | [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) |
 | Modes, filters, tool routing | [`docs/MODES.md`](docs/MODES.md), [`docs/FILTERS.md`](docs/FILTERS.md), [`docs/TOOLS.md`](docs/TOOLS.md) |
 | Agent skill spec (advanced) | [`docs/SKILL.md`](docs/SKILL.md) |
+| Browser companion (localhost only) | [`docs/EXTENSION.md`](docs/EXTENSION.md) |
 | Architecture decisions | [`docs/DECISIONS.md`](docs/DECISIONS.md) |
 | What changed | [`docs/CHANGELOG.md`](docs/CHANGELOG.md) |
 | Keep the repo visitor-clean (contributing) | [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) |

@@ -1,4 +1,4 @@
-"""ARGUS MCP server - exposes orchestrator logic as MCP tools.
+"""ARGUS MCP server - verified research plans for AI agents.
 
 Tools:
   list_modes        - the 7 research modes
@@ -8,9 +8,9 @@ Tools:
   verify_report     - audit a finished report (links, citations, languages)
 
 Safety: MCP is non-interactive, so every consent defaults to False.
-Pass True only after explicit user [Y] obtained OUTSIDE this server.
+Pass True only after explicit user approval obtained OUTSIDE this server.
 
-Deployment (sovereign-grade): bind stdio/localhost ONLY. Never expose
+Run on stdio/localhost ONLY. Never expose
 this server to a network socket without authentication + TLS + allowlist,
 because generate_report / verify_report perform filesystem I/O.
 """
@@ -21,15 +21,15 @@ from pathlib import Path
 try:
     from mcp.server.fastmcp import FastMCP
 except ImportError:  # graceful message when extra not installed
-    raise SystemExit("mcp package missing: pip install 'argus-search[mcp]'")
+    raise SystemExit("mcp package missing: pip install 'emo-argus[mcp]'")
 
 import argus_search as core
 
-mcp = FastMCP("argus-search")
+mcp = FastMCP("argus")
 
 
 def _safe_path(path: str | Path) -> Path:
-    """S3: refuse path escape - resolved path must stay inside CWD.
+    """Refuse path escape - resolved path must stay inside CWD.
 
     Used by generate_report (output_dir) and verify_report (file).
     Rejects '..' segments and absolute paths outside the project.

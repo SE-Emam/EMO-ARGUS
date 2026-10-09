@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
-"""ARGUS CLI - orchestrator helper (stdlib only, no dependencies).
-
-Implements the routing logic from SKILL.md locally:
-  mode inference -> filter defaults -> plan generation ->
-  consent gates -> report skeleton / public Telegram preview.
+"""ARGUS CLI - turn a vague question into a verified research plan.
 
 Usage:
-  python argus_search.py plan "ARGUS: compare Notion vs Obsidian"
-  python argus_search.py report "ARGUS: deep AI in Africa" --output ./output
-  python argus_search.py preview durov --limit 5
-  python argus_search.py modes
-  python argus_search.py --help
+  argus plan "ARGUS: compare Notion vs Obsidian"
+  argus report "ARGUS: deep AI in Africa" --output ./output
+  argus preview durov --limit 5
+  argus modes
+  argus --help
 """
 from __future__ import annotations
 
@@ -29,7 +25,7 @@ from pathlib import Path
 
 VERSION = "1.1.0"
 
-# --- Shared security / reliability constants (Phase 1) ---
+# --- Shared security / reliability limits ---
 CHANNEL_RE = re.compile(r"^[A-Za-z0-9_]{5,64}$")
 MAX_PREVIEW_LIMIT = 50
 MAX_VERIFY_URLS = 50
@@ -81,7 +77,6 @@ def split_compare_items(topic: str) -> list[str]:
 
 
 # Per-mode question templates. {t} = topic, {a}/{b} = compared items.
-# Mirrors SKILL.md Step 3 "Template focus" column.
 MODE_TEMPLATES: dict[str, list[str]] = {
     "quick": [
         "What is the single verified answer to '{t}'? (one authoritative source + URL + date)",
@@ -222,7 +217,7 @@ def slugify(text: str) -> str:
     """Filesystem-safe slug, keeps Arabic letters.
 
     Falls back to argus-report-<uuid8> (never silent 'research')
-    to avoid report filename collisions (B8).
+    to avoid report filename collisions.
     """
     s = re.sub(r"(?i)^argus\s*:\s*", "", text)
     s = re.sub(r"[^\w\s-]", "", s, flags=re.UNICODE).strip().lower()
@@ -234,7 +229,7 @@ def slugify(text: str) -> str:
 
 
 def parse_limit(v: int, default: int = 20) -> int:
-    """Clamp a preview limit into safe range [1, MAX_PREVIEW_LIMIT]. (B3/DRY)"""
+    """Clamp a preview limit into safe range [1, MAX_PREVIEW_LIMIT]."""
     try:
         n = int(v)
     except (TypeError, ValueError):
@@ -258,7 +253,7 @@ def format_verdict(label: str) -> str:
 
 
 def report_filename(query: str, now: datetime.datetime | None = None) -> str:
-    """Collision-proof name: argus-report-{slug}-{YYYYMMDD}-{HHMMSS}-{rand6}.md (B6)."""
+    """Collision-proof name: argus-report-{slug}-{YYYYMMDD}-{HHMMSS}-{rand6}.md."""
     ts = now or datetime.datetime.now(datetime.timezone.utc)
     stamp = ts.strftime("%Y%m%d-%H%M%S")
     rand = uuid.uuid4().hex[:6]
@@ -266,7 +261,7 @@ def report_filename(query: str, now: datetime.datetime | None = None) -> str:
 
 
 def atomic_write_text(path: Path, text: str) -> None:
-    """Atomic write: tmp file + os.replace, never leaves half-files. (B6)"""
+    """Atomic write: tmp file + os.replace, never leaves half-files."""
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + f".tmp-{uuid.uuid4().hex[:6]}")
     tmp.write_text(text, encoding="utf-8")
@@ -307,14 +302,14 @@ def build_report(query: str, mode: str, langs: str, waves: list[str],
 ## 10. Gaps and Open Questions
 ## 11. Key Sources (with URLs) - group by language
 ## 12. Methodology Notes
-Consent log: {consent_log}. Tool: argus_search.py v1.1.0.
+Consent log: {consent_log}. Tool: argus v1.1.0.
 """
 
 
 def fetch_telegram_preview(channel: str, limit: int = 20) -> list[str]:
     """Public preview via t.me/s/ - no credentials needed.
 
-    Security (S1): strict channel validation + host pinning.
+    Strict channel validation + host pinning.
     Only [A-Za-z0-9_]{5,64} accepted; final URL host must be t.me.
     Raises ValueError on invalid format (caller surfaces as ERROR).
     """
@@ -329,7 +324,7 @@ def fetch_telegram_preview(channel: str, limit: int = 20) -> list[str]:
 
     class _NoRedirect(urllib.request.HTTPRedirectHandler):
         def redirect_request(self, req, fp, code, msg, headers, newurl):
-            return None  # S1: disable automatic redirects
+            return None  # disable automatic redirects
 
     opener = urllib.request.build_opener(_NoRedirect)
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
@@ -353,7 +348,7 @@ def fetch_telegram_preview(channel: str, limit: int = 20) -> list[str]:
         text = re.sub(r"<[^>]+>", "", text)
         text = htmlmod.unescape(text).strip()
         if text:
-            # S2: escape before embedding in Markdown output files
+            # escape before embedding in Markdown output files
             out.append(htmlmod.escape(text))
     return out
 
@@ -402,7 +397,7 @@ def cmd_preview(args: argparse.Namespace) -> int:
     try:
         msgs = fetch_telegram_preview(args.channel, limit)
     except ValueError as e:
-        # S1: invalid channel format - user error, no network attempted
+        # invalid channel format - user error, no network attempted
         print(f"{e}", file=sys.stderr)
         return 2
     except (urllib.error.URLError, urllib.error.HTTPError,
@@ -611,7 +606,7 @@ def check_consent(text: str,
 
 def _check_live_links(live: list[str],
                       max_workers: int = 8) -> list[dict]:
-    """Throttled + capped liveness probe (S4: sleep + MAX_VERIFY_URLS)."""
+    """Throttled + capped liveness probe."""
     out: list[dict] = []
     capped = live[:MAX_VERIFY_URLS]
     skipped = len(live) - len(capped)
@@ -655,7 +650,7 @@ def verify_report_text(text: str, check_links: bool = True,
                        max_workers: int = 8) -> tuple[str, list[dict]]:
     """Audit a report. Returns (verdict, findings). Verdict: PASS/WARN/FAIL.
 
-    Orchestrator (Phase 2): delegates to check_structure / check_urls /
+    Delegates to check_structure / check_urls /
     check_citations / check_languages / check_consent + throttled liveness.
     """
     findings: list[dict] = []
@@ -693,7 +688,7 @@ def cmd_verify(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(prog="argus-search", description="ARGUS orchestrator CLI")
+    p = argparse.ArgumentParser(prog="argus", description="ARGUS - verified research reports from the command line")
     p.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
     sub = p.add_subparsers(dest="cmd", required=True)
 

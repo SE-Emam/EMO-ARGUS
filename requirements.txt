@@ -1,4 +1,4 @@
-# ARGUS has NO required dependencies (argus_search.py is stdlib-only).
+# ARGUS has NO required dependencies (the `argus` CLI is stdlib-only).
 # Optional tools below - install only what your case needs.
 #
 # Evidence collection (Telegram) - requires user API credentials:

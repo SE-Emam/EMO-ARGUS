@@ -1,73 +1,105 @@
-# ARGUS - Research Orchestrator
+# ARGUS — Stop getting shallow AI answers
 
 ![ARGUS banner](ARGUS-banner.jpeg)
 
-> Not a search engine, not a scraper, not a wrapper. A research orchestration skill and CLI that routes any AI agent through existing open-source tools using a 5-wave methodology with cross-verification.
+[![PyPI version](https://img.shields.io/pypi/v/emo-argus)](https://pypi.org/project/emo-argus/)
+[![Python](https://img.shields.io/pypi/pyversions/emo-argus)](https://pypi.org/project/emo-argus/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![CI](https://github.com/SE-Emam/EMO-ARGUS/actions/workflows/ci.yml/badge.svg)](https://github.com/SE-Emam/EMO-ARGUS/actions)
 
-**Philosophy:** do not reinvent the wheel. Compose existing tools (yt-dlp, Firecrawl, Crawl4AI, TEx, Telerecon) into one coherent research workflow.
+> AI assistants guess. **ARGUS verifies.** One command turns a vague question into a sourced, multilingual research report — with dead links and uncited claims caught before delivery.
 
-## Quick start
+If you use ChatGPT, Claude, or any agent for research and you're tired of invented URLs, English-only results, and no sources — ARGUS is the 60-second fix.
 
+## Install (30 seconds)
+
+```bash
+pip install emo-argus
+argus modes
 ```
-ARGUS: <query>
+
+That's it. You now have the `argus` command. Zero dependencies, works on Python 3.9+.
+
+> Why `emo-argus` and not `argus`? The name `argus` is taken on PyPI since 2015 by an unrelated camera-calibration package. Our distribution is `emo-argus`, but it installs the exact same `argus` + `argus-mcp` commands. After install you just type `argus`.
+
+For AI agents (Claude Code, Cursor, Copilot):
+
+```bash
+pip install "emo-argus[mcp]"
+argus-mcp
+```
+
+## 60-second demo
+
+```bash
+# 1. See the plan before anything runs
+argus plan "ARGUS: compare Notion vs Obsidian"
+
+# 2. Generate a report skeleton
+argus report "ARGUS: deep AI startups in Africa" --output ./output
+
+# 3. Preview any public Telegram channel (no login needed)
+argus preview durov --limit 5
+
+# 4. Audit any report before you trust it (mandatory gate)
+argus verify ./output/argus-report-*.md --offline
+```
+
+Real output: a Markdown report with executive summary, verified findings, contested claims, sources grouped by language, and a consent log.
+
+## Why ARGUS matters
+
+| Without ARGUS | With ARGUS |
+|---|---|
+| Single-language, Google-only answers | **14 languages** by default in Deep mode (Arabic, Chinese, Spanish, Russian, Hindi…) |
+| Invented links you discover too late | **`verify` gate** checks structure, live links, citations, and language coverage |
+| "Deep research" = one long paragraph | **7 modes** from 100-word quick answers to 5,000-word deep reports |
+| Scraping / forums happen silently | **Explicit consent gates** — silence always means SKIP |
+| Agent does random tool calls | **Fixed 5-wave method** — broad → regional → technical → discussion → verify |
+
+**Zero-dependency core:** the CLI is pure Python stdlib. No supply-chain risk, auditable line by line, runs even in air-gapped environments.
+
+## The 7 modes
+
+| Mode | Use it when | You get |
+|---|---|---|
+| `quick` | One fact, fast | 100–300 words, 1 question |
+| `compare` | X vs Y | Table + 1,000–2,000 words |
+| `deep` (default) | "Research this properly" | 2,000–5,000 words, all 14 languages |
+| `platform` | One platform (YouTube, X, Reddit…) | 1,500–3,000 words |
+| `timebox` | "What happened in 2024–2026?" | Timeline + 1,500–3,500 words |
+| `region` | One geography | 2,000–4,000 words + regional engines |
+| `narrow` | One tight question, deep | 800–1,500 words |
+
+Example:
+
+```text
+ARGUS: quick who is the CEO of OpenAI
 ARGUS: compare Notion vs Obsidian
-ARGUS: platform AI agents on Twitter
-ARGUS: timebox EU AI Act 2024-2026
-ARGUS: region AI market in Africa
-ARGUS: narrow pricing model of Stripe
-ARGUS: deep quantum computing startups in Europe
-ARGUS: quick who is the CEO of X
+ARGUS: deep African fintech landscape 2026
+ARGUS: platform AI agents on Twitter last 30 days
 ```
 
-Local CLI (standard library only, no install required):
+Full detail: [`docs/MODES.md`](docs/MODES.md) · Filters: [`docs/FILTERS.md`](docs/FILTERS.md) · Tools: [`docs/TOOLS.md`](docs/TOOLS.md)
 
-```bash
-python argus_search.py plan "ARGUS: compare Notion vs Obsidian"
-python argus_search.py report "ARGUS: deep AI in Africa" --output ./output
-python argus_search.py preview durov --limit 5
-python argus_search.py verify ./output/argus-report-<slug>-<date>.md   # mandatory gate before delivery
-python argus_search.py modes
-```
+## Safety in one line
 
-Install as a package (one line — you get the `argus` command):
+> No scraping, no forums/Telegram deep search, no dark web, no login-bypass — without asking you first and getting an explicit `Y`. Silence = SKIP, always.
 
-```bash
-pip install emo-argus      # CLI: argus
-argus modes                # verify install
-pip install emo-argus[mcp] # MCP server: argus-mcp
-```
+Run the MCP server on stdio/localhost only. It touches the filesystem by design.
 
-> **Why not `pip install argus`?** The name `argus` is taken on PyPI
-> since 2015 (v0.0.11, camera calibration utils) — so our distribution
-> is `emo-argus`, but it installs the exact same `argus` + `argus-mcp`
-> commands. After install you just type `argus`.
+## Docs
 
-> **MCP deployment:** run the MCP server on stdio or localhost only.
-> Never bind it to a network socket without authentication, TLS, and a path
-> allowlist, because `generate_report` and `verify_report` perform filesystem I/O.
+| I want to… | Open |
+|---|---|
+| Daily use, 5-step flow, FAQ | [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) |
+| Modes, filters, tool routing | [`docs/MODES.md`](docs/MODES.md), [`docs/FILTERS.md`](docs/FILTERS.md), [`docs/TOOLS.md`](docs/TOOLS.md) |
+| Agent skill spec (advanced) | [`docs/SKILL.md`](docs/SKILL.md) |
+| Architecture decisions | [`docs/DECISIONS.md`](docs/DECISIONS.md) |
+| What changed | [`docs/CHANGELOG.md`](docs/CHANGELOG.md) |
 
-## Contents
+## License
 
-| File | Role |
-|------|------|
-| `SKILL.md` | Orchestrator spec: modes, filters, routing, consent workflows, evidence pipeline |
-| `MODES.md` | The 7 research modes in detail |
-| `FILTERS.md` | The 10 filters and language presets |
-| `TOOLS.md` | Routing matrix and tool notes |
-| `USER_GUIDE.md` | Install, 5-step flow, consents, troubleshooting |
-| `DECISIONS.md` | Architecture decision records |
-| `CHANGELOG.md` | Release history |
-| `argus_search.py` | CLI: plan bank, consent gates, report skeleton, Telegram preview, `verify` gate |
-| `argus_mcp.py` | MCP server: `list_modes`, `plan_research`, `generate_report`, `telegram_preview`, `verify_report` |
-| `pyproject.toml` | Packaging: `argus-search` CLI and `argus-mcp` server |
+MIT — see [LICENSE](LICENSE).
 
-## Golden rule
-
-> No scraping, no forums or Telegram deep search, no dark web, no restricted sources - without asking the user first and getting an explicit `[Y]`. Silence means SKIP, always.
-
-## Status
-
-- Phase 1 (build) done. Phase 2 (verify) done. Phase 3 (publish prep) done.
-- Verified 2026-10-07: 7/7 modes, 7/7 routing entries, 4/4 consents, 5/5 verification checks.
-- Full Telegram collection requires the user's own `TELEGRAM_API_ID` and `TELEGRAM_API_HASH`.
 

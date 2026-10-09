@@ -1,6 +1,6 @@
-# ARGUS - Modes (7 Research Modes)
+# ARGUS — The 7 Research Modes
 
-> Reference: `SKILL.md`. Standalone detail for each mode.
+Pick the depth you need — from a 100-word answer to a 5,000-word multilingual report.
 
 | # | Mode | Trigger | Use when | Sub-questions | Waves | Tools | Output |
 |---|------|---------|----------|---------------|-------|-------|--------|

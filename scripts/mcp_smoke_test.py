@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""MCP smoke test protocol (sovereign deployment gate).
+"""MCP smoke test - verifies the same paths the MCP tools use.
 
 Runs WITHOUT the mcp package: imports core logic directly and exercises
 the same code paths the MCP tools use (resolve_waves / report_filename /

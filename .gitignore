@@ -11,3 +11,6 @@ output/*
 TEx_config/
 *.sqlite
 .DS_Store
+dist/
+build/
+*.egg-info/

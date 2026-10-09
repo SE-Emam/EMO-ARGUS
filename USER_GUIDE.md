@@ -4,11 +4,15 @@
 
 ## 1. Install (one minute)
 
-Nothing required to start - the CLI is standard-library only:
+One line — you get the `argus` command:
 
 ```bash
-python argus_search.py modes
+pip install emo-argus
+argus modes
 ```
+
+> `pip install argus` is taken on PyPI since 2015 by another project,
+> so our package is `emo-argus` — after install you just type `argus`.
 
 Install later, only when needed:
 

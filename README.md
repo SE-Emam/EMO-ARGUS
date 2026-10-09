@@ -29,12 +29,18 @@ python argus_search.py verify ./output/argus-report-<slug>-<date>.md   # mandato
 python argus_search.py modes
 ```
 
-Install as a package with MCP server (for agents):
+Install as a package (one line — you get the `argus` command):
 
 ```bash
-pip install .              # CLI: argus
-pip install .[mcp]         # MCP server: argus-mcp
+pip install emo-argus      # CLI: argus
+argus modes                # verify install
+pip install emo-argus[mcp] # MCP server: argus-mcp
 ```
+
+> **Why not `pip install argus`?** The name `argus` is taken on PyPI
+> since 2015 (v0.0.11, camera calibration utils) — so our distribution
+> is `emo-argus`, but it installs the exact same `argus` + `argus-mcp`
+> commands. After install you just type `argus`.
 
 > **MCP deployment:** run the MCP server on stdio or localhost only.
 > Never bind it to a network socket without authentication, TLS, and a path

@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+output/*
+!output/.gitkeep
+*.session
+*.session-journal
+TEx_config/
+*.sqlite
+.DS_Store

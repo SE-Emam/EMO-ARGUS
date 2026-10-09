@@ -1,0 +1,13 @@
+# ARGUS has NO required dependencies (argus_search.py is stdlib-only).
+# Optional tools below - install only what your case needs.
+#
+# Evidence collection (Telegram) - requires user API credentials:
+#   pip install "pydantic>=2.9" && pip install TelegramExplorer --no-deps
+#   pip install "Telethon==1.29.2" "SQLAlchemy>=2.0.19,<2.1" aiofiles aiosqlite Jinja2 pytesseract pytz "requests>=2.31.0,<3" python-socks
+#
+# Media processing layer:
+#   pip install faster-whisper        # video/audio transcription (derivative output)
+#   brew install tesseract-lang       # Arabic OCR data (ara.traineddata)
+#   brew install exiftool             # media/document metadata
+#
+# System tools (via brew/apt): tesseract, ffmpeg, exiftool

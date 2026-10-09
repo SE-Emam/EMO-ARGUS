@@ -1,0 +1,35 @@
+name: ARGUS CI
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  argus-security-and-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest ruff pip-audit
+
+      - name: Lint with Ruff
+        run: ruff check . --output-format=github
+
+      - name: Run Tests
+        run: pytest tests/ -v
+
+      - name: Audit dependencies
+        run: pip-audit --strict
+
+      - name: Verify Offline Reports (Sanity Check)
+        run: python argus_search.py verify --offline output/*.md || true

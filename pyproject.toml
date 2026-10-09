@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "argus-search"
+version = "1.1.0"
+description = "ARGUS - Research orchestrator CLI + MCP server (stdlib only)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.0,<2"]
+
+[project.scripts]
+argus = "argus_search:main"
+argus-mcp = "argus_mcp:main"
+
+[tool.setuptools]
+py-modules = ["argus_search", "argus_mcp"]

@@ -64,7 +64,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     await rememberResult({ ok: true, at: Date.now(), request: payload, response: data });
   } catch (e) {
     // Fail-safe: offline bridge => report offline, never reroute elsewhere.
-    await rememberResult({ ok: false, error: "ARGUS Core is offline — start argus_bridge.py, data sent nowhere." });
+    await rememberResult({ ok: false, error: "ARGUS Core is offline — start argus-bridge, data sent nowhere." });
   }
 });
 

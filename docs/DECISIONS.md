@@ -35,7 +35,7 @@
 
 ## ADR-5: Secure Bridge Pattern for the browser companion — why loopback-only?
 
-- **Decision:** the Chrome companion (`argus-chrome-extension/`, Manifest V3) never talks to the network except `http://127.0.0.1:8765/*`. A tiny stdlib bridge (`argus_bridge.py`, entry point `argus-bridge`) binds `127.0.0.1` only, checks a per-boot token (`X-Argus-Token` with constant-time compare), and exposes exactly three routes: `GET /health` (no auth), `POST /analyze` (plan from captured context), `POST /verify-snippet` (offline audit, no live fetch).
+- **Decision:** the Chrome companion (`argus-chrome-extension/`, Manifest V3) never talks to the network except `http://127.0.0.1:8765/*`. A tiny stdlib bridge (`src/emo_argus/bridge.py`, entry point `argus-bridge`) binds `127.0.0.1` only, checks a per-boot token (`X-Argus-Token` with constant-time compare), and exposes exactly three routes: `GET /health` (no auth), `POST /analyze` (plan from captured context), `POST /verify-snippet` (offline audit, no live fetch).
 - **Why:**
   1. Browser is treated as an untrusted host — collection tiers with consent gates stay in the CLI/MCP, never in the extension.
   2. Extension role is context gathering + quick audit only: selected text (capped at 2000 chars), page URL/title, offline structure/citation/URL-shape checks.

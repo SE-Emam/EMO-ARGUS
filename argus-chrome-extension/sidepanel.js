@@ -39,7 +39,7 @@ async function checkHealth() {
     setStatus(true, `Connected — bridge ok (${data.tool || "argus"} ${data.version || ""})`);
   } catch (e) {
     // Fail-safe: offline message, no fallback destination.
-    setStatus(false, "ARGUS Core is offline — start argus_bridge.py locally");
+    setStatus(false, "ARGUS Core is offline — start argus-bridge locally");
   }
 }
 
@@ -47,7 +47,7 @@ async function verifySnippet() {
   const snippet = $("snippet").value.trim();
   const { argusToken = "" } = await chrome.storage.local.get("argusToken");
   if (!argusToken) {
-    $("result").textContent = "Paste the bridge token first (from the argus_bridge.py terminal).";
+    $("result").textContent = "Paste the bridge token first (from the argus-bridge terminal).";
     return;
   }
   if (!snippet) {
@@ -66,7 +66,7 @@ async function verifySnippet() {
       ? JSON.stringify(data, null, 2)
       : `Refused: ${data.error || `HTTP ${res.status}`}`;
   } catch (e) {
-    $("result").textContent = "ARGUS Core is offline — start argus_bridge.py locally";
+    $("result").textContent = "ARGUS Core is offline — start argus-bridge locally";
   }
 }
 

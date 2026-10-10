@@ -14,7 +14,7 @@ import secrets
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 
-import argus_search as core
+from emo_argus import search as core
 
 HOST = "127.0.0.1"
 DEFAULT_PORT = 8765

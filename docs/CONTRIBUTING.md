@@ -17,7 +17,7 @@ Allowed root only:
 
 ```
 README.md  LICENSE  pyproject.toml  requirements.txt
-argus_search.py  argus_mcp.py  argus_bridge.py  ARGUS-banner.jpeg
+src/emo_argus/  assets/images/ARGUS-banner.jpeg
 argus-chrome-extension/  argus-vscode-extension/  docs/  scripts/  tests/  output/.gitkeep  .github/  .gitignore
 ```
 
@@ -27,7 +27,7 @@ Any file outside this list (`SHA256SUMS`, `dist/`, `*.egg-info/`, `__pycache__/`
 
 ## 2) Visitor Language (No AI Slop, English-Only UI)
 
-Banned in any user-facing file (`README.md`, `docs/*.md` except allowlisted i18n data, `argus_*.py --help`, `pyproject.toml`, both extensions):
+Banned in any user-facing file (`README.md`, `docs/*.md` except allowlisted i18n data, `src/emo_argus/*.py --help`, `pyproject.toml`, both extensions):
 
 - `python argus_search.py` → use `argus ...`
 - `argus-search` → correct is `emo-argus` for the distribution and `argus` for the command
@@ -38,7 +38,7 @@ Banned in any user-facing file (`README.md`, `docs/*.md` except allowlisted i18n
 Language policy:
 
 - Visitor UI is **English only**. No Arabic or CJK script in `README.md`, `docs/CONTRIBUTING.md`, `docs/EXTENSION.md`, `docs/CHANGELOG.md`, `docs/DECISIONS.md`, `docs/USER_GUIDE.md`, both extensions, or the bridge.
-- Only allowlisted functional i18n data may contain non-Latin script: `argus_search.py` mode triggers + split regex, and `docs/SKILL.md` language table + trigger lists (14-language coverage is the product). Everything else must stay ASCII/Latin.
+- Only allowlisted functional i18n data may contain non-Latin script: `src/emo_argus/search.py` mode triggers + split regex, and `docs/SKILL.md` language table + trigger lists (14-language coverage is the product). Everything else must stay ASCII/Latin.
 - Enforced by `check_language_veto` in `scripts/check_hygiene.py`.
 
 Before any PR, run:

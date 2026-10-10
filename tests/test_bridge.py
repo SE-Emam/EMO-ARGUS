@@ -4,15 +4,17 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-import argus_bridge as bridge
+from emo_argus import bridge
 
 
 def test_analyze_test_word_returns_verification_message():
     out = bridge.analyze_context("test", "https://example.com/a", "Example")
     assert out["message"] == "Token verified, received: test"
-    assert out["mode"] in ("quick", "compare", "deep", "platform", "timeboxed", "regional", "narrow")
+    valid_modes = ("quick", "compare", "deep", "platform", "timeboxed")
+    valid_modes += ("regional", "narrow")
+    assert out["mode"] in valid_modes
     assert isinstance(out["subquestions"], list) and out["subquestions"]
 
 

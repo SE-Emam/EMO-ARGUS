@@ -20,10 +20,10 @@ from pathlib import Path
 
 try:
     from mcp.server.fastmcp import FastMCP
-except ImportError:  # graceful message when extra not installed
-    raise SystemExit("mcp package missing: pip install 'emo-argus[mcp]'")
+except ImportError as exc:  # graceful message when extra not installed
+    raise SystemExit("mcp package missing: pip install 'emo-argus[mcp]'") from exc
 
-import argus_search as core
+from emo_argus import search as core
 
 mcp = FastMCP("argus")
 

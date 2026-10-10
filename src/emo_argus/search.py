@@ -86,7 +86,7 @@ MODE_TEMPLATES: dict[str, list[str]] = {
         "Define {b}: what is it, who owns it, what is the pricing model? (cite official source)",
         "Feature-by-feature: where do {a} and {b} differ on '{t}'? (table, cite docs)",
         "Pricing and total cost: {a} vs {b} for a typical individual user? (cite pricing pages)",
-        "UX and learning curve: which is easier to adopt, per real user reports? (cite communities)",
+        "UX curve: which is easier to adopt, per user reports? (cite communities)",
         "Integrations and ecosystem: {a} vs {b}? (cite docs or directories)",
         "Performance and scale limits reported for each? (cite benchmarks or issue trackers)",
         "Security and privacy posture of {a} vs {b}? (cite policies or audits)",
@@ -102,7 +102,7 @@ MODE_TEMPLATES: dict[str, list[str]] = {
         "How does it work in practice? (mechanism, with a primary source)",
         "Scale in numbers: market size, users, growth - 3+ independent figures?",
         "Academic consensus: what do papers and scholars agree on? (cite Scholar/arXiv)",
-        "Regional picture: how does '{t}' differ across regions and languages? (use non-English sources)",
+        "Regional picture: how does '{t}' differ by region/language? (native sources)",
         "Technical landscape: leading tools, standards, docs? (cite repos and docs)",
         "Business models and pricing in this space? (cite vendors)",
         "Risks, harms, criticisms: who warns, with what evidence?",
@@ -187,7 +187,12 @@ def detect_gates(query: str) -> dict[str, bool]:
 
 def generate_subquestions(query: str, mode: str, n: int = 8) -> list[str]:
     """Per-mode sub-question plan. Compare splits 'X vs Y' into items."""
-    raw = re.sub(r"(?i)^argus\s*:\s*(quick|compare|deep|platform|timebox\w*|region\w*|narrow|سريع|قارن|مقارنة|عميق|منص[ةه]|وقت|زمن|منطقة|ضيق|محدد)?\s*", "", query).strip() or query
+    raw = re.sub(
+        r"(?i)^argus\s*:\s*(quick|compare|deep|platform|timebox\w*|"
+        r"region\w*|narrow|سريع|قارن|مقارنة|عميق|منص[ةه]|وقت|زمن|منطقة|ضيق|محدد)?\s*",
+        "",
+        query,
+    ).strip() or query
     topic = raw
     items = split_compare_items(raw)
     a = items[0] if items else topic
@@ -284,6 +289,10 @@ def build_report(query: str, mode: str, langs: str, waves: list[str],
     consent_log = ", ".join(
         f"{k}={'Y' if v else 'N'}" for k, v in consents.items()
     )
+    if consents.get("forums"):
+        forums_note = "(TODO: per-item verdict VERIFIED / CONTESTED / UNVERIFIED)"
+    else:
+        forums_note = "_Skipped - no consent._"
     return f"""# ARGUS: {query}
 **Date**: {date} | **Mode**: {m['name']} | **Languages**: {langs} | **Waves**: {', '.join(waves)}
 
@@ -298,7 +307,7 @@ def build_report(query: str, mode: str, langs: str, waves: list[str],
 ## 7. Technical Landscape
 ## 8. Market and Opportunity Signals
 ## 9. Community Signals - Forums & Telegram
-{'_Skipped - no consent._' if not consents.get('forums') else '(TODO: per-item verdict VERIFIED / CONTESTED / UNVERIFIED / OPINION)'}
+{forums_note}
 ## 10. Gaps and Open Questions
 ## 11. Key Sources (with URLs) - group by language
 ## 12. Methodology Notes
@@ -373,7 +382,9 @@ def cmd_report(args: argparse.Namespace) -> int:
     gates = detect_gates(args.query)
     if not args.no_consent and sys.stdin.isatty():
         if gates["scraping"]:
-            consents["scraping"] = ask_consent("Scraping requested - scrape politely (rate-limited, public only)?")
+            consents["scraping"] = ask_consent(
+                "Scraping requested - scrape politely (public only)?"
+            )
         if gates["forums"]:
             consents["forums"] = ask_consent("Search PUBLIC forums + PUBLIC Telegram channels?")
         if gates["dark"]:
@@ -688,7 +699,9 @@ def cmd_verify(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(prog="argus", description="ARGUS - verified research reports from the command line")
+    p = argparse.ArgumentParser(
+        prog="argus", description="ARGUS - verified research reports (CLI)"
+    )
     p.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
     sub = p.add_subparsers(dest="cmd", required=True)
 

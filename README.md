@@ -1,6 +1,6 @@
 # ARGUS — Stop getting shallow AI answers
 
-![ARGUS banner](ARGUS-banner.jpeg)
+![ARGUS banner](assets/images/ARGUS-banner.jpeg)
 
 [![PyPI version](https://img.shields.io/pypi/v/emo-argus)](https://pypi.org/project/emo-argus/)
 [![Python](https://img.shields.io/pypi/pyversions/emo-argus)](https://pypi.org/project/emo-argus/)

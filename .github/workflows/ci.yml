@@ -21,6 +21,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pytest ruff pip-audit
+          pip install -e .
 
       - name: Repo Hygiene Gate (visitor-clean)
         run: python scripts/check_hygiene.py
@@ -35,4 +36,9 @@ jobs:
         run: pip-audit --strict
 
       - name: Verify Offline Reports (Sanity Check)
-        run: python argus_search.py verify --offline output/*.md || true
+        run: |
+          if ls output/*.md >/dev/null 2>&1; then
+            argus verify --offline output/*.md || true
+          else
+            echo "no reports to verify (output/ empty) — skipping"
+          fi

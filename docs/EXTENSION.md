@@ -58,7 +58,7 @@ argus-bridge
 - `argus-chrome-extension/manifest.json` — Manifest V3, `permissions: contextMenus, sidePanel, storage`, `host_permissions: 127.0.0.1 only`, strict CSP.
 - `argus-chrome-extension/background.js` — context menu + loopback `fetch` + offline fail-safe.
 - `argus-chrome-extension/sidepanel.html` + `sidepanel.js` — status, token box, verify box, ephemeral log (`textContent` only, never raw HTML).
-- `argus_bridge.py` — stdlib `http.server`, constant-time token check, 32KB body cap, binds `127.0.0.1` only.
+- `src/emo_argus/bridge.py` — stdlib `http.server`, constant-time token check, 32KB body cap, binds `127.0.0.1` only.
 
 ## VS Code companion (`argus-vscode-extension/`)
 

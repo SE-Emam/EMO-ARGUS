@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-import argus_search as core
+from emo_argus import search as core
 
 
 def test_infer_mode_all_triggers_and_default():

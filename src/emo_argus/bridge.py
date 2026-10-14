@@ -80,12 +80,23 @@ class BridgeHandler(BaseHTTPRequestHandler):
     def log_message(self, fmt: str, *args) -> None:
         pass
 
+    def _allowed_origin(self) -> str | None:
+        """Return the request Origin only if it matches loopback on our port."""
+        origin = self.headers.get("Origin")
+        if not origin:
+            return None
+        port = self.server.server_port
+        allowed = {f"http://127.0.0.1:{port}", f"http://localhost:{port}"}
+        return origin if origin in allowed else None
+
     def _send_json(self, code: int, obj: dict) -> None:
         body = json.dumps(obj, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self._allowed_origin()
+        if origin is not None:
+            self.send_header("Access-Control-Allow-Origin", origin)
         self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Argus-Token")
         self.end_headers()
         self.wfile.write(body)
@@ -110,7 +121,9 @@ class BridgeHandler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self) -> None:
         self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self._allowed_origin()
+        if origin is not None:
+            self.send_header("Access-Control-Allow-Origin", origin)
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Argus-Token")
         self.send_header("Content-Length", "0")

@@ -95,3 +95,24 @@ def test_report_filename_unique_and_atomic(tmp_path):
     core.atomic_write_text(target, "hello")
     assert target.read_text(encoding="utf-8") == "hello"
     assert list(tmp_path.glob("*.tmp-*")) == []  # no tmp leftovers
+
+
+def test_institutional_profile_restrictions():
+    assert core.infer_mode("something totally vague here", "institutional") == "quick"
+    assert core.clamp_mode("deep", "institutional") == "quick"
+    assert core.clamp_mode("timeboxed", "institutional") == "quick"
+    assert core.clamp_mode("narrow", "institutional") == "quick"
+    assert core.clamp_mode("compare", "institutional") == "compare"
+    assert core.clamp_mode("regional", "institutional") == "regional"
+    assert core.infer_mode("compare Q3 vs Q4 financial reports", "institutional") == "compare"
+
+
+def test_institutional_gates_silent_sovereign_guarded():
+    tricky = "scrape the site + reddit threads + dark web + login"
+    silent = core.detect_gates(tricky, "institutional")
+    assert silent == {"scraping": False, "forums": False, "dark": False, "restricted": False}
+    guarded = core.detect_gates(tricky, "sovereign")
+    assert guarded["scraping"] is True
+    assert guarded["forums"] is True
+    assert guarded["dark"] is True
+    assert guarded["restricted"] is True

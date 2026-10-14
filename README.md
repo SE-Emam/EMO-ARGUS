@@ -82,6 +82,30 @@ ARGUS: platform AI agents on Twitter last 30 days
 
 Full detail: [`docs/MODES.md`](docs/MODES.md) · Filters: [`docs/FILTERS.md`](docs/FILTERS.md) · Tools: [`docs/TOOLS.md`](docs/TOOLS.md)
 
+## ARGUS Lite: Institutional Research Orchestrator
+
+Built for admin teams, academic researchers, and data analysts who need
+fast, simple, and safe research without advanced field complexity.
+
+```bash
+pip install emo-argus
+argus-lite modes
+argus-lite plan "compare Q3 vs Q4 financial reports"
+argus --profile institutional plan "compare Q3 vs Q4 financial reports"
+```
+
+What Lite changes (same core, preset behaviour):
+
+| Full default | Lite preset |
+|---|---|
+| 7 modes (quick, compare, deep, platform, timeboxed, regional, narrow) | 3 modes only: quick, compare, regional |
+| Consent gates on scraping, forums, restricted access | Gates stay silent for routine admin queries |
+| Verify requires structure, links, citations, languages, consent log | Verify focuses on structure and links only |
+
+Defaults stay unchanged: `argus` runs the full preset unless
+`--profile institutional` is passed. `argus-lite` is a shortcut that
+defaults to the institutional preset.
+
 ## Safety in one line
 
 > No scraping, no forums/Telegram deep search, no dark web, no login-bypass — without asking you first and getting an explicit `Y`. Silence = SKIP, always.

@@ -2,6 +2,14 @@
 
 All notable changes documented here. Format follows Keep a Changelog, versioning follows SemVer.
 
+## [Unreleased] - ARGUS-LITE foundation
+
+### ADD
+- Profile-based configuration via `src/emo_argus/profiles.py`: sovereign preset (7 modes, full gates, full verify) and institutional preset (quick, compare, regional; silent gates; structure plus links verify).
+- CLI `--profile {sovereign,institutional}` flag (default sovereign) wired into plan, report, modes, and verify; plus `argus-lite` entry point defaulting to institutional.
+- Institutional tests covering mode clamping and silent gates.
+- README section for ARGUS Lite institutional use.
+
 ## [Unreleased] - Field companions scaffold (Secure Bridge Pattern)
 
 ### FIX

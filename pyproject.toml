@@ -17,6 +17,7 @@ mcp = ["mcp>=1.0,<2"]
 
 [project.scripts]
 argus = "emo_argus.search:main"
+argus-lite = "emo_argus.search:lite_main"
 argus-mcp = "emo_argus.mcp:main"
 argus-bridge = "emo_argus.bridge:main"
 

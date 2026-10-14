@@ -1,0 +1,81 @@
+{
+  "quick": [
+    "What is the single verified answer to '{t}'? (one authoritative source + URL + date)"
+  ],
+  "compare": [
+    "Define {a}: what is it, who owns it, what is the pricing model? (cite official source)",
+    "Define {b}: what is it, who owns it, what is the pricing model? (cite official source)",
+    "Feature-by-feature: where do {a} and {b} differ on '{t}'? (table, cite docs)",
+    "Pricing and total cost: {a} vs {b} for a typical individual user? (cite pricing pages)",
+    "UX curve: which is easier to adopt, per user reports? (cite communities)",
+    "Integrations and ecosystem: {a} vs {b}? (cite docs or directories)",
+    "Performance and scale limits reported for each? (cite benchmarks or issue trackers)",
+    "Security and privacy posture of {a} vs {b}? (cite policies or audits)",
+    "Who recommends {a} over {b}, and why? (cite threads; mark OPINION)",
+    "Who recommends {b} over {a}, and why? (cite threads; mark OPINION)",
+    "Switching cost {a} <-> {b}: migration paths and lock-in? (cite migration guides)",
+    "Verdict matrix: which wins per criterion on '{t}', every cell cited?"
+  ],
+  "deep": [
+    "Define '{t}': scope, key terms, and what is explicitly OUT of scope?",
+    "Timeline: how did '{t}' evolve? (5+ dated milestones, cite each)",
+    "Key actors: who builds, funds, regulates, opposes? (names + roles + URLs)",
+    "How does it work in practice? (mechanism, with a primary source)",
+    "Scale in numbers: market size, users, growth - 3+ independent figures?",
+    "Academic consensus: what do papers and scholars agree on? (cite Scholar/arXiv)",
+    "Regional picture: how does '{t}' differ by region/language? (native sources)",
+    "Technical landscape: leading tools, standards, docs? (cite repos and docs)",
+    "Business models and pricing in this space? (cite vendors)",
+    "Risks, harms, criticisms: who warns, with what evidence?",
+    "Contested claims: where do credible sources disagree? (cite both sides)",
+    "Last 12 months: what changed recently? (dated news, newest first)",
+    "What do practitioners discuss (surface threads) that official docs omit?",
+    "Gaps: what cannot be verified today, and what would verify it?",
+    "Source audit: are 3+ languages and 3+ source types represented?"
+  ],
+  "platform": [
+    "What content about '{t}' exists on this platform, and in which formats?",
+    "Who are the top voices or accounts on '{t}' here? (handles + follower signals)",
+    "Dominant narratives: what does this platform mostly claim about '{t}'?",
+    "Pushback: which posts challenge the dominant narrative? (cite URLs)",
+    "Last-30-days trend: what is new about '{t}' here?",
+    "Native discovery: which hashtags, subreddits, or boards index '{t}' best?",
+    "Notable threads or posts worth citing, with URLs (top + controversial + recent)?",
+    "What is missing here compared with other platforms and sources?"
+  ],
+  "timeboxed": [
+    "Timeline spine: key events on '{t}' inside the window? (dated, each cited)",
+    "Actors: who drove each event? (names + roles)",
+    "Before/after numbers: what measurably changed in the window?",
+    "Policy and regulatory milestones in the window? (cite official texts)",
+    "Media narrative: how did coverage shift across the window?",
+    "Academic and policy-paper coverage of this period? (cite)",
+    "Regional variance: did the story differ by region or language?",
+    "Contested interpretations of what happened? (cite both sides)",
+    "What was predicted at the time vs what actually happened?",
+    "Unresolved threads at the end of the window?",
+    "Sources per phase: is each phase independently cited?",
+    "Stale risk: which claims may already be OUTDATED?"
+  ],
+  "regional": [
+    "Define the region for '{t}': which countries, why these, what is excluded?",
+    "Market scale in-region: size, growth, local figures? (cite local sources)",
+    "Local-language narrative: how do native sources frame '{t}'? (native-script queries)",
+    "Local leaders: top companies or actors headquartered in-region?",
+    "Regulation: which local laws or policies shape '{t}'? (cite official texts)",
+    "Adoption barriers specific to this region?",
+    "Global vs local: where does the region diverge from the global story?",
+    "Case studies from inside the region? (cite)",
+    "Local data sources: which outlets or datasets cover '{t}' natively?",
+    "Risks and criticisms voiced locally - not imported narratives?",
+    "Outlook: what is forecast for the region specifically?",
+    "Contested local claims: who disagrees, with what evidence?"
+  ],
+  "narrow": [
+    "Precise scope: what exactly is '{t}', and what is out of scope?",
+    "Verified facts: what is established by 3+ independent sources?",
+    "Mechanism: how does it work step by step? (cite a primary source)",
+    "Edge cases and exceptions that break the simple story?",
+    "Open questions: what remains unknown or contested?"
+  ]
+}

@@ -14,7 +14,7 @@ Localhost-only companion for the ARGUS research integrity core. Capture selected
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| Bridge port | `8765` | Port for the local ARGUS bridge. The extension always connects to `http://127.0.0.1:<port>`. |
+| Bridge port | `8765` | Port for the local ARGUS bridge (default `8765`). Custom ports require updating `host_permissions` in `manifest.json` to match. |
 | Bridge token | *(empty)* | Token printed by `argus-bridge` at startup. Paste it into the side panel token field. Stored in `chrome.storage.local`. |
 
 ## Usage
@@ -25,8 +25,8 @@ Localhost-only companion for the ARGUS research integrity core. Capture selected
 
 ## Security
 
-- **Loopback only**: `host_permissions` in `manifest.json` restricts all network requests to `http://127.0.0.1:*`. The background script never contacts any other origin.
-- **Strict CSP**: `"script-src 'self'; object-src 'self'; base-uri 'self'; connect-src http://127.0.0.1; img-src 'self' data:; style-src 'self'; font-src 'self'"`. No inline styles or scripts, no external resources. All CSS is loaded from `sidepanel.css`.
+- **Loopback only**: `host_permissions` in `manifest.json` restricts all network requests to `http://127.0.0.1:8765/*`. The background script never contacts any other origin.
+- **Strict CSP**: `"script-src 'self'; object-src 'self'; base-uri 'self'; connect-src http://127.0.0.1:8765; img-src 'self' data:; style-src 'self'; font-src 'self'"`. No inline styles or scripts, no external resources. All CSS is loaded from `sidepanel.css`.
 - **Fail-safe offline**: connection errors surface as an offline message. No fallback to external services.
 - **No persistent page data**: captured text lives in session storage only and is cleared when the browser session ends. Only the bridge token persists.
 - **No telemetry**: zero analytics, tracking, or update checks from the extension code.

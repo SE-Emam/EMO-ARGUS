@@ -20,6 +20,7 @@ import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 from concurrent.futures import ThreadPoolExecutor
@@ -355,7 +356,7 @@ def fetch_telegram_preview(channel: str, limit: int = 20) -> list[str]:
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     try:
         with opener.open(req, timeout=PREVIEW_TIMEOUT) as r:
-            final_host = urllib.request.urlparse(r.geturl()).hostname or ""
+            final_host = urllib.parse.urlparse(r.geturl()).hostname or ""
             if final_host.lower() != "t.me":
                 raise ValueError(
                     f"ERROR: refused redirect outside t.me ({final_host!r})"

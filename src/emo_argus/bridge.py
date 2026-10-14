@@ -77,7 +77,7 @@ def verify_snippet_offline(snippet: str) -> dict:
 class BridgeHandler(BaseHTTPRequestHandler):
     server_version = "ARGUSBridge/0.1"
 
-    def log_message(self, fmt: str, *args) -> None:
+    def log_message(self, format: str, *args) -> None:  # noqa: A002 - stdlib signature
         pass
 
     def _allowed_origin(self) -> str | None:
@@ -85,7 +85,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
         origin = self.headers.get("Origin")
         if not origin:
             return None
-        port = self.server.server_port
+        port = getattr(self.server, "server_port", DEFAULT_PORT)
         allowed = {f"http://127.0.0.1:{port}", f"http://localhost:{port}"}
         return origin if origin in allowed else None
 

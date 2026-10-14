@@ -33,7 +33,7 @@ except ImportError:  # pragma: no cover - direct script fallback
     from emo_argus.profiles import allowed_modes as _allowed_modes
     from emo_argus.profiles import get_profile as _get_profile
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 # --- Structured logging ---
 _logger = logging.getLogger("argus")
@@ -327,7 +327,7 @@ def build_report(query: str, mode: str, langs: str, waves: list[str],
 ## 10. Gaps and Open Questions
 ## 11. Key Sources (with URLs) - group by language
 ## 12. Methodology Notes
-Consent log: {consent_log}. Tool: argus v1.1.0.
+Consent log: {consent_log}. Tool: argus v{VERSION}.
 """
     return frontmatter + body
 

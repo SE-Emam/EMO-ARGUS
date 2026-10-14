@@ -2,6 +2,26 @@
 
 All notable changes documented here. Format follows Keep a Changelog, versioning follows SemVer.
 
+## [1.2.0] - 2026-10-14 - Hardening, extensions, Apache-2.0
+
+### SECURITY
+- Bridge CORS restricted to loopback origins only (DNS rebinding guard).
+- Chrome manifest pinned to exact `http://127.0.0.1:8765/*` with strict CSP (no unsafe-inline).
+- VSCode webview `enableScripts: false`, `validateBridgeUrl` with port-range check, SecretStorage token only.
+- Fixed `urlparse` import bug in `fetch_telegram_preview` (`urllib.parse`).
+
+### ADD
+- MCP unit tests (`tests/test_mcp.py`, 6 tests); total suite 22 passed.
+- `src/emo_argus/templates.json` external mode templates; structured logging via `ARGUS_LOG_FORMAT`/`ARGUS_LOG_LEVEL`.
+- YAML frontmatter in generated reports; configurable timeouts via `ARGUS_PREVIEW_TIMEOUT`/`ARGUS_VERIFY_TIMEOUT`.
+- Multi-stage Dockerfile at `docs/docker/Dockerfile`; pre-commit config; extension READMEs; Agent Skills README section (no-Docker native run).
+- Chrome: configurable bridge port UI, retry with backoff. VSCode: status-bar item, `bridgeClient` unit tests.
+
+### CHANGED
+- License switched from MIT to Apache-2.0 (`LICENSE`, `pyproject.toml`, README badge, VSCode package).
+- README rewritten for marketing clarity (English-only visitor UI); report footer uses dynamic `VERSION`.
+- Dockerfile moved from root to `docs/docker/` to pass hygiene root whitelist.
+
 ## [Unreleased] - ARGUS-LITE foundation
 
 ### ADD

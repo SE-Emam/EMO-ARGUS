@@ -37,10 +37,15 @@ async function getToken() {
   return (argusToken || "").trim();
 }
 
-/** Read the configured bridge port from storage and build the base URL. */
+/** Read the configured bridge port from storage and build the base URL.
+ * Port is clamped to 1-65535 (storage is user-writable, never trust it raw).
+ * Host stays fixed at 127.0.0.1 — only the port varies. */
 async function getBridgeBase() {
   const { argusPort } = await chrome.storage.local.get("argusPort");
-  const port = Number(argusPort) || DEFAULT_BRIDGE_PORT;
+  const raw = Number(argusPort);
+  const port = (Number.isInteger(raw) && raw >= 1 && raw <= 65535)
+    ? raw
+    : DEFAULT_BRIDGE_PORT;
   return `http://127.0.0.1:${port}`;
 }
 

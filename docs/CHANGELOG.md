@@ -2,6 +2,19 @@
 
 All notable changes documented here. Format follows Keep a Changelog, versioning follows SemVer.
 
+## [1.2.1] - 2026-10-14 - Packaging hotfix
+
+### FIX
+- Ship `templates.json` inside the wheel/sdist via `[tool.setuptools.package-data]` — PyPI 1.2.0 crashed on every `plan`/`report` with `KeyError: 'deep'` because the file was missing from the distribution.
+- `generate_subquestions` now degrades to generic fallback questions instead of raising `KeyError` when templates are unavailable.
+- Chrome extension clamps the configured bridge port to 1-65535 in both `background.js` and `sidepanel.js` (storage is user-writable).
+- License metadata uses the SPDX expression (`license = "Apache-2.0"`) per current packaging guidance.
+- Report footer uses dynamic `VERSION` (no hardcoded version string).
+
+### ADD
+- Packaging regression tests: `templates.json` ships with all 7 modes; sub-question generation survives missing templates.
+- CI now builds the wheel and asserts `templates.json` is inside it.
+
 ## [1.2.0] - 2026-10-14 - Hardening, extensions, Apache-2.0
 
 ### SECURITY

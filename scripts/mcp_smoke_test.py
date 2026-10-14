@@ -16,9 +16,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-import argus_search as core
+from emo_argus import search as core
 
 results: list[str] = []
 

@@ -14,7 +14,7 @@ export class ArgusSidebarProvider implements vscode.WebviewViewProvider {
 
   resolveWebviewView(view: vscode.WebviewView): void {
     this.view = view;
-    view.webview.options = { enableScripts: true, localResourceRoots: [this.root] };
+    view.webview.options = { enableScripts: false, localResourceRoots: [this.root] };
     this.render();
   }
 

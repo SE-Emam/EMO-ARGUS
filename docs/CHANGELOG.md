@@ -2,16 +2,44 @@
 
 All notable changes documented here. Format follows Keep a Changelog, versioning follows SemVer.
 
+## [1.2.0] - 2026-10-14 - Hardening, extensions, Apache-2.0
+
+### SECURITY
+- Bridge CORS restricted to loopback origins only (DNS rebinding guard).
+- Chrome manifest pinned to exact `http://127.0.0.1:8765/*` with strict CSP (no unsafe-inline).
+- VSCode webview `enableScripts: false`, `validateBridgeUrl` with port-range check, SecretStorage token only.
+- Fixed `urlparse` import bug in `fetch_telegram_preview` (`urllib.parse`).
+
+### ADD
+- MCP unit tests (`tests/test_mcp.py`, 6 tests); total suite 22 passed.
+- `src/emo_argus/templates.json` external mode templates; structured logging via `ARGUS_LOG_FORMAT`/`ARGUS_LOG_LEVEL`.
+- YAML frontmatter in generated reports; configurable timeouts via `ARGUS_PREVIEW_TIMEOUT`/`ARGUS_VERIFY_TIMEOUT`.
+- Multi-stage Dockerfile at `docs/docker/Dockerfile`; pre-commit config; extension READMEs; Agent Skills README section (no-Docker native run).
+- Chrome: configurable bridge port UI, retry with backoff. VSCode: status-bar item, `bridgeClient` unit tests.
+
+### CHANGED
+- License switched from MIT to Apache-2.0 (`LICENSE`, `pyproject.toml`, README badge, VSCode package).
+- README rewritten for marketing clarity (English-only visitor UI); report footer uses dynamic `VERSION`.
+- Dockerfile moved from root to `docs/docker/` to pass hygiene root whitelist.
+
+## [Unreleased] - ARGUS-LITE foundation
+
+### ADD
+- Profile-based configuration via `src/emo_argus/profiles.py`: sovereign preset (7 modes, full gates, full verify) and institutional preset (quick, compare, regional; silent gates; structure plus links verify).
+- CLI `--profile {sovereign,institutional}` flag (default sovereign) wired into plan, report, modes, and verify; plus `argus-lite` entry point defaulting to institutional.
+- Institutional tests covering mode clamping and silent gates.
+- README section for ARGUS Lite institutional use.
+
 ## [Unreleased] - Field companions scaffold (Secure Bridge Pattern)
 
 ### FIX
-- Visitor UI is English-only again: rewrote `docs/CONTRIBUTING.md` fully in English, converted Chrome companion UI (`background.js` menu title, `sidepanel.html` layout/labels, `sidepanel.js` status/result/log strings) to English, removed stray Arabic line in `docs/USER_GUIDE.md`. Only allowlisted functional i18n data keeps non-Latin script (`argus_search.py` triggers, `docs/SKILL.md` language table, `tests/test_core.py` assertions).
+- Visitor UI is English-only again: rewrote `docs/CONTRIBUTING.md` fully in English, converted Chrome companion UI (`background.js` menu title, `sidepanel.html` layout/labels, `sidepanel.js` status/result/log strings) to English, removed stray Arabic line in `docs/USER_GUIDE.md`. Only allowlisted functional i18n data keeps non-Latin script (`src/emo_argus/search.py` triggers, `docs/SKILL.md` language table, `tests/test_core.py` assertions).
 - Added `check_language_veto` gate in `scripts/check_hygiene.py` (fails on Arabic/CJK outside the allowlist) and documented it in `docs/CONTRIBUTING.md` §2.
 - Task/fix/session artifacts stay local-only: `TASK-*.md`, `FIX-*.md`, `*.log`, `SHA256SUMS`, `*.zip`, `*.vsix` added to `.gitignore` plus `docs/CONTRIBUTING.md` §6. Verified no such files are tracked (`git ls-files` clean).
 
 ### ADD
 - VS Code companion scaffold `argus-vscode-extension/` (thin client, zero collection logic): sidebar view, 6 commands (`Check Bridge`, `Verify Selection`, `Plan From Selection`, `Insert Report Template`, `Set/Clear Token`), loopback-only client (`src/bridgeClient.ts`), `SecretStorage` token, 12-section offline report template mirroring core `build_report`.
-- Local bridge `argus_bridge.py` (stdlib only, entry point `argus-bridge`): binds `127.0.0.1:8765` only, per-boot token via `X-Argus-Token`, routes `GET /health`, `POST /analyze` (plan from captured context), `POST /verify-snippet` (offline audit, no live fetch).
+- Local bridge `src/emo_argus/bridge.py` (stdlib only, entry point `argus-bridge`): binds `127.0.0.1:8765` only, per-boot token via `X-Argus-Token`, routes `GET /health`, `POST /analyze` (plan from captured context), `POST /verify-snippet` (offline audit, no live fetch).
 - Chrome companion scaffold `argus-chrome-extension/` (Manifest V3 strict): `manifest.json` (loopback host only, strict CSP), `background.js` (context menu + offline fail-safe), `sidepanel.html` + `sidepanel.js` (status, token box, Verify Snippet, ephemeral session log).
 - Bridge unit tests `tests/test_bridge.py` (4 tests: verification message, truncation, URL guard, offline audit shape).
 - Docs: `docs/EXTENSION.md` (setup + use + endpoints), ADR-5 in `docs/DECISIONS.md` (loopback-only bridge rationale).

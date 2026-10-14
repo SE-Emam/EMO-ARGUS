@@ -5,6 +5,7 @@ __pycache__/
 .venv/
 venv/
 output/*
+output/**/*.md
 !output/.gitkeep
 *.session
 *.session-journal

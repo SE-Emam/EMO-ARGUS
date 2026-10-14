@@ -14,7 +14,7 @@ import secrets
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 
-import argus_search as core
+from emo_argus import search as core
 
 HOST = "127.0.0.1"
 DEFAULT_PORT = 8765
@@ -77,15 +77,26 @@ def verify_snippet_offline(snippet: str) -> dict:
 class BridgeHandler(BaseHTTPRequestHandler):
     server_version = "ARGUSBridge/0.1"
 
-    def log_message(self, fmt: str, *args) -> None:
+    def log_message(self, format: str, *args) -> None:  # noqa: A002 - stdlib signature
         pass
+
+    def _allowed_origin(self) -> str | None:
+        """Return the request Origin only if it matches loopback on our port."""
+        origin = self.headers.get("Origin")
+        if not origin:
+            return None
+        port = getattr(self.server, "server_port", DEFAULT_PORT)
+        allowed = {f"http://127.0.0.1:{port}", f"http://localhost:{port}"}
+        return origin if origin in allowed else None
 
     def _send_json(self, code: int, obj: dict) -> None:
         body = json.dumps(obj, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self._allowed_origin()
+        if origin is not None:
+            self.send_header("Access-Control-Allow-Origin", origin)
         self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Argus-Token")
         self.end_headers()
         self.wfile.write(body)
@@ -110,7 +121,9 @@ class BridgeHandler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self) -> None:
         self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self._allowed_origin()
+        if origin is not None:
+            self.send_header("Access-Control-Allow-Origin", origin)
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Argus-Token")
         self.send_header("Content-Length", "0")

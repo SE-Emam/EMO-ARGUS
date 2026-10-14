@@ -10,7 +10,7 @@
  *   "ARGUS Core is offline" and send data nowhere else.
  */
 
-const BRIDGE_BASE = "http://127.0.0.1:8765";
+const DEFAULT_BRIDGE_PORT = 8765;
 const MENU_ID = "argus-send-to-core";
 
 // Install: context-menu entry + side-panel behaviour.
@@ -37,6 +37,23 @@ async function getToken() {
   return (argusToken || "").trim();
 }
 
+/** Read the configured bridge port from storage and build the base URL. */
+async function getBridgeBase() {
+  const { argusPort } = await chrome.storage.local.get("argusPort");
+  const port = Number(argusPort) || DEFAULT_BRIDGE_PORT;
+  return `http://127.0.0.1:${port}`;
+}
+
+/** Single attempt to POST /analyze. Returns { ok, res?, error? }. */
+async function tryAnalyze(bridgeBase, token, payload) {
+  const res = await fetch(`${bridgeBase}/analyze`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Argus-Token": token },
+    body: JSON.stringify(payload),
+  });
+  return res;
+}
+
 // Context-menu click: gather context, forward to the local bridge only.
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId !== MENU_ID) return;
@@ -50,12 +67,16 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     await rememberResult({ ok: false, error: "Missing token — paste the bridge token in the side panel." });
     return;
   }
+  const bridgeBase = await getBridgeBase();
   try {
-    const res = await fetch(`${BRIDGE_BASE}/analyze`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Argus-Token": token },
-      body: JSON.stringify(payload),
-    });
+    let res;
+    try {
+      res = await tryAnalyze(bridgeBase, token, payload);
+    } catch (firstError) {
+      // Retry once after 1 second before declaring offline.
+      await new Promise((r) => setTimeout(r, 1000));
+      res = await tryAnalyze(bridgeBase, token, payload);
+    }
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       await rememberResult({ ok: false, error: data.error || `Bridge refused (HTTP ${res.status})` });
@@ -64,7 +85,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     await rememberResult({ ok: true, at: Date.now(), request: payload, response: data });
   } catch (e) {
     // Fail-safe: offline bridge => report offline, never reroute elsewhere.
-    await rememberResult({ ok: false, error: "ARGUS Core is offline — start argus_bridge.py, data sent nowhere." });
+    await rememberResult({ ok: false, error: "ARGUS Core is offline — start argus-bridge, data sent nowhere." });
   }
 });
 

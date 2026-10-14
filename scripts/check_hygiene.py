@@ -23,10 +23,8 @@ ALLOWED_ROOT = {
     "LICENSE",
     "pyproject.toml",
     "requirements.txt",
-    "argus_search.py",
-    "argus_mcp.py",
-    "argus_bridge.py",
-    "ARGUS-banner.jpeg",
+    "assets",
+    "src",
     "argus-chrome-extension",
     "argus-vscode-extension",
     "docs",
@@ -53,6 +51,8 @@ FORBIDDEN_ANYWHERE = {
 # 2) Slop / internal codes banned from user-facing text.
 SLOP_PATTERNS = [
     r"python\s+argus_search\.py",
+    r"python\s+src/emo_argus/search\.py",
+    r"python\s+-m\s+emo_argus",
     r"argus-search",
     r"sovereign-grade",
     r"sovereign deployment gate",
@@ -93,22 +93,21 @@ SLOP_ALLOWLIST_FILES = {
 # Per-pattern exceptions: deliberate UI, not slop.
 # - [Y] in SKILL.md lives ONLY inside verbatim consent-question templates
 #   (the `Y`/`N` option labels the user actually sees and types).
-# - `python argus_search.py` in CI tests the source file pre-install
-#   (no installed `argus` entry point exists yet at that step).
 SLOP_FILE_OVERRIDES: dict[str, set[str]] = {
     r"\[Y\]": {"docs/SKILL.md"},
-    r"python\s+argus_search\.py": {".github/workflows/ci.yml"},
 }
 
 # 2b) Language veto: visitor UI stays English-only (Latin script).
 # Only allowlisted functional i18n data may carry non-Latin script:
-#   - argus_search.py (mode triggers + split regex — the product speaks 14 langs)
+#   - src/emo_argus/search.py (mode triggers + split regex — 14 langs)
 #   - docs/SKILL.md (language table + trigger lists)
 #   - tests/test_core.py (i18n behaviour assertions)
 # Everything else must not contain Arabic or CJK characters.
-LANGUAGE_VETO_RE = re.compile(r"[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7AF]")
+LANGUAGE_VETO_RE = re.compile(
+    r"[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7AF]"
+)
 LANGUAGE_VETO_ALLOW = {
-    "argus_search.py",
+    "src/emo_argus/search.py",
     "docs/SKILL.md",
     "tests/test_core.py",
 }
@@ -175,7 +174,7 @@ def check_extension_veto() -> None:
     """Architectural veto: browser + editor sides stay institutional-only, loopback-only."""
     ext = ROOT / "argus-chrome-extension"
     vs = ROOT / "argus-vscode-extension"
-    bridge = ROOT / "argus_bridge.py"
+    bridge = ROOT / "src" / "emo_argus" / "bridge.py"
     ok = True
     if not ext.is_dir():
         fail("extension scaffold missing: argus-chrome-extension/")
@@ -193,7 +192,7 @@ def check_extension_veto() -> None:
             fail(f"vscode scaffold missing file: argus-vscode-extension/{name}")
             ok = False
     if not bridge.is_file():
-        fail("bridge missing: argus_bridge.py")
+        fail("bridge missing: src/emo_argus/bridge.py")
         ok = False
         return
     # 1) Sovereign terms must never appear in extension, vscode, or bridge.

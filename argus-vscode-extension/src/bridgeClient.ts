@@ -36,17 +36,29 @@ export interface VerifyResult {
   raw: unknown;
 }
 
-/** True only for loopback destinations (127.0.0.1, localhost, ::1). */
+/** True only for loopback destinations (127.0.0.1, localhost, ::1) with a valid port. */
 export function isLoopbackUrl(value: string): boolean {
+  return validateBridgeUrl(value).valid;
+}
+
+/** Validate bridge URL with specific error messages. */
+export function validateBridgeUrl(url: string): { valid: boolean; error?: string } {
   try {
-    const u = new URL(value);
+    const u = new URL(url);
     if (u.protocol !== 'http:') {
-      return false;
+      return { valid: false, error: 'Must be HTTP protocol' };
     }
     const host = (u.hostname || '').toLowerCase();
-    return host === '127.0.0.1' || host === 'localhost' || host === '::1';
+    if (host !== '127.0.0.1' && host !== 'localhost' && host !== '::1') {
+      return { valid: false, error: 'Must be loopback address (127.0.0.1, localhost, or ::1)' };
+    }
+    const port = Number(u.port);
+    if (!Number.isInteger(port) || port < 1 || port > 65535) {
+      return { valid: false, error: 'Invalid port number' };
+    }
+    return { valid: true };
   } catch {
-    return false;
+    return { valid: false, error: 'Invalid URL' };
   }
 }
 

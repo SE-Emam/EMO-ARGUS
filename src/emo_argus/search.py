@@ -13,23 +13,74 @@ from __future__ import annotations
 import argparse
 import datetime
 import html as htmlmod
+import json
+import logging
 import os
 import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-VERSION = "1.1.0"
+try:
+    from .profiles import allowed_modes as _allowed_modes
+    from .profiles import get_profile as _get_profile
+except ImportError:  # pragma: no cover - direct script fallback
+    from emo_argus.profiles import allowed_modes as _allowed_modes
+    from emo_argus.profiles import get_profile as _get_profile
+
+VERSION = "1.2.0"
+
+# --- Structured logging ---
+_logger = logging.getLogger("argus")
+if not _logger.handlers:
+    _handler = logging.StreamHandler(sys.stderr)
+    if os.environ.get("ARGUS_LOG_FORMAT", "").lower() == "json":
+        class _JsonFormatter(logging.Formatter):
+            def format(self, record: logging.LogRecord) -> str:
+                payload = {
+                    "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    "level": record.levelname,
+                    "logger": record.name,
+                    "msg": record.getMessage(),
+                }
+                if record.exc_info and record.exc_info[0] is not None:
+                    payload["exception"] = self.formatException(record.exc_info)
+                return json.dumps(payload, ensure_ascii=False)
+        _handler.setFormatter(_JsonFormatter())
+    else:
+        _handler.setFormatter(logging.Formatter(
+            "%(asctime)s %(levelname)-7s %(name)s: %(message)s",
+            datefmt="%Y-%m-%dT%H:%M:%S",
+        ))
+    _logger.addHandler(_handler)
+    _debug = os.environ.get("ARGUS_LOG_LEVEL", "").upper() == "DEBUG"
+    _logger.setLevel(logging.DEBUG if _debug else logging.INFO)
 
 # --- Shared security / reliability limits ---
 CHANNEL_RE = re.compile(r"^[A-Za-z0-9_]{5,64}$")
 MAX_PREVIEW_LIMIT = 50
 MAX_VERIFY_URLS = 50
 VERIFY_DELAY_SEC = 0.3
+
+
+def _int_env(name: str, default: int) -> int:
+    """Read an integer from an env var, falling back to default on any failure."""
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    try:
+        return int(raw)
+    except (ValueError, TypeError):
+        return default
+
+
+PREVIEW_TIMEOUT = _int_env("ARGUS_PREVIEW_TIMEOUT", 25)
+VERIFY_TIMEOUT = _int_env("ARGUS_VERIFY_TIMEOUT", 8)
 
 MODES: dict[str, dict] = {
     "quick": {
@@ -76,88 +127,15 @@ def split_compare_items(topic: str) -> list[str]:
     return [p.strip(" ,\"'") for p in parts if p.strip(" ,\"'")]
 
 
-# Per-mode question templates. {t} = topic, {a}/{b} = compared items.
-MODE_TEMPLATES: dict[str, list[str]] = {
-    "quick": [
-        "What is the single verified answer to '{t}'? (one authoritative source + URL + date)",
-    ],
-    "compare": [
-        "Define {a}: what is it, who owns it, what is the pricing model? (cite official source)",
-        "Define {b}: what is it, who owns it, what is the pricing model? (cite official source)",
-        "Feature-by-feature: where do {a} and {b} differ on '{t}'? (table, cite docs)",
-        "Pricing and total cost: {a} vs {b} for a typical individual user? (cite pricing pages)",
-        "UX and learning curve: which is easier to adopt, per real user reports? (cite communities)",
-        "Integrations and ecosystem: {a} vs {b}? (cite docs or directories)",
-        "Performance and scale limits reported for each? (cite benchmarks or issue trackers)",
-        "Security and privacy posture of {a} vs {b}? (cite policies or audits)",
-        "Who recommends {a} over {b}, and why? (cite threads; mark OPINION)",
-        "Who recommends {b} over {a}, and why? (cite threads; mark OPINION)",
-        "Switching cost {a} <-> {b}: migration paths and lock-in? (cite migration guides)",
-        "Verdict matrix: which wins per criterion on '{t}', every cell cited?",
-    ],
-    "deep": [
-        "Define '{t}': scope, key terms, and what is explicitly OUT of scope?",
-        "Timeline: how did '{t}' evolve? (5+ dated milestones, cite each)",
-        "Key actors: who builds, funds, regulates, opposes? (names + roles + URLs)",
-        "How does it work in practice? (mechanism, with a primary source)",
-        "Scale in numbers: market size, users, growth - 3+ independent figures?",
-        "Academic consensus: what do papers and scholars agree on? (cite Scholar/arXiv)",
-        "Regional picture: how does '{t}' differ across regions and languages? (use non-English sources)",
-        "Technical landscape: leading tools, standards, docs? (cite repos and docs)",
-        "Business models and pricing in this space? (cite vendors)",
-        "Risks, harms, criticisms: who warns, with what evidence?",
-        "Contested claims: where do credible sources disagree? (cite both sides)",
-        "Last 12 months: what changed recently? (dated news, newest first)",
-        "What do practitioners discuss (surface threads) that official docs omit?",
-        "Gaps: what cannot be verified today, and what would verify it?",
-        "Source audit: are 3+ languages and 3+ source types represented?",
-    ],
-    "platform": [
-        "What content about '{t}' exists on this platform, and in which formats?",
-        "Who are the top voices or accounts on '{t}' here? (handles + follower signals)",
-        "Dominant narratives: what does this platform mostly claim about '{t}'?",
-        "Pushback: which posts challenge the dominant narrative? (cite URLs)",
-        "Last-30-days trend: what is new about '{t}' here?",
-        "Native discovery: which hashtags, subreddits, or boards index '{t}' best?",
-        "Notable threads or posts worth citing, with URLs (top + controversial + recent)?",
-        "What is missing here compared with other platforms and sources?",
-    ],
-    "timeboxed": [
-        "Timeline spine: key events on '{t}' inside the window? (dated, each cited)",
-        "Actors: who drove each event? (names + roles)",
-        "Before/after numbers: what measurably changed in the window?",
-        "Policy and regulatory milestones in the window? (cite official texts)",
-        "Media narrative: how did coverage shift across the window?",
-        "Academic and policy-paper coverage of this period? (cite)",
-        "Regional variance: did the story differ by region or language?",
-        "Contested interpretations of what happened? (cite both sides)",
-        "What was predicted at the time vs what actually happened?",
-        "Unresolved threads at the end of the window?",
-        "Sources per phase: is each phase independently cited?",
-        "Stale risk: which claims may already be OUTDATED?",
-    ],
-    "regional": [
-        "Define the region for '{t}': which countries, why these, what is excluded?",
-        "Market scale in-region: size, growth, local figures? (cite local sources)",
-        "Local-language narrative: how do native sources frame '{t}'? (native-script queries)",
-        "Local leaders: top companies or actors headquartered in-region?",
-        "Regulation: which local laws or policies shape '{t}'? (cite official texts)",
-        "Adoption barriers specific to this region?",
-        "Global vs local: where does the region diverge from the global story?",
-        "Case studies from inside the region? (cite)",
-        "Local data sources: which outlets or datasets cover '{t}' natively?",
-        "Risks and criticisms voiced locally - not imported narratives?",
-        "Outlook: what is forecast for the region specifically?",
-        "Contested local claims: who disagrees, with what evidence?",
-    ],
-    "narrow": [
-        "Precise scope: what exactly is '{t}', and what is out of scope?",
-        "Verified facts: what is established by 3+ independent sources?",
-        "Mechanism: how does it work step by step? (cite a primary source)",
-        "Edge cases and exceptions that break the simple story?",
-        "Open questions: what remains unknown or contested?",
-    ],
-}
+# Per-mode question templates loaded from external JSON file.
+# Falls back to empty dict if the file is missing or invalid.
+_templates_path = Path(__file__).parent / "templates.json"
+try:
+    MODE_TEMPLATES: dict[str, list[str]] = json.loads(
+        _templates_path.read_text(encoding="utf-8")
+    )
+except (FileNotFoundError, json.JSONDecodeError, OSError):
+    MODE_TEMPLATES = {}
 
 GATED_KEYWORDS = {
     "scraping": ["scrape", "crawl", "سكرابنج", "اسكراب", "استخرج"],
@@ -167,17 +145,35 @@ GATED_KEYWORDS = {
 }
 
 
-def infer_mode(query: str) -> str:
+def infer_mode(query: str, profile: str | None = None) -> str:
+    """Pick research mode from triggers; default depends on profile."""
+    prof = _get_profile(profile)
+    allowed = list(prof.get("allowed_modes", list(MODES)))
+    default = str(prof.get("default_mode", "deep"))
     q = query.lower()
-    for key, spec in MODES.items():
-        if key == "deep":
+    for key in allowed:
+        spec = MODES.get(key)
+        if not spec:
             continue
         if any(tr in q for tr in spec["triggers"]):
             return key
-    return "deep"
+    return default if default in allowed else (allowed[0] if allowed else "quick")
 
 
-def detect_gates(query: str) -> dict[str, bool]:
+def clamp_mode(mode: str, profile: str | None = None) -> str:
+    """Clamp an explicit mode into the profile allowlist."""
+    prof = _get_profile(profile)
+    allowed = list(prof.get("allowed_modes", list(MODES)))
+    default = str(prof.get("default_mode", "deep"))
+    if mode in allowed:
+        return mode
+    return default if default in allowed else (allowed[0] if allowed else "quick")
+
+
+def detect_gates(query: str, profile: str | None = None) -> dict[str, bool]:
+    prof = _get_profile(profile)
+    if prof.get("name") == "institutional":
+        return {gate: False for gate in GATED_KEYWORDS}
     q = query.lower()
     return {
         gate: any(kw in q for kw in kws)
@@ -187,7 +183,12 @@ def detect_gates(query: str) -> dict[str, bool]:
 
 def generate_subquestions(query: str, mode: str, n: int = 8) -> list[str]:
     """Per-mode sub-question plan. Compare splits 'X vs Y' into items."""
-    raw = re.sub(r"(?i)^argus\s*:\s*(quick|compare|deep|platform|timebox\w*|region\w*|narrow|سريع|قارن|مقارنة|عميق|منص[ةه]|وقت|زمن|منطقة|ضيق|محدد)?\s*", "", query).strip() or query
+    raw = re.sub(
+        r"(?i)^argus\s*:\s*(quick|compare|deep|platform|timebox\w*|"
+        r"region\w*|narrow|سريع|قارن|مقارنة|عميق|منص[ةه]|وقت|زمن|منطقة|ضيق|محدد)?\s*",
+        "",
+        query,
+    ).strip() or query
     topic = raw
     items = split_compare_items(raw)
     a = items[0] if items else topic
@@ -284,7 +285,31 @@ def build_report(query: str, mode: str, langs: str, waves: list[str],
     consent_log = ", ".join(
         f"{k}={'Y' if v else 'N'}" for k, v in consents.items()
     )
-    return f"""# ARGUS: {query}
+    if consents.get("forums"):
+        forums_note = "(TODO: per-item verdict VERIFIED / CONTESTED / UNVERIFIED)"
+    else:
+        forums_note = "_Skipped - no consent._"
+
+    # YAML frontmatter
+    waves_yaml = "\n".join(f"  - {w}" for w in waves)
+    consents_yaml = "\n".join(
+        f"  {k}: {'true' if v else 'false'}" for k, v in consents.items()
+    )
+    frontmatter = (
+        "---\n"
+        f"title: \"ARGUS: {query}\"\n"
+        f"date: {date}\n"
+        f"mode: {mode}\n"
+        f"languages: {langs}\n"
+        "waves:\n"
+        f"{waves_yaml}\n"
+        "consents:\n"
+        f"{consents_yaml}\n"
+        f"tool_version: \"{VERSION}\"\n"
+        "---\n"
+    )
+
+    body = f"""# ARGUS: {query}
 **Date**: {date} | **Mode**: {m['name']} | **Languages**: {langs} | **Waves**: {', '.join(waves)}
 
 ## 1. Executive Summary
@@ -298,12 +323,13 @@ def build_report(query: str, mode: str, langs: str, waves: list[str],
 ## 7. Technical Landscape
 ## 8. Market and Opportunity Signals
 ## 9. Community Signals - Forums & Telegram
-{'_Skipped - no consent._' if not consents.get('forums') else '(TODO: per-item verdict VERIFIED / CONTESTED / UNVERIFIED / OPINION)'}
+{forums_note}
 ## 10. Gaps and Open Questions
 ## 11. Key Sources (with URLs) - group by language
 ## 12. Methodology Notes
-Consent log: {consent_log}. Tool: argus v1.1.0.
+Consent log: {consent_log}. Tool: argus v{VERSION}.
 """
+    return frontmatter + body
 
 
 def fetch_telegram_preview(channel: str, limit: int = 20) -> list[str]:
@@ -329,8 +355,8 @@ def fetch_telegram_preview(channel: str, limit: int = 20) -> list[str]:
     opener = urllib.request.build_opener(_NoRedirect)
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     try:
-        with opener.open(req, timeout=25) as r:
-            final_host = urllib.request.urlparse(r.geturl()).hostname or ""
+        with opener.open(req, timeout=PREVIEW_TIMEOUT) as r:
+            final_host = urllib.parse.urlparse(r.geturl()).hostname or ""
             if final_host.lower() != "t.me":
                 raise ValueError(
                     f"ERROR: refused redirect outside t.me ({final_host!r})"
@@ -354,26 +380,36 @@ def fetch_telegram_preview(channel: str, limit: int = 20) -> list[str]:
 
 
 def cmd_plan(args: argparse.Namespace) -> int:
-    mode = args.mode or infer_mode(args.query)
-    gates = detect_gates(args.query)
+    profile = getattr(args, "profile", "sovereign")
+    raw = args.mode or infer_mode(args.query, profile)
+    mode = clamp_mode(raw, profile)
+    gates = detect_gates(args.query, profile)
+    _logger.info("plan: mode=%s query=%r", mode, args.query)
     print(f"Mode: {MODES[mode]['name']}  |  Waves: {', '.join(MODES[mode]['waves'])}")
     print(f"Tools: {', '.join(MODES[mode]['tools'])}  |  Output: {MODES[mode]['words']} words")
     flagged = [g for g, v in gates.items() if v]
     if flagged:
+        _logger.debug("plan: consent gates flagged: %s", flagged)
         print(f"Consent required before execution: {', '.join(flagged)} (default = SKIP)")
+    subqs = generate_subquestions(args.query, mode)
+    _logger.debug("plan: generated %d sub-questions for mode=%s", len(subqs), mode)
     print("\nSub-questions (approve / edit / change mode before execution):")
-    for i, q in enumerate(generate_subquestions(args.query, mode), 1):
+    for i, q in enumerate(subqs, 1):
         print(f"  {i}. {q}")
     return 0
 
 
 def cmd_report(args: argparse.Namespace) -> int:
-    mode = args.mode or infer_mode(args.query)
+    profile = getattr(args, "profile", "sovereign")
+    raw = args.mode or infer_mode(args.query, profile)
+    mode = clamp_mode(raw, profile)
     consents = {"scraping": False, "forums": False, "dark": False, "restricted": False}
-    gates = detect_gates(args.query)
+    gates = detect_gates(args.query, profile)
     if not args.no_consent and sys.stdin.isatty():
         if gates["scraping"]:
-            consents["scraping"] = ask_consent("Scraping requested - scrape politely (rate-limited, public only)?")
+            consents["scraping"] = ask_consent(
+                "Scraping requested - scrape politely (public only)?"
+            )
         if gates["forums"]:
             consents["forums"] = ask_consent("Search PUBLIC forums + PUBLIC Telegram channels?")
         if gates["dark"]:
@@ -387,6 +423,8 @@ def cmd_report(args: argparse.Namespace) -> int:
     fname = report_filename(args.query)
     path = _safe_output_path(outdir, fname)
     atomic_write_text(path, body)
+    _logger.info("report: written to %s mode=%s", path, mode)
+    _logger.debug("report: consents=%s", consents)
     print(f"Report skeleton written: {path}")
     print(f"Consent log: {consents}")
     return 0
@@ -398,13 +436,16 @@ def cmd_preview(args: argparse.Namespace) -> int:
         msgs = fetch_telegram_preview(args.channel, limit)
     except ValueError as e:
         # invalid channel format - user error, no network attempted
+        _logger.error("preview: invalid channel format: %s", e)
         print(f"{e}", file=sys.stderr)
         return 2
     except (urllib.error.URLError, urllib.error.HTTPError,
             TimeoutError, OSError, RuntimeError) as e:
         # Network / fetch failure - report plainly (no traceback leak)
+        _logger.error("preview: fetch failed for %s: %s", args.channel, e)
         print(f"ERROR fetching preview: {e}", file=sys.stderr)
         return 1
+    _logger.info("preview: fetched %d messages from t.me/s/%s", len(msgs), args.channel)
     print(f"Public preview: t.me/s/{args.channel} - {len(msgs)} messages (UNVERIFIED by default)")
     if args.output:
         out = Path(args.output)
@@ -413,6 +454,7 @@ def cmd_preview(args: argparse.Namespace) -> int:
                  "_Source: public t.me/s/ preview. Claims = UNVERIFIED._\n"]
         lines += [f"\n---\n\n{m}\n" for m in msgs]
         atomic_write_text(out, "\n".join(lines))
+        _logger.debug("preview: saved to %s", out)
         print(f"Saved: {out}")
     else:
         for m in msgs:
@@ -420,12 +462,13 @@ def cmd_preview(args: argparse.Namespace) -> int:
     return 0
 
 
-def cmd_modes(_: argparse.Namespace) -> int:
-    for m in MODES.values():
+def cmd_modes(args: argparse.Namespace) -> int:
+    profile = getattr(args, "profile", "sovereign")
+    allowed = _allowed_modes(profile)
+    for key in allowed:
+        m = MODES[key]
         print(f"{m['name']:12s} triggers={m['triggers']} waves={m['waves']} out={m['words']}")
     return 0
-
-
 # ---------------------------------------------------------------------------
 # verify - offline report audit (structure, links, citations, languages)
 # ---------------------------------------------------------------------------
@@ -454,7 +497,7 @@ def _clean_url(u: str) -> str:
     return u.rstrip(".,;:!?'\"*)]")
 
 
-def _check_url_live(url: str, timeout: int = 8) -> str:
+def _check_url_live(url: str, timeout: int = VERIFY_TIMEOUT) -> str:
     """Return 'ok' | 'dead' | 'unknown' (network blocked/timeout)."""
     host = re.sub(r"^https?://", "", url).split("/")[0].lower()
     if any(p in host or p in url.lower() for p in PLACEHOLDER_HOSTS):
@@ -647,11 +690,13 @@ def _check_live_links(live: list[str],
 
 def verify_report_text(text: str, check_links: bool = True,
                        require_consent_log: bool = True,
+                       profile: str | None = None,
                        max_workers: int = 8) -> tuple[str, list[dict]]:
     """Audit a report. Returns (verdict, findings). Verdict: PASS/WARN/FAIL.
 
     Delegates to check_structure / check_urls /
     check_citations / check_languages / check_consent + throttled liveness.
+    Institutional profile keeps structure + links only (light audit).
     """
     findings: list[dict] = []
     findings += check_structure(text)
@@ -662,8 +707,10 @@ def verify_report_text(text: str, check_links: bool = True,
     elif not check_links and live_urls:
         findings.append(_finding("WARN", "dead-links",
                                  "link liveness skipped (--offline)"))
-    findings += check_citations(text)
-    findings += check_languages(text)
+    prof = _get_profile(profile)
+    if prof.get("name") != "institutional":
+        findings += check_citations(text)
+        findings += check_languages(text)
     findings += check_consent(text, require_consent_log)
     fails = sum(1 for f in findings if f["level"] == "FAIL")
     verdict = "FAIL" if fails else ("WARN" if any(
@@ -674,13 +721,19 @@ def verify_report_text(text: str, check_links: bool = True,
 def cmd_verify(args: argparse.Namespace) -> int:
     path = Path(args.file)
     if not path.is_file():
+        _logger.error("verify: file not found: %s", path)
         print(f"ERROR: not found: {path}", file=sys.stderr)
         return 2
     text = path.read_text(encoding="utf-8")
+    profile = getattr(args, "profile", "sovereign")
+    require_log = bool(_get_profile(profile).get("require_consent_log", True))
+    _logger.info("verify: auditing %s (offline=%s)", path, args.offline)
     verdict, findings = verify_report_text(
-        text, check_links=not args.offline, require_consent_log=True)
+        text, check_links=not args.offline, profile=profile,
+        require_consent_log=require_log)
     fails = sum(1 for f in findings if f["level"] == "FAIL")
     warns = sum(1 for f in findings if f["level"] == "WARN")
+    _logger.debug("verify: %d findings (%d FAIL, %d WARN)", len(findings), fails, warns)
     for f in findings:
         print(f"[{f['level']:4s}] {f['check']:16s} {f['message']}")
     print(f"\nVerdict: {verdict} ({fails} FAIL, {warns} WARN)")
@@ -688,8 +741,13 @@ def cmd_verify(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(prog="argus", description="ARGUS - verified research reports from the command line")
+    p = argparse.ArgumentParser(
+        prog="argus", description="ARGUS - verified research reports (CLI)"
+    )
     p.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
+    p.add_argument("--profile", choices=["sovereign", "institutional"],
+                   default="sovereign",
+                   help="behaviour preset (default sovereign)")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     pp = sub.add_parser("plan", help="infer mode + show sub-question plan")
@@ -722,6 +780,14 @@ def main(argv: list[str] | None = None) -> int:
 
     args = p.parse_args(argv)
     return args.func(args)
+
+
+def lite_main(argv: list[str] | None = None) -> int:
+    """Institutional entry point: same CLI defaulting to institutional."""
+    args = list(argv) if argv is not None else list(sys.argv[1:])
+    if "--profile" not in args:
+        args = ["--profile", "institutional", *args]
+    return main(args)
 
 
 if __name__ == "__main__":

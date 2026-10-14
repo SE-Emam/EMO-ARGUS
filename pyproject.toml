@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "emo-argus"
-version = "1.1.0"
+version = "1.2.0"
 description = "ARGUS - turn shallow AI answers into verified, multilingual research reports (CLI + MCP server, zero dependencies)"
 readme = "README.md"
 requires-python = ">=3.9"
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 keywords = ["research", "osint", "verification", "multilingual", "cli", "mcp", "ai-agents"]
 dependencies = []
 
@@ -16,9 +16,10 @@ dependencies = []
 mcp = ["mcp>=1.0,<2"]
 
 [project.scripts]
-argus = "argus_search:main"
-argus-mcp = "argus_mcp:main"
-argus-bridge = "argus_bridge:main"
+argus = "emo_argus.search:main"
+argus-lite = "emo_argus.search:lite_main"
+argus-mcp = "emo_argus.mcp:main"
+argus-bridge = "emo_argus.bridge:main"
 
 [project.urls]
 Homepage = "https://github.com/SE-Emam/EMO-ARGUS"
@@ -26,5 +27,12 @@ Documentation = "https://github.com/SE-Emam/EMO-ARGUS#readme"
 Repository = "https://github.com/SE-Emam/EMO-ARGUS.git"
 Changelog = "https://github.com/SE-Emam/EMO-ARGUS/blob/main/docs/CHANGELOG.md"
 
-[tool.setuptools]
-py-modules = ["argus_search", "argus_mcp", "argus_bridge"]
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]

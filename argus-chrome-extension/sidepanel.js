@@ -1,28 +1,48 @@
 /* ARGUS Field Companion — side panel logic.
  * Stateless by design: captured context lives in chrome.storage.session
- * (ephemeral). Only the bridge token persists in storage.local, and it is
- * sent exclusively to http://127.0.0.1:8765. Fail-safe stays offline-only.
+ * (ephemeral). Only the bridge token and port persist in storage.local, and
+ * they are sent exclusively to http://127.0.0.1:<port>. Fail-safe stays
+ * offline-only.
  */
-const BRIDGE_BASE = "http://127.0.0.1:8765";
+
+const DEFAULT_BRIDGE_PORT = 8765;
 const $ = (id) => document.getElementById(id);
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadToken();
+  loadSettings();
   checkHealth();
   renderLog();
   $("token").addEventListener("change", saveToken);
+  $("port").addEventListener("change", savePort);
   $("refreshBtn").addEventListener("click", checkHealth);
   $("verifyBtn").addEventListener("click", verifySnippet);
   chrome.storage.session.onChanged.addListener(renderLog);
 });
 
-async function loadToken() {
-  const { argusToken = "" } = await chrome.storage.local.get("argusToken");
+/** Read the configured bridge port from storage and build the base URL. */
+async function getBridgeBase() {
+  const { argusPort } = await chrome.storage.local.get("argusPort");
+  const port = Number(argusPort) || DEFAULT_BRIDGE_PORT;
+  return `http://127.0.0.1:${port}`;
+}
+
+async function loadSettings() {
+  const { argusToken = "", argusPort } = await chrome.storage.local.get(["argusToken", "argusPort"]);
   $("token").value = argusToken;
+  $("port").value = argusPort || DEFAULT_BRIDGE_PORT;
 }
 
 async function saveToken() {
   await chrome.storage.local.set({ argusToken: $("token").value.trim() });
+}
+
+async function savePort() {
+  const raw = parseInt($("port").value, 10);
+  const port = (!isNaN(raw) && raw >= 1 && raw <= 65535) ? raw : DEFAULT_BRIDGE_PORT;
+  $("port").value = port;
+  await chrome.storage.local.set({ argusPort: port });
+  // Re-check health automatically when port changes.
+  checkHealth();
 }
 
 function setStatus(online, text) {
@@ -33,13 +53,14 @@ function setStatus(online, text) {
 async function checkHealth() {
   setStatus(false, "Checking…");
   try {
-    const res = await fetch(`${BRIDGE_BASE}/health`, { method: "GET" });
+    const bridgeBase = await getBridgeBase();
+    const res = await fetch(`${bridgeBase}/health`, { method: "GET" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     setStatus(true, `Connected — bridge ok (${data.tool || "argus"} ${data.version || ""})`);
   } catch (e) {
     // Fail-safe: offline message, no fallback destination.
-    setStatus(false, "ARGUS Core is offline — start argus_bridge.py locally");
+    setStatus(false, "ARGUS Core is offline — start argus-bridge locally");
   }
 }
 
@@ -47,7 +68,7 @@ async function verifySnippet() {
   const snippet = $("snippet").value.trim();
   const { argusToken = "" } = await chrome.storage.local.get("argusToken");
   if (!argusToken) {
-    $("result").textContent = "Paste the bridge token first (from the argus_bridge.py terminal).";
+    $("result").textContent = "Paste the bridge token first (from the argus-bridge terminal).";
     return;
   }
   if (!snippet) {
@@ -56,7 +77,8 @@ async function verifySnippet() {
   }
   $("result").textContent = "Verifying locally…";
   try {
-    const res = await fetch(`${BRIDGE_BASE}/verify-snippet`, {
+    const bridgeBase = await getBridgeBase();
+    const res = await fetch(`${bridgeBase}/verify-snippet`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-Argus-Token": argusToken },
       body: JSON.stringify({ snippet: snippet.slice(0, 2000) }),
@@ -66,7 +88,7 @@ async function verifySnippet() {
       ? JSON.stringify(data, null, 2)
       : `Refused: ${data.error || `HTTP ${res.status}`}`;
   } catch (e) {
-    $("result").textContent = "ARGUS Core is offline — start argus_bridge.py locally";
+    $("result").textContent = "ARGUS Core is offline — start argus-bridge locally";
   }
 }
 

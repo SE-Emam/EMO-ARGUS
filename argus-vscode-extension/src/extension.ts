@@ -1,6 +1,6 @@
 /** ARGUS thin client — loopback only, SecretStorage token, fail-safe offline. */
 import * as vscode from 'vscode';
-import { DEFAULT_BRIDGE_URL, OFFLINE_MESSAGE, analyzeSelection, checkHealth, isLoopbackUrl, normalizeBridgeUrl, verifySnippet } from './bridgeClient';
+import { DEFAULT_BRIDGE_URL, OFFLINE_MESSAGE, analyzeSelection, checkHealth, isLoopbackUrl, normalizeBridgeUrl, validateBridgeUrl, verifySnippet } from './bridgeClient';
 import { ArgusSidebarProvider } from './sidebarProvider';
 const TOKEN_KEY = 'argus.bridgeToken';
 const MAX_TEXT = 2000;
@@ -8,8 +8,10 @@ function bridgeUrl(): string {
   return normalizeBridgeUrl(vscode.workspace.getConfiguration('argus').get<string>('bridgeUrl', DEFAULT_BRIDGE_URL));
 }
 function allowLoopback(url: string): boolean {
-  if (isLoopbackUrl(url)) { return true; }
-  void vscode.window.showWarningMessage(`ARGUS refused non-loopback URL (${url}). Must stay 127.0.0.1.`, 'Reset to loopback').then((c) => {
+  const validation = validateBridgeUrl(url);
+  if (validation.valid) { return true; }
+  const reason = validation.error ?? 'unknown reason';
+  void vscode.window.showWarningMessage(`ARGUS refused bridge URL (${url}): ${reason}.`, 'Reset to loopback').then((c) => {
     if (c === 'Reset to loopback') { void vscode.workspace.getConfiguration('argus').update('bridgeUrl', DEFAULT_BRIDGE_URL, true); }
   });
   return false;
@@ -29,7 +31,10 @@ export function buildReportTemplate(topic: string): string {
 export function activate(ctx: vscode.ExtensionContext): void {
   const output = vscode.window.createOutputChannel('ARGUS');
   const sidebar = new ArgusSidebarProvider(ctx.extensionUri);
-  ctx.subscriptions.push(vscode.window.registerWebviewViewProvider('argus.sidebar', sidebar), output);
+  const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+  statusBarItem.text = 'ARGUS: Offline';
+  statusBarItem.show();
+  ctx.subscriptions.push(vscode.window.registerWebviewViewProvider('argus.sidebar', sidebar), output, statusBarItem);
   const check = vscode.commands.registerCommand('argus.checkBridge', async () => {
     const base = bridgeUrl();
     if (!allowLoopback(base)) { sidebar.setStatus(false, 'Refused: non-loopback URL blocked.'); return; }
@@ -37,9 +42,11 @@ export function activate(ctx: vscode.ExtensionContext): void {
     if (h.ok) {
       const label = `Connected — bridge ok (${h.tool ?? 'argus'} ${h.version ?? ''})`.trim();
       sidebar.setStatus(true, label); sidebar.pushLog(`health: ${label}`);
+      statusBarItem.text = 'ARGUS: Online';
       void vscode.window.showInformationMessage(label);
     } else {
       sidebar.setStatus(false, OFFLINE_MESSAGE); sidebar.pushLog('health: offline');
+      statusBarItem.text = 'ARGUS: Offline';
       void vscode.window.showWarningMessage(OFFLINE_MESSAGE);
     }
   });

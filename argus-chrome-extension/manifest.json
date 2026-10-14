@@ -16,6 +16,6 @@
     "default_title": "Open ARGUS companion"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'self'; connect-src http://127.0.0.1:8765; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self';"
+    "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'self'; connect-src http://127.0.0.1:8765; img-src 'self' data:; style-src 'self'; font-src 'self';"
   }
 }

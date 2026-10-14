@@ -4,7 +4,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/emo-argus)](https://pypi.org/project/emo-argus/)
 [![Python](https://img.shields.io/pypi/pyversions/emo-argus)](https://pypi.org/project/emo-argus/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![CI](https://github.com/SE-Emam/EMO-ARGUS/actions/workflows/ci.yml/badge.svg)](https://github.com/SE-Emam/EMO-ARGUS/actions)
 
 > AI assistants guess. **ARGUS verifies.** One command turns a vague question into a sourced, multilingual research report — with dead links and uncited claims caught before delivery.
@@ -126,6 +126,6 @@ Run the MCP server on stdio/localhost only. It touches the filesystem by design.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Apache License 2.0 — see [LICENSE](LICENSE).
 
 

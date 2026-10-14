@@ -4,7 +4,7 @@
   "description": "Real-time research integrity linter via your local ARGUS core. Localhost only, no external network.",
   "version": "0.1.0",
   "publisher": "argus",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.85.0"
   },

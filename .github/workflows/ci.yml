@@ -33,9 +33,12 @@ jobs:
         run: pytest tests/ -v
 
       - name: Audit dependencies
-        # --skip-editable: do not audit the local editable install itself
-        # (its bumped version is not on PyPI until release publish).
-        run: pip-audit --strict --skip-editable
+        # Exclude the local editable install itself: its bumped version
+        # is not on PyPI until release publish, so auditing it always
+        # fails collection under --strict. Audit everything else.
+        run: |
+          pip freeze | grep -vi "emo-argus" > /tmp/ci-reqs.txt
+          pip-audit --strict -r /tmp/ci-reqs.txt
 
       - name: Verify Offline Reports (Sanity Check)
         run: |

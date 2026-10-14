@@ -33,7 +33,9 @@ jobs:
         run: pytest tests/ -v
 
       - name: Audit dependencies
-        run: pip-audit --strict
+        # --skip-editable: do not audit the local editable install itself
+        # (its bumped version is not on PyPI until release publish).
+        run: pip-audit --strict --skip-editable
 
       - name: Verify Offline Reports (Sanity Check)
         run: |

@@ -10,10 +10,11 @@
 [![Python](https://img.shields.io/pypi/pyversions/emo-argus)](https://pypi.org/project/emo-argus/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![CI](https://github.com/SE-Emam/EMO-ARGUS/actions/workflows/ci.yml/badge.svg)](https://github.com/SE-Emam/EMO-ARGUS/actions)
+[![Release](https://img.shields.io/github/v/release/SE-Emam/EMO-ARGUS)](https://github.com/SE-Emam/EMO-ARGUS/releases)
 
 **One command turns a vague question into a sourced, multilingual research report — with dead links and uncited claims caught before delivery.**
 
-[Install](#install) · [Quick Start](#quick-start) · [7 Modes](#the-7-modes) · [Docs](#documentation) · [Extensions](#extensions)
+[Install](#install) · [How it works](#how-it-works) · [Quick Start](#quick-start) · [7 Modes](#the-7-modes) · [Docs](#documentation) · [Extensions](#extensions)
 
 </div>
 
@@ -33,19 +34,74 @@
 
 ---
 
+## How it works
+
+ARGUS is a **research planner and verifier** — it plans what to investigate and audits the finished report. You (or your AI agent) do the reading; ARGUS makes sure nothing ships unverified.
+
+```text
+  You ask                      You research                  ARGUS audits
+┌──────────┐   ┌────────────────────────┐   ┌──────────────────────────┐
+│ Question │──▶│ Plan: sub-questions,   │──▶│ Report skeleton          │
+└──────────┘   │ modes, waves, consent  │   │ (you fill in findings)   │
+               └────────────────────────┘   └─────────────┬────────────┘
+                                                          ▼
+                                               ┌──────────────────────────┐
+                                               │ Verify: structure, links,│
+                                               │ citations, languages —   │
+                                               │ PASS, WARN, or FAIL      │
+                                               └──────────────────────────┘
+```
+
+What ARGUS does itself over the network: public Telegram previews (`t.me/s/`, no login) and link-liveness checks (HEAD/GET). Everything else — searching, reading, scraping — happens through your own tools or agent, behind explicit consent gates.
+
+Real session (v1.2.1, fresh PyPI install):
+
+```text
+$ argus plan "ARGUS: compare Notion vs Obsidian"
+Mode: Compare  |  Waves: Wave 1, Wave 2, Wave 4
+Tools: web_search, extraction  |  Output: 1000-2000 words
+
+Sub-questions (approve / edit / change mode before execution):
+  1. Define Notion: what is it, who owns it, what is the pricing model? (cite official source)
+  2. Define Obsidian: what is it, who owns it, what is the pricing model? (cite official source)
+  3. Feature-by-feature: where do Notion and Obsidian differ? (table, cite docs)
+  ...
+```
+
+---
+
 ## Install
+
+**Prerequisites:** Python 3.9 or newer. Check yours:
+
+```bash
+python3 --version  # need 3.9+
+```
+
+**Install + verify (30 seconds):**
 
 ```bash
 pip install emo-argus
-argus modes
+argus --version   # should print: argus 1.2.1 (or newer)
+argus modes       # lists the 7 research modes — you are ready
 ```
 
-That's it. You now have the `argus` command. Works on Python 3.9+.
+That's it. Zero dependencies, works on Python 3.9+.
 
 <details>
 <summary>Why <code>emo-argus</code> and not <code>argus</code>?</summary>
 
 The name `argus` is taken on PyPI since 2015 by an unrelated camera-calibration package. Our distribution is `emo-argus`, but it installs the exact same `argus` + `argus-mcp` commands. After install you just type `argus`.
+
+</details>
+
+<details>
+<summary>Troubleshooting</summary>
+
+- **`argus: command not found`** — your pip scripts directory is not on `PATH`. Add it to `PATH`, or use [pipx](https://pipx.pypa.io/) instead: `pipx install emo-argus`.
+- **Old Python** — `pip install` fails on `requires-python >= 3.9`. Upgrade Python or use [pyenv](https://github.com/pyenv/pyenv).
+- **No network at install time** — clone the repo and run from source: `pip install -e .` needs no extra downloads (zero-dependency core).
+- **Uninstall** — `pip uninstall emo-argus`.
 
 </details>
 
@@ -71,7 +127,7 @@ docker run --rm argus plan "ARGUS: compare Notion vs Obsidian"
 # 1. See the plan before anything runs
 argus plan "ARGUS: compare Notion vs Obsidian"
 
-# 2. Generate a verified report skeleton
+# 2. Generate a report skeleton (with YAML frontmatter)
 argus report "ARGUS: deep AI startups in Africa" --output ./output
 
 # 3. Preview any public Telegram channel (no login needed)
@@ -81,7 +137,7 @@ argus preview durov --limit 5
 argus verify ./output/argus-report-*.md --offline
 ```
 
-Output: a Markdown report with YAML frontmatter, executive summary, verified findings, contested claims, sources grouped by language, and a consent log.
+Output: a Markdown report with YAML frontmatter, executive summary, verified findings, contested claims, sources grouped by language, and a consent log. A fresh skeleton reports `FAIL` until you fill in real sources — that is the gate working as designed.
 
 ---
 

@@ -1,4 +1,5 @@
 """ARGUS core tests (stdlib + pytest only)."""
+import json
 import re
 import sys
 from pathlib import Path
@@ -116,3 +117,18 @@ def test_institutional_gates_silent_sovereign_guarded():
     assert guarded["forums"] is True
     assert guarded["dark"] is True
     assert guarded["restricted"] is True
+
+
+def test_templates_json_ships_with_all_modes():
+    tpl_path = Path(core.__file__).resolve().parent / "templates.json"
+    assert tpl_path.is_file(), "templates.json must ship with the package"
+    data = json.loads(tpl_path.read_text(encoding="utf-8"))
+    for mode in ("quick", "compare", "deep", "platform",
+                 "timeboxed", "regional", "narrow"):
+        assert isinstance(data.get(mode), list) and data[mode]
+
+
+def test_generate_subquestions_survives_missing_templates(monkeypatch):
+    monkeypatch.setattr(core, "MODE_TEMPLATES", {})
+    out = core.generate_subquestions("ARGUS: compare X vs Y", "deep")
+    assert len(out) >= 1  # generic fallback, never KeyError

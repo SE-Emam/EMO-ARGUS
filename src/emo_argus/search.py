@@ -33,7 +33,7 @@ except ImportError:  # pragma: no cover - direct script fallback
     from emo_argus.profiles import allowed_modes as _allowed_modes
     from emo_argus.profiles import get_profile as _get_profile
 
-VERSION = "1.2.0"
+VERSION = "1.2.1"
 
 # --- Structured logging ---
 _logger = logging.getLogger("argus")
@@ -128,7 +128,8 @@ def split_compare_items(topic: str) -> list[str]:
 
 
 # Per-mode question templates loaded from external JSON file.
-# Falls back to empty dict if the file is missing or invalid.
+# Falls back to empty dict if the file is missing or invalid
+# (generate_subquestions degrades to generic questions instead of crashing).
 _templates_path = Path(__file__).parent / "templates.json"
 try:
     MODE_TEMPLATES: dict[str, list[str]] = json.loads(
@@ -136,6 +137,14 @@ try:
     )
 except (FileNotFoundError, json.JSONDecodeError, OSError):
     MODE_TEMPLATES = {}
+
+# Minimal generic plan used only when templates.json is unavailable,
+# so the CLI never crashes with KeyError on a broken install.
+_FALLBACK_TEMPLATES = [
+    "What is the verified answer to '{t}'? (cite one authoritative source + URL + date)",
+    "Which independent sources confirm the answer, and do any disagree? (cite both sides)",
+    "What remains unverified about '{t}', and what would verify it?",
+]
 
 GATED_KEYWORDS = {
     "scraping": ["scrape", "crawl", "سكرابنج", "اسكراب", "استخرج"],
@@ -194,7 +203,9 @@ def generate_subquestions(query: str, mode: str, n: int = 8) -> list[str]:
     a = items[0] if items else topic
     b = items[1] if len(items) > 1 else "the alternative"
     label = " vs ".join(items[:3]) if mode == "compare" and len(items) > 1 else topic
-    templates = MODE_TEMPLATES.get(mode, MODE_TEMPLATES["deep"])
+    templates = (
+        MODE_TEMPLATES.get(mode) or MODE_TEMPLATES.get("deep") or _FALLBACK_TEMPLATES
+    )
     out = [tpl.format(t=label, a=a, b=b) for tpl in templates]
     if mode == "quick":
         return out[:1]

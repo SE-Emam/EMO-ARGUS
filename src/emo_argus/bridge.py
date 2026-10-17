@@ -10,6 +10,7 @@ import argparse
 import datetime
 import hmac
 import json
+import os
 import secrets
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
@@ -43,8 +44,6 @@ def analyze_context(selected_text: str, page_url: str, page_title: str) -> dict:
     mode = core.infer_mode(query)
     plan = core.generate_subquestions(query, mode)
     message = None
-    if text.strip() == "test":
-        message = "Token verified, received: test"
     return {
         "tool": "argus",
         "version": VERSION,
@@ -183,9 +182,11 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(
         prog="argus-bridge", description="ARGUS local bridge (127.0.0.1 only)")
     p.add_argument("--port", type=int, default=DEFAULT_PORT)
-    p.add_argument("--token", default="", help="pre-shared token (default: random per boot)")
+    p.add_argument("--token", default="", help="pre-shared token (default: $ARGUS_BRIDGE_TOKEN, else random per boot)")
     args = p.parse_args(argv)
-    token = args.token.strip() or secrets.token_urlsafe(32)
+    # Env var first so the token never lands in shell history via --token.
+    token = args.token.strip() or os.environ.get("ARGUS_BRIDGE_TOKEN", "").strip()
+    token = token or secrets.token_urlsafe(32)
     server = build_server(args.port, token)
     print(f"ARGUS bridge on http://{HOST}:{args.port} (loopback only)")
     print(f"Bridge token (paste into the extension side panel): {token}")

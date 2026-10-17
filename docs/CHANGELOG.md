@@ -2,6 +2,17 @@
 
 All notable changes documented here. Format follows Keep a Changelog, versioning follows SemVer.
 
+## [1.2.2] - 2026-10-17 - Security fixes
+
+### SECURITY
+- YAML frontmatter injection fixed: report title is sanitized (quotes/newlines stripped) before embedding in `build_report`.
+- Removed debug hook in bridge `analyze_context` (the `"test"` → verification message leftover).
+- Bridge token now reads `$ARGUS_BRIDGE_TOKEN` env var before `--token`, so secrets never land in shell history.
+- Telegram preview parsing replaced regex with a real `HTMLParser` — robust to nested markup changes.
+
+### ADD
+- `tests/test_security.py`: 12 regression tests (path traversal, YAML injection, parser robustness, bridge token precedence).
+
 ## [1.2.1] - 2026-10-14 - Packaging hotfix
 
 ### FIX

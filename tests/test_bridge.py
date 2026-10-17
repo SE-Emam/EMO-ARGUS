@@ -9,9 +9,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from emo_argus import bridge
 
 
-def test_analyze_test_word_returns_verification_message():
+def test_analyze_context_has_no_debug_message():
+    # The old "test" debug hook was removed: message must stay None.
     out = bridge.analyze_context("test", "https://example.com/a", "Example")
-    assert out["message"] == "Token verified, received: test"
+    assert out["message"] is None
     valid_modes = ("quick", "compare", "deep", "platform", "timeboxed")
     valid_modes += ("regional", "narrow")
     assert out["mode"] in valid_modes

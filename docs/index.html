@@ -106,11 +106,13 @@ section{padding:72px 0}
 .final p{color:var(--muted);margin-bottom:30px;font-size:17px}
 footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:14px}
 footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
-.reveal.vis{opacity:1;transform:none}
+.reveal{opacity:1}
+.js .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.js .reveal.vis{opacity:1;transform:none}
 </style>
 </head>
 <body>
+<script>document.documentElement.classList.add("js");</script>
 
 <nav><div class="wrap">
   <a class="brand" href="#top">
@@ -124,7 +126,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 </div></nav>
 
 <header class="hero" id="top"><div class="wrap">
-  <img class="banner" src="https://raw.githubusercontent.com/SE-Emam/EMO-ARGUS/main/assets/images/ARGUS-banner.jpeg" alt="ARGUS banner">
+  <img class="banner" src="https://raw.githubusercontent.com/SE-Emam/EMO-ARGUS/main/assets/images/ARGUS-banner.jpeg" alt="ARGUS banner" onerror="this.style.display='none'">
   <div class="badge"><b>●</b> v1.2.1 live on PyPI · zero dependencies</div>
   <h1>AI assistants guess.<br><span class="hl">ARGUS verifies.</span></h1>
   <p class="sub">One command turns a vague question into a sourced, multilingual research report — with dead links and uncited claims caught <em>before</em> delivery.</p>
@@ -134,7 +136,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
   </div>
   <div class="term">
     <div class="termbar"><div class="dot" style="background:#f87171"></div><div class="dot" style="background:#fbbf24"></div><div class="dot" style="background:#34d399"></div><span class="t">argus — zsh</span></div>
-    <div class="termbody" id="termbody"></div>
+    <div class="termbody" id="termbody"><div><span class="p">$ </span>argus plan &quot;solid-state battery supply chains&quot; --mode deep</div><div><span class="c">Mode: deep · 5 waves · 14 languages</span></div><div><span class="c">Sub-questions: 12 — scope, timeline, key players, evidence…</span></div><div><span class="w">Consent gates: scraping=SKIP  forums=SKIP</span></div><div><span class="c">Plan saved → ./ARGUS-2026-10-17/</span></div><div><span class="p">$ </span>argus verify report.md --live-links</div><div><span class="ok">✓ structure  ✓ 14/14 links live  ✓ citations  ✓ languages</span></div><div><span class="ok">VERDICT: PASS — ready to ship</span></div></div>
   </div>
 </div></header>
 

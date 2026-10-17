@@ -38,6 +38,15 @@ h2.sec{font-size:20px;margin:34px 0 14px}
 .res-card .hl{font-size:14px;color:#bae6fd;border-left:3px solid var(--accent);padding-left:10px;margin-bottom:8px}
 .res-card .ex{font-size:13px;color:var(--muted)}
 #lstatus{font-size:14px;color:var(--muted);margin-bottom:12px;min-height:20px}
+.prof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.prof{background:#060a12;border:1px solid var(--line);border-radius:12px;padding:14px;color:var(--txt);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:6px}
+.prof:hover{border-color:var(--accent)}
+.prof .pic{font-size:22px}
+.prof b{font-size:14px}
+.prof span:last-child{font-size:12px;color:var(--muted)}
+#prof-badge{display:flex;align-items:center;gap:8px;background:#060a12;border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin-bottom:14px;font-size:14px}
+#prof-badge .pic{font-size:18px}
+#prof-badge a{font-size:12px}
 .ctl-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px}
 .ctl label{font-size:12px;margin-bottom:4px}
 .ctl select{width:auto;margin:0;font-size:14px;padding:9px 12px}
@@ -49,50 +58,40 @@ h2.sec{font-size:20px;margin:34px 0 14px}
 <p class="sub">Type a research question — get a structured investigation plan and a report skeleton. Free, no signup. Reports stay in <b>your browser only</b>.</p>
 <div class="card">
   <label>Live web search <span class="badge">BETA</span></label>
-  <input type="text" id="lq" maxlength="500" placeholder="e.g. EMO-ARGUS" onkeydown="if(event.key==='Enter')liveSearch()">
-  <div class="ctl-row">
-    <div class="ctl"><label>Source type</label><select id="lcat">
-      <option value="all">All sources</option><option value="news">News</option>
-      <option value="research">Research papers</option><option value="pdf">PDF files</option>
-      <option value="github">GitHub &amp; code</option><option value="company">Companies</option>
-      <option value="tweets">Tweets</option></select></div>
-    <div class="ctl"><label>Method</label><select id="lm">
-      <option value="auto">Auto</option><option value="semantic">Semantic</option>
-      <option value="exact">Exact keywords</option></select></div>
-    <div class="ctl"><label>Sources</label><select id="lc">
-      <option value="10">10</option><option value="25" selected>25</option>
-      <option value="50">50</option></select></div>
-    <div class="ctl"><label>Language</label><select id="ll">
-      <option value="auto">Auto</option><option value="ar">Arabic</option>
-      <option value="en">English</option><option value="both">Both</option></select></div>
-    <div class="ctl"><label>Region</label><select id="lr">
-      <option value="all">All regions</option><option value="egypt">Egypt</option>
-      <option value="saudi">Saudi Arabia</option><option value="uae">UAE</option>
-      <option value="qatar">Qatar</option><option value="morocco">Morocco</option>
-      <option value="usa">USA</option><option value="uk">UK</option></select></div>
+  <div id="profiles">
+    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">What are you investigating? Pick a mission and the engine configures itself.</p>
+    <div class="prof-grid" id="prof-grid"></div>
   </div>
-  <button id="lgo" onclick="liveSearch()">Search live</button>
-  <button id="lreport" style="display:none;margin-left:10px" onclick="genReportFromSearch()">Generate investigation report</button>
-  <div id="lstatus" style="margin-top:12px"></div>
-  <div id="lresults"></div>
+  <div id="searchform" style="display:none">
+    <div id="prof-badge"></div>
+    <input type="text" id="lq" maxlength="500" placeholder="e.g. EMO-ARGUS" onkeydown="if(event.key==='Enter')liveSearch()">
+    <div class="ctl-row">
+      <div class="ctl"><label>Source type</label><select id="lcat">
+        <option value="all">All sources</option><option value="news">News</option>
+        <option value="research">Research papers</option><option value="pdf">PDF files</option>
+        <option value="github">GitHub &amp; code</option><option value="company">Companies</option>
+        <option value="tweets">Tweets</option></select></div>
+      <div class="ctl"><label>Method</label><select id="lm">
+        <option value="auto">Auto</option><option value="semantic">Semantic</option>
+        <option value="exact">Exact keywords</option></select></div>
+      <div class="ctl"><label>Sources</label><select id="lc">
+        <option value="10">10</option><option value="25" selected>25</option>
+        <option value="50">50</option></select></div>
+      <div class="ctl"><label>Language</label><select id="ll">
+        <option value="auto">Auto</option><option value="ar">Arabic</option>
+        <option value="en">English</option><option value="both">Both</option></select></div>
+      <div class="ctl"><label>Region</label><select id="lr">
+        <option value="all">All regions</option><option value="egypt">Egypt</option>
+        <option value="saudi">Saudi Arabia</option><option value="uae">UAE</option>
+        <option value="qatar">Qatar</option><option value="morocco">Morocco</option>
+        <option value="usa">USA</option><option value="uk">UK</option></select></div>
+    </div>
+    <button id="lgo" onclick="liveSearch()">Search live</button>
+    <button id="lreport" style="display:none;margin-left:10px" onclick="genReportFromSearch()">Generate investigation report</button>
+    <div id="lstatus" style="margin-top:12px"></div>
+    <div id="lresults"></div>
+  </div>
 </div>
-<div class="card">
-  <label>Research question</label>
-  <input type="text" id="q" maxlength="500" placeholder="e.g. solid-state battery supply chains">
-  <label>Mode</label>
-  <select id="m">
-    <option value="quick">quick — one verified answer</option>
-    <option value="deep" selected>deep — full investigation</option>
-    <option value="compare">compare — A vs B</option>
-    <option value="platform">platform — content on one platform</option>
-    <option value="timeboxed">timeboxed — dated timeline</option>
-    <option value="regional">regional — region-first</option>
-    <option value="narrow">narrow — laser scope</option>
-  </select>
-  <button id="go" onclick="run()">Generate plan</button>
-</div>
-<div id="out"></div>
-<div id="share"></div>
 
 <h2 class="sec">Your recent reports <span style="font-size:13px;color:var(--muted);font-weight:400">(this browser only)</span></h2>
 <div id="hist"></div>
@@ -141,13 +140,95 @@ async function run(){
   btn.disabled=false;
 }
 renderHistory();
+renderProfiles();
+var PROFILES = {
+  market: {name:'Market & Competitor Intel', icon:'\uD83D\uDCCA',
+    desc:'Market analysis, rivals and bids for your project study',
+    category:'company', method:'auto', count:'50', lang:'auto', region:'all',
+    hint:'e.g. solar panels market Egypt', suffix:' market analysis competitors pricing',
+    sections:[['Market Overview','SEED'],['Key Competitors','SEED'],
+      ['Pricing & Bid Signals','TODO: tender values, pricing tiers and contract signals spotted in the sources above'],
+      ['Opportunities & Risks','TODO: gaps competitors leave open, regulatory or cost risks']]},
+  osint: {name:'Deep Source Investigation', icon:'\uD83D\uDD75\uFE0F',
+    desc:'Trace the origin of an image, video or dataset (text-based tracing)',
+    category:'all', method:'exact', count:'25', lang:'both', region:'all',
+    hint:'e.g. a filename, exact phrase or URL fragment to trace', suffix:'',
+    note:'Text-based tracing only: image upload and reverse-image search are not supported yet.',
+    sections:[['Objective','TODO: state exactly what is being traced'],
+      ['Origin Candidates','SEED'],
+      ['Spread & Copies','TODO: where else the same content appears, earliest dates seen'],
+      ['Credibility Assessment','TODO: which origin is most credible and why']]},
+  jobs: {name:'Job & Opportunity Scout', icon:'\uD83D\uDCBC',
+    desc:'Roles and hiring signals in a specific country',
+    category:'company', method:'auto', count:'25', lang:'auto', region:'all',
+    hint:'e.g. backend developer jobs', suffix:' jobs hiring openings',
+    sections:[['Target Role & Market','SEED'],['Hiring Signals','SEED'],
+      ['Requirements Seen in Postings','TODO: skills, experience levels and salary bands mentioned']]},
+  academic: {name:'Academic Gap Finder', icon:'\uD83C\uDF93',
+    desc:'Find research gaps in the scientific literature',
+    category:'research', method:'semantic', count:'50', lang:'en', region:'all',
+    hint:'e.g. solid-state battery degradation mechanisms', suffix:' research gap literature review',
+    sections:[['Research Question','TODO: state the question precisely'],
+      ['What the Literature Says','SEED'],
+      ['Contradictions Between Studies','TODO: where the sources disagree'],
+      ['Identified Gaps','TODO: what no source covers — candidate research openings']]},
+  dev: {name:'Developer Tool Finder', icon:'\uD83D\uDEE0\uFE0F',
+    desc:'Find and compare dev tools, e.g. a QA agent',
+    category:'github', method:'auto', count:'25', lang:'en', region:'all',
+    hint:'e.g. QA agent for automated testing', suffix:' open source tool github',
+    sections:[['The Need','TODO: one-line requirement'],
+      ['Candidate Tools','SEED'],
+      ['Comparison Signals','TODO: stars and activity, license, docs quality, last commit'],
+      ['Recommendation','TODO: pick one and justify']]},
+  factcheck: {name:'Fact Check', icon:'\u2696\uFE0F',
+    desc:'Verify whether a claim is actually true',
+    category:'news', method:'exact', count:'25', lang:'both', region:'all',
+    hint:'e.g. paste the exact claim to verify', suffix:'',
+    sections:[['The Claim','TODO: quote the claim verbatim'],
+      ['Supporting Evidence','SEED'],
+      ['Contradicting Evidence','TODO: sources that dispute the claim'],
+      ['Verdict','TODO: true / false / misleading / unverified — with reasoning']]}
+};
+var activeProfile = null;
+function renderProfiles(){
+  var g=document.getElementById('prof-grid');
+  g.innerHTML=Object.keys(PROFILES).map(function(k){
+    var p=PROFILES[k];
+    return '<button class="prof" onclick="pickProfile(\''+k+'\')"><span class="pic">'+p.icon+'</span><b>'+p.name+'</b><span>'+p.desc+'</span></button>';
+  }).join('');
+}
+function pickProfile(k){
+  activeProfile=k; var p=PROFILES[k];
+  document.getElementById('profiles').style.display='none';
+  document.getElementById('searchform').style.display='block';
+  document.getElementById('lcat').value=p.category;
+  document.getElementById('lm').value=p.method;
+  document.getElementById('lc').value=p.count;
+  document.getElementById('ll').value=p.lang;
+  document.getElementById('lr').value=p.region;
+  document.getElementById('lq').placeholder=p.hint;
+  document.getElementById('lq').value='';
+  document.getElementById('lstatus').textContent='';
+  document.getElementById('lresults').innerHTML='';
+  document.getElementById('lreport').style.display='none';
+  lastLive=null;
+  document.getElementById('prof-badge').innerHTML='<span class="pic">'+p.icon+'</span><span>Mission: <b>'+p.name+'</b></span><a href="#" onclick="backToProfiles();return false;">(change)</a>';
+}
+function backToProfiles(){
+  activeProfile=null; lastLive=null;
+  document.getElementById('searchform').style.display='none';
+  document.getElementById('profiles').style.display='block';
+}
+
 var lastLive=null;
 async function liveSearch(){
-  var q=document.getElementById('lq').value.trim();
+  var qRaw=document.getElementById('lq').value.trim();
+  var prof0=activeProfile?PROFILES[activeProfile]:null;
+  var q=(qRaw+(prof0&&prof0.suffix?prof0.suffix:'')).slice(0,500);
   var st=document.getElementById('lstatus'), res=document.getElementById('lresults'), btn=document.getElementById('lgo');
   res.innerHTML=''; lastLive=null;
   document.getElementById('lreport').style.display='none';
-  if(!q){st.innerHTML='<span class="err">Type a question first.</span>';return;}
+  if(!qRaw){st.innerHTML='<span class="err">Type a question first.</span>';return;}
   btn.disabled=true; st.textContent='\uD83D\uDD0E Searching the live web\u2026';
   var payload={query:q,
     count:document.getElementById('lc').value,
@@ -162,7 +243,7 @@ async function liveSearch(){
     if(!r.ok) throw new Error(d.error||'request failed');
     var items=d.results||[];
     if(!items.length){st.textContent='No results found.';return;}
-    lastLive={q:q,items:items,controls:payload,translated:d.translated_query};
+    lastLive={q:qRaw,items:items,controls:payload,translated:d.translated_query,profile:activeProfile};
     document.getElementById('lreport').style.display='inline-block';
     var note='\u26A1 Reading '+items.length+' live sources\u2026 ('+d.took_ms+'ms)';
     if(d.translated_query) note+=' \u2014 translated query: \u201C'+d.translated_query+'\u201D';
@@ -186,39 +267,58 @@ async function liveSearch(){
 function genReportFromSearch(){
   if(!lastLive||!lastLive.items.length) return;
   var q=lastLive.q, items=lastLive.items, c=lastLive.controls;
+  var prof=lastLive.profile?PROFILES[lastLive.profile]:null;
+  var mission=prof?prof.name:'General search';
   var date=new Date().toISOString().slice(0,10);
-  var safeQ=q.replace(/"/g,'').replace(/\n/g,' ').slice(0,120);
-  var md='---\ntitle: "ARGUS: '+safeQ+'"\ndate: '+date+'\nmode: live-search\nsources: '+items.length+'\n---\n';
-  md+='# ARGUS: '+q+'\n**Date**: '+date+' | **Mode**: Live search | **Sources**: '+items.length+'\n\n';
-  md+='## 1. Executive Summary\n(TODO: 3-5 sentences, every claim cited from the sources below)\n\n';
-  md+='## 2. Background and Definitions\n(TODO)\n\n';
-  md+='## 3. Key Actors / Items Compared\n(TODO)\n\n';
-  md+='## 4. Findings seeded from live sources\n';
-  var n=0;
-  items.forEach(function(it){
-    (it.highlights||[]).forEach(function(h){
-      if(n>=12) return;
-      md+='- \u201C'+h.replace(/\n/g,' ').slice(0,280)+'\u201D \u2014 ['+String(it.title||it.url).slice(0,60)+']('+it.url+')\n';
-      n++;
+  var safeQ=String(q).replace(/"/g,'').replace(/\n/g,' ').slice(0,120);
+  var md='---\ntitle: "ARGUS: '+safeQ+'"\ndate: '+date+'\nmode: live-search\nmission: '+mission+'\nsources: '+items.length+'\n---\n';
+  md+='# ARGUS: '+q+'\n**Mission**: '+mission+' | **Date**: '+date+' | **Sources**: '+items.length+'\n\n';
+  if(prof&&prof.note) md+='_'+prof.note+'_\n\n';
+  var seeded=false;
+  function seedBlock(){
+    if(seeded) return '(covered in the seeded findings above)\n';
+    seeded=true;
+    var t='', n=0;
+    items.forEach(function(it){
+      (it.highlights||[]).forEach(function(h){
+        if(n>=12) return;
+        t+='- \u201C'+String(h).replace(/\n/g,' ').slice(0,280)+'\u201D \u2014 ['+String(it.title||it.url).slice(0,60)+']('+it.url+')\n';
+        n++;
+      });
     });
+    return t||'(no highlights extracted)\n';
+  }
+  function sourceBlock(){
+    var t='';
+    items.forEach(function(it){
+      var host=''; try{host=new URL(it.url).hostname;}catch(e){}
+      t+='- ['+String(it.title||host||'untitled').slice(0,80)+']('+it.url+')'+(host?' \u2014 '+host:'')+'\n';
+    });
+    return t;
+  }
+  function methodBlock(){
+    var t='Live web search via Exa. Mission: '+mission+'. Controls: count='+c.count+', category='+c.category+', method='+c.method+', lang='+c.lang+', region='+c.region+'.';
+    if(lastLive.translated) t+=' Translated query: \u201C'+lastLive.translated+'\u201D.';
+    t+=' Excerpts are machine-extracted; verify key claims against the original pages before publishing.';
+    return t+'\n';
+  }
+  var tpl=prof?prof.sections:[['Executive Summary','(TODO: 3-5 sentences, every claim cited from the sources below)'],['Findings seeded from live sources','SEED']];
+  tpl.forEach(function(sec){
+    md+='## '+sec[0]+'\n';
+    if(sec[1]==='SEED') md+=seedBlock();
+    else if(sec[1]==='SOURCES') md+=sourceBlock();
+    else if(sec[1]==='METHOD') md+=methodBlock();
+    else md+=sec[1]+'\n';
+    md+='\n';
   });
-  if(!n) md+='(no highlights extracted)\n';
-  md+='\n## 5. Contested Claims and Disagreements\n(TODO)\n\n';
-  md+='## 11. Key Sources ('+items.length+')\n';
-  items.forEach(function(it){
-    var host=''; try{host=new URL(it.url).hostname;}catch(e){}
-    md+='- ['+String(it.title||host||'untitled').slice(0,80)+']('+it.url+')'+(host?' \u2014 '+host:'')+'\n';
-  });
-  md+='\n## 12. Methodology Notes\n';
-  md+='Live web search via Exa. Controls: count='+c.count+', category='+c.category+', method='+c.method+', lang='+c.lang+', region='+c.region+'.';
-  if(lastLive.translated) md+=' Translated query: \u201C'+lastLive.translated+'\u201D.';
-  md+=' Excerpts are machine-extracted; verify key claims against the original pages before publishing.\n';
+  md+='## Key Sources ('+items.length+')\n'+sourceBlock()+'\n';
+  md+='## Methodology Notes\n'+methodBlock();
   var out=document.getElementById('out'), share=document.getElementById('share');
   var id=uid(), all=loadDemos();
   all.unshift({id:id,query:q,mode:'live-search',markdown:md,ts:new Date().toISOString()});
   saveDemos(all); renderHistory();
   out.style.display='block';
-  out.innerHTML='<h3>Investigation report (from '+items.length+' live sources)</h3>'+esc(md).slice(0,6000);
+  out.innerHTML='<h3>Investigation report \u2014 '+mission+' (from '+items.length+' live sources)</h3>'+esc(md).slice(0,8000);
   share.style.display='block';
   share.innerHTML='\uD83D\uDD17 Saved in this browser: <a href="/share.html?id='+encodeURIComponent(id)+'">'+location.origin+'/share.html?id='+encodeURIComponent(id)+'</a>';
   out.scrollIntoView();

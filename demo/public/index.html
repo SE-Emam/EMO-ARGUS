@@ -31,11 +31,31 @@ h2.sec{font-size:20px;margin:34px 0 14px}
 .hist-item .del{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
 .hist-item .del:hover{color:#f87171;border-color:#f87171}
 #hist-empty{color:var(--muted);font-size:14px}
+.badge{font-size:11px;background:#164e63;color:#67e8f9;border-radius:6px;padding:2px 8px;vertical-align:middle;margin-left:8px}
+.res-card{background:#060a12;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px;animation:fadein .4s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.res-card .host{font-size:12px;color:var(--muted);margin:2px 0 8px}
+.res-card .hl{font-size:14px;color:#bae6fd;border-left:3px solid var(--accent);padding-left:10px;margin-bottom:8px}
+.res-card .ex{font-size:13px;color:var(--muted)}
+#lstatus{font-size:14px;color:var(--muted);margin-bottom:12px;min-height:20px}
 </style>
 </head>
 <body><div class="wrap">
 <h1>Try ARGUS 🔍</h1>
 <p class="sub">Type a research question — get a structured investigation plan and a report skeleton. Free, no signup. Reports stay in <b>your browser only</b>.</p>
+<div class="card">
+  <label>Live web search <span class="badge">BETA</span></label>
+  <input type="text" id="lq" maxlength="500" placeholder="e.g. EMO-ARGUS" onkeydown="if(event.key==='Enter')liveSearch()">
+  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+    <select id="ld" style="width:auto;margin:0">
+      <option value="quick">quick — 5 sources</option>
+      <option value="deep">deep — 8 sources</option>
+    </select>
+    <button id="lgo" onclick="liveSearch()">Search live</button>
+  </div>
+  <div id="lstatus" style="margin-top:12px"></div>
+  <div id="lresults"></div>
+</div>
 <div class="card">
   <label>Research question</label>
   <input type="text" id="q" maxlength="500" placeholder="e.g. solid-state battery supply chains">
@@ -79,6 +99,7 @@ function renderHistory(){
 function delDemo(id){
   saveDemos(loadDemos().filter(function(d){return d.id!==id;}));
   renderHistory();
+
 }
 async function run(){
   var q=document.getElementById('q').value.trim(), m=document.getElementById('m').value;
@@ -100,5 +121,33 @@ async function run(){
   btn.disabled=false;
 }
 renderHistory();
+async function liveSearch(){
+  var q=document.getElementById('lq').value.trim(), depth=document.getElementById('ld').value;
+  var st=document.getElementById('lstatus'), res=document.getElementById('lresults'), btn=document.getElementById('lgo');
+  res.innerHTML='';
+  if(!q){st.innerHTML='<span class="err">Type a question first.</span>';return;}
+  btn.disabled=true; st.textContent='🔎 Searching the live web…';
+  try{
+    var r=await fetch('/api/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,depth:depth})});
+    var d=await r.json();
+    if(r.status===503){st.innerHTML='<span class="err">Live search is not configured yet.</span>';return;}
+    if(!r.ok) throw new Error(d.error||'request failed');
+    var items=d.results||[];
+    if(!items.length){st.textContent='No results found.';return;}
+    st.textContent='⚡ Reading '+items.length+' live sources… ('+d.took_ms+'ms)';
+    items.forEach(function(it,i){
+      setTimeout(function(){
+        var host=''; try{host=new URL(it.url).hostname;}catch(e){}
+        var card=document.createElement('div'); card.className='res-card';
+        card.innerHTML='<a href="'+esc(it.url)+'" target="_blank" rel="noopener"><b>'+esc(it.title||host||'untitled')+'</b></a>'+
+          '<div class="host">'+esc(host)+'</div>'+
+          ((it.highlights&&it.highlights.length)?'<div class="hl">\u201C'+esc(it.highlights[0])+'\u201D</div>':'')+
+          '<div class="ex">'+esc((it.text||'').slice(0,280))+'\u2026</div>';
+        res.appendChild(card);
+      }, 140*i);
+    });
+  }catch(e){st.innerHTML='<span class="err">'+esc(e.message)+'</span>';}
+  btn.disabled=false;
+}
 </script>
 </body></html>

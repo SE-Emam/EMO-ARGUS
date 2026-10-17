@@ -34,6 +34,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(600px 300px at 50% -50px,rgba(56,189,248,.15),transparent);pointer-events:none}
 .badge{display:inline-block;padding:6px 16px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--muted);margin-bottom:24px;background:var(--panel)}
 .badge b{color:var(--ok)}
+.banner{max-width:880px;width:100%;border-radius:18px;border:1px solid var(--line);margin:0 auto 32px;display:block;box-shadow:0 24px 60px rgba(0,0,0,.45)}
 .hero h1{font-size:clamp(38px,6vw,64px);font-weight:800;line-height:1.12;letter-spacing:-1px;margin-bottom:20px}
 .hero h1 .hl{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p.sub{font-size:19px;color:var(--muted);max-width:680px;margin:0 auto 36px}
@@ -117,12 +118,13 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
     ARGUS
   </a>
   <div class="navlinks">
-    <a href="#features">Features</a><a href="#modes">Modes</a><a href="#how">How it works</a><a href="#install">Install</a><a href="#security">Security</a>
+    <a href="#features">Features</a><a href="#modes">Modes</a><a href="#how">How it works</a><a href="#releases">Releases</a><a href="#install">Install</a><a href="#security">Security</a>
   </div>
   <a class="btn" href="https://github.com/SE-Emam/EMO-ARGUS" target="_blank" rel="noopener">GitHub ★</a>
 </div></nav>
 
 <header class="hero" id="top"><div class="wrap">
+  <img class="banner" src="https://raw.githubusercontent.com/SE-Emam/EMO-ARGUS/main/assets/images/ARGUS-banner.jpeg" alt="ARGUS banner">
   <div class="badge"><b>●</b> v1.2.1 live on PyPI · zero dependencies</div>
   <h1>AI assistants guess.<br><span class="hl">ARGUS verifies.</span></h1>
   <p class="sub">One command turns a vague question into a sourced, multilingual research report — with dead links and uncited claims caught <em>before</em> delivery.</p>
@@ -177,6 +179,15 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
     <div class="step reveal"><h3>You ask</h3><p>One vague question in. <code>argus plan "EV battery supply chains" --mode deep</code> → sub-questions, waves, consent gates.</p></div>
     <div class="step reveal"><h3>You research</h3><p>Follow the plan — yourself or with your AI agent via the MCP server. ARGUS generates the report skeleton; you fill in findings.</p></div>
     <div class="step reveal"><h3>ARGUS audits</h3><p><code>argus verify report.md --live-links</code> checks structure, every link, citations, and language coverage before anything ships.</p></div>
+  </div>
+</div></section>
+
+<section id="releases"><div class="wrap">
+  <div class="sec-head reveal"><h2>Release highlights</h2><p>What each version brought — full history in the <a href="https://github.com/SE-Emam/EMO-ARGUS/blob/main/docs/CHANGELOG.md">changelog</a>.</p></div>
+  <div class="grid">
+    <div class="card reveal"><div class="ico">🛡️</div><h3>v1.2.2 <span style="color:var(--muted);font-weight:400;font-size:14px">· 2026-10-17</span></h3><p><b style="color:var(--txt)">Security release.</b> YAML frontmatter injection fixed, bridge debug hook removed, bridge token via <code style="color:var(--accent2)">$ARGUS_BRIDGE_TOKEN</code>, Telegram parsing hardened with a real HTML parser — plus 12 new security regression tests.</p></div>
+    <div class="card reveal"><div class="ico">📦</div><h3>v1.2.1 <span style="color:var(--muted);font-weight:400;font-size:14px">· 2026-10-14</span></h3><p><b style="color:var(--txt)">Packaging hotfix.</b> Mode templates ship inside the wheel, graceful fallback when templates are missing, Chrome extension port clamping, SPDX license metadata.</p></div>
+    <div class="card reveal"><div class="ico">🔒</div><h3>v1.2.0 <span style="color:var(--muted);font-weight:400;font-size:14px">· 2026-10-14</span></h3><p><b style="color:var(--txt)">Hardening release.</b> Loopback-only bridge with strict CSP, MCP unit tests, external mode templates, structured logging — and the license switch to Apache-2.0, with Chrome &amp; VS&nbsp;Code companions.</p></div>
   </div>
 </div></section>
 

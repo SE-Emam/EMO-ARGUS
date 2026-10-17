@@ -280,6 +280,7 @@ details#settings-wrap > summary::marker{display:none}
 <div class="px-2 pt-1 pb-1.5 font-code-telemetry text-[10px] text-text-dim" data-i18n="set_theme">المظهر</div>
 <div id="set-themes" class="flex flex-col gap-1"><button type="button" data-settheme="system" onclick="pickTheme('system')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">settings_suggest</span><span data-i18n="theme_system" class="pointer-events-none">حسب النظام</span></span></button><button type="button" data-settheme="dark" onclick="pickTheme('dark')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">dark_mode</span><span data-i18n="theme_dark" class="pointer-events-none">داكن</span></span></button><button type="button" data-settheme="light" onclick="pickTheme('light')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">light_mode</span><span data-i18n="theme_light" class="pointer-events-none">فاتح</span></span></button></div>
 </div>
+<div class="px-3 py-1.5 text-[10px] text-text-dim font-code-telemetry border-t border-surface-border" dir="ltr">build 2026-10-17-v4</div>
 </details><div class="w-8 h-8 rounded bg-[#10192e] border border-[#1b2640] flex items-center justify-center font-code-telemetry text-[11px] text-primary font-bold">AG</div></div></div></header><main class="w-full pt-16 flex-1 bg-transparent relative z-10"><div class="flex flex-col w-full relative">
 <!-- High-Craft Utilitarian Security Attestation Modal in Deep Midnight Navy -->
 <div class="fixed inset-0 z-50 flex items-center justify-center p-space-md bg-[#02050c]/80 backdrop-blur-md transition-all duration-300" id="argus-splash-modal">
@@ -312,7 +313,7 @@ details#settings-wrap > summary::marker{display:none}
 </div>
 <div class="flex items-center gap-2 font-code-telemetry text-[11px]">
 <span class="inline-block w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_#3b82f6]"></span>
-<span class="text-on-surface-variant">حالة النظام: <strong class="text-on-surface font-semibold">100% محصن</strong></span>
+<span class="text-on-surface-variant"><span data-i18n="sp_syslabel">حالة النظام:</span> <strong class="text-on-surface font-semibold" data-i18n="sp_sysval">100% محصن</strong></span>
 </div>
 </div>
 <!-- Primary Statement & Clear Typography -->
@@ -773,7 +774,7 @@ details#settings-wrap > summary::marker{display:none}
 <div class="flex items-center justify-between pb-3 mb-3 border-b border-surface-border">
 <div class="flex items-center gap-2">
 <span class="material-symbols-outlined text-primary text-[15px]">tune</span>
-<span class="font-code-telemetry text-xs font-semibold text-on-surface tracking-wide">QUERY MATRIX // محددات الاستطلاع المتقدمة</span>
+<span class="font-code-telemetry text-xs font-semibold text-on-surface tracking-wide">QUERY MATRIX // <span data-i18n="qm_sub">محددات الاستطلاع المتقدمة</span></span>
 </div>
 <span class="font-code-telemetry text-[10px] text-text-dim">PARAM_FILTER_STRICT_MODE</span>
 </div>
@@ -782,12 +783,12 @@ details#settings-wrap > summary::marker{display:none}
 <!-- Control 1: Time Scope (Segmented Tab Selector) -->
 <div class="flex flex-col gap-1.5">
 <span class="font-code-telemetry text-[11px] text-text-dim" data-i18n="time_label">نطاق التوقيت (TIME SCOPE)</span>
-<div class="grid grid-cols-6 bg-surface-canvas p-0.5 rounded-[4px] border border-surface-border text-center font-code-telemetry text-xs">
-<button data-days="any" data-tbtn class="py-1 rounded-[3px] bg-primary text-white font-medium border border-blue-400/40 shadow-[0_0_8px_rgba(37,99,235,0.35)] transition-colors" type="button" data-i18n="t_all">الكل</button><button data-days="1" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_24h">24س</button>
-<button data-days="7" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_7d">7أيام</button>
-<button data-days="30" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_month">شهر</button>
-<button data-days="365" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_year">سنة</button>
-<button data-days="365" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_custom">مخصص</button>
+<div class="flex flex-wrap gap-0.5 bg-surface-canvas p-0.5 rounded-[4px] border border-surface-border text-center font-code-telemetry text-xs">
+<button style="flex:1 1 0;min-width:70px" data-days="any" data-tbtn class="py-1 rounded-[3px] bg-primary text-white font-medium border border-blue-400/40 shadow-[0_0_8px_rgba(37,99,235,0.35)] transition-colors" type="button" data-i18n="t_all">الكل</button><button style="flex:1 1 0;min-width:70px" data-days="1" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_24h">24س</button>
+<button style="flex:1 1 0;min-width:70px" data-days="7" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_7d">7أيام</button>
+<button style="flex:1 1 0;min-width:70px" data-days="30" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_month">شهر</button>
+<button style="flex:1 1 0;min-width:70px" data-days="365" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_year">سنة</button>
+<button style="flex:1 1 0;min-width:70px" data-days="365" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_custom">مخصص</button>
 </div>
 </div>
 <!-- Control 2: File Format -->
@@ -987,7 +988,8 @@ rep_method_body:"المقتطفات مستخرجة آليًا؛ تحقق من ا
 rep_src_link:"المصدر", ui_lang_label:"🌐 اللغة",
 hdr_vpn:"مشفر بالكامل / VPN Active", page_title:"ARGUS — محرك البحث الخاص", no_title:"بدون عنوان",
 tip_theme:"وضع الإضاءة", tip_settings:"إعدادات الخصوصية",
-set_language:"اللغة", set_theme:"المظهر", theme_system:"حسب النظام", theme_dark:"داكن", theme_light:"فاتح"
+set_language:"اللغة", set_theme:"المظهر", theme_system:"حسب النظام", theme_dark:"داكن", theme_light:"فاتح",
+sp_syslabel:"حالة النظام:", sp_sysval:"100% محصن", qm_sub:"محددات الاستطلاع المتقدمة"
 },
 en: {
 nav_search:"Secure Search", nav_threats:"Threat Intel", nav_vault:"Encrypted Vault", nav_privacy:"Privacy Audit",
@@ -1018,7 +1020,8 @@ rep_method_body:"Excerpts are machine-extracted; verify key claims against the o
 rep_src_link:"Source", ui_lang_label:"🌐 Language",
 hdr_vpn:"Fully encrypted / VPN Active", page_title:"ARGUS — Private Search Engine", no_title:"Untitled",
 tip_theme:"Theme", tip_settings:"Privacy settings",
-set_language:"Language", set_theme:"Appearance", theme_system:"System", theme_dark:"Dark", theme_light:"Light"
+set_language:"Language", set_theme:"Appearance", theme_system:"System", theme_dark:"Dark", theme_light:"Light",
+sp_syslabel:"System status:", sp_sysval:"100% hardened", qm_sub:"Advanced recon filters"
 },
 ru: {
 nav_search:"Безопасный поиск", nav_threats:"Разведка угроз", nav_vault:"Шифрованное хранилище", nav_privacy:"Аудит приватности",
@@ -1049,7 +1052,8 @@ rep_method_body:"Фрагменты извлечены автоматическ�
 rep_src_link:"Источник", ui_lang_label:"🌐 Язык",
 hdr_vpn:"Полное шифрование / VPN Active", page_title:"ARGUS — Приватная поисковая система", no_title:"Без названия",
 tip_theme:"Тема", tip_settings:"Настройки приватности",
-set_language:"Язык", set_theme:"Оформление", theme_system:"Системная", theme_dark:"Тёмная", theme_light:"Светлая"
+set_language:"Язык", set_theme:"Оформление", theme_system:"Системная", theme_dark:"Тёмная", theme_light:"Светлая",
+sp_syslabel:"Статус системы:", sp_sysval:"100% защищено", qm_sub:"Расширенные фильтры"
 },
 zh: {
 nav_search:"安全搜索", nav_threats:"威胁情报", nav_vault:"加密保险库", nav_privacy:"隐私审计",
@@ -1080,7 +1084,8 @@ rep_method_body:"摘录由机器自动提取;发布前请对照原始页面核�
 rep_src_link:"来源", ui_lang_label:"🌐 语言",
 hdr_vpn:"完全加密 / VPN Active", page_title:"ARGUS — 私人搜索引擎", no_title:"无标题",
 tip_theme:"主题", tip_settings:"隐私设置",
-set_language:"语言", set_theme:"外观", theme_system:"跟随系统", theme_dark:"深色", theme_light:"浅色"
+set_language:"语言", set_theme:"外观", theme_system:"跟随系统", theme_dark:"深色", theme_light:"浅色",
+sp_syslabel:"系统状态:", sp_sysval:"100% 加固", qm_sub:"高级侦察过滤器"
 },
 es: {
 nav_search:"Búsqueda segura", nav_threats:"Inteligencia de amenazas", nav_vault:"Bóveda cifrada", nav_privacy:"Auditoría de privacidad",
@@ -1111,7 +1116,8 @@ rep_method_body:"Extractos automáticos; verifica los datos clave en las página
 rep_src_link:"Fuente", ui_lang_label:"🌐 Idioma",
 hdr_vpn:"Cifrado total / VPN Active", page_title:"ARGUS — Motor de búsqueda privado", no_title:"Sin título",
 tip_theme:"Tema", tip_settings:"Ajustes de privacidad",
-set_language:"Idioma", set_theme:"Apariencia", theme_system:"Sistema", theme_dark:"Oscuro", theme_light:"Claro"
+set_language:"Idioma", set_theme:"Apariencia", theme_system:"Sistema", theme_dark:"Oscuro", theme_light:"Claro",
+sp_syslabel:"Estado del sistema:", sp_sysval:"100% protegido", qm_sub:"Filtros avanzados"
 },
 fr: {
 nav_search:"Recherche sécurisée", nav_threats:"Renseignement menaces", nav_vault:"Coffre chiffré", nav_privacy:"Audit confidentialité",
@@ -1142,7 +1148,8 @@ rep_method_body:"Extraits automatiques ; vérifiez les faits clés sur les pages
 rep_src_link:"Source", ui_lang_label:"🌐 Langue",
 hdr_vpn:"Chiffrement total / VPN Active", page_title:"ARGUS — Moteur de recherche privé", no_title:"Sans titre",
 tip_theme:"Thème", tip_settings:"Paramètres de confidentialité",
-set_language:"Langue", set_theme:"Apparence", theme_system:"Système", theme_dark:"Sombre", theme_light:"Clair"
+set_language:"Langue", set_theme:"Apparence", theme_system:"Système", theme_dark:"Sombre", theme_light:"Clair",
+sp_syslabel:"État du système :", sp_sysval:"100% protégé", qm_sub:"Filtres avancés"
 }
 };
 const UI_LANGS = ["ar","en","ru","zh","es","fr"];

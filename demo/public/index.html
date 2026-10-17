@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Try ARGUS — live demo</title>
+<style>
+:root{--bg:#0b0f17;--panel:#101724;--line:#1e293b;--txt:#e8edf5;--muted:#93a1b8;--accent:#38bdf8}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6;padding:40px 20px}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:34px;letter-spacing:-.5px;margin-bottom:8px}
+p.sub{color:var(--muted);margin-bottom:28px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:18px}
+label{display:block;font-size:14px;color:var(--muted);margin-bottom:8px}
+input[type=text],select{width:100%;background:#060a12;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px 14px;font-size:16px;margin-bottom:16px}
+button{background:linear-gradient(135deg,#38bdf8,#22d3ee);border:none;border-radius:10px;color:#04121c;font-weight:700;font-size:16px;padding:12px 28px;cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}
+#out{white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;font-size:14px;background:#060a12;border:1px solid var(--line);border-radius:14px;padding:22px;display:none;overflow-x:auto}
+#out h3{color:var(--accent);font-size:15px;margin:14px 0 6px;font-family:inherit}
+#share{display:none;margin-top:14px;font-size:14px}
+.err{color:#f87171}
+.note{font-size:13px;color:var(--muted);margin-top:20px}
+a{color:var(--accent)}
+</style>
+</head>
+<body><div class="wrap">
+<h1>Try ARGUS 🔍</h1>
+<p class="sub">Type a research question — get a structured investigation plan and a report skeleton. Free, no signup.</p>
+<div class="card">
+  <label>Research question</label>
+  <input type="text" id="q" maxlength="500" placeholder="e.g. solid-state battery supply chains">
+  <label>Mode</label>
+  <select id="m">
+    <option value="quick">quick — one verified answer</option>
+    <option value="deep" selected>deep — full investigation</option>
+    <option value="compare">compare — A vs B</option>
+    <option value="platform">platform — content on one platform</option>
+    <option value="timeboxed">timeboxed — dated timeline</option>
+    <option value="regional">regional — region-first</option>
+    <option value="narrow">narrow — laser scope</option>
+  </select>
+  <button id="go" onclick="run()">Generate plan</button>
+</div>
+<div id="out"></div>
+<div id="share"></div>
+<p class="note">Demo runs the real <a href="https://pypi.org/project/emo-argus/">emo-argus</a> core. Network features (live link checks, Telegram preview) are disabled in the public demo for safety.</p>
+</div>
+<script>
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+async function run(){
+  const q=document.getElementById('q').value.trim(), m=document.getElementById('m').value;
+  const out=document.getElementById('out'), btn=document.getElementById('go'), share=document.getElementById('share');
+  if(!q){out.style.display='block';out.innerHTML='<span class="err">Type a question first.</span>';return;}
+  btn.disabled=true; out.style.display='block'; out.textContent='Planning…'; share.style.display='none';
+  try{
+    const r=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,mode:m})});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||'request failed');
+    out.innerHTML='<h3>Report skeleton</h3>'+esc(d.markdown).slice(0,4000)+(d.markdown.length>4000?'\n…(truncated in demo)':'');
+    if(d.share_id){share.style.display='block';share.innerHTML='🔗 Shareable link: <a href="/share.html?id='+d.share_id+'">'+location.origin+'/share.html?id='+d.share_id+'</a>';}
+  }catch(e){out.innerHTML='<span class="err">'+esc(e.message)+'</span>';}
+  btn.disabled=false;
+}
+</script>
+</body></html>

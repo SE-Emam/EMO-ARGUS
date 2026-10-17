@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARGUS shared report</title>
+<style>
+body{background:#0b0f17;color:#e8edf5;font-family:-apple-system,"Segoe UI",Roboto,sans-serif;padding:40px 20px;line-height:1.6}
+.wrap{max-width:760px;margin:0 auto}
+pre{white-space:pre-wrap;background:#101724;border:1px solid #1e293b;border-radius:14px;padding:24px;font-size:14px}
+a{color:#38bdf8}
+</style>
+</head>
+<body><div class="wrap">
+<h2>🔍 ARGUS report</h2>
+<p id="meta" style="color:#93a1b8"></p>
+<pre id="body">Loading…</pre>
+<p><a href="/">← Try your own question</a></p>
+</div>
+<script>
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+(async()=>{
+  const id=new URLSearchParams(location.search).get('id');
+  if(!id){document.getElementById('body').textContent='Missing id.';return;}
+  try{
+    const cfg=await (await fetch('/api/config')).json();
+    const r=await fetch(`${cfg.supabase_url}/rest/v1/demos?id=eq.${id}&select=query,mode,report_md,created_at`,
+      {headers:{apikey:cfg.anon_key,Authorization:'Bearer '+cfg.anon_key}});
+    const rows=await r.json();
+    if(!rows.length) throw new Error('not found');
+    const d=rows[0];
+    document.getElementById('meta').textContent=`"${d.query}" · mode: ${d.mode} · ${d.created_at.slice(0,10)}`;
+    document.getElementById('body').textContent=d.report_md;
+  }catch(e){document.getElementById('body').textContent='Could not load this report.';}
+})();
+</script>
+</body></html>

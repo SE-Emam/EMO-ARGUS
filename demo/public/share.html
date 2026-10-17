@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARGUS shared report</title>
+<style>
+body{background:#0b0f17;color:#e8edf5;font-family:-apple-system,"Segoe UI",Roboto,sans-serif;padding:40px 20px;line-height:1.6}
+.wrap{max-width:760px;margin:0 auto}
+pre{white-space:pre-wrap;background:#101724;border:1px solid #1e293b;border-radius:14px;padding:24px;font-size:14px}
+a{color:#38bdf8}
+.note{color:#93a1b8;font-size:13px;margin-top:16px}
+</style>
+</head>
+<body><div class="wrap">
+<h2>🔍 ARGUS report</h2>
+<p id="meta" style="color:#93a1b8"></p>
+<pre id="body">Loading…</pre>
+<p class="note">Reports are stored in the browser they were created in — this link only opens on that device.</p>
+<p><a href="/">← Try your own question</a></p>
+</div>
+<script>
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+(function(){
+  var id=new URLSearchParams(location.search).get('id');
+  var body=document.getElementById('body'), meta=document.getElementById('meta');
+  if(!id){body.textContent='Missing id.';return;}
+  var all=[];
+  try{all=JSON.parse(localStorage.getItem('argus_demos'))||[]}catch(e){}
+  var d=null;
+  for(var i=0;i<all.length;i++){if(all[i].id===id){d=all[i];break;}}
+  if(!d){body.textContent='This report was not created in this browser (or was deleted).';meta.textContent='';return;}
+  meta.textContent='\u201C'+d.query+'\u201D · mode: '+d.mode+' · '+String(d.ts).slice(0,10);
+  body.textContent=d.markdown;
+})();
+</script>
+</body></html>

@@ -38,6 +38,10 @@ h2.sec{font-size:20px;margin:34px 0 14px}
 .res-card .hl{font-size:14px;color:#bae6fd;border-left:3px solid var(--accent);padding-left:10px;margin-bottom:8px}
 .res-card .ex{font-size:13px;color:var(--muted)}
 #lstatus{font-size:14px;color:var(--muted);margin-bottom:12px;min-height:20px}
+.ctl-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.ctl label{font-size:12px;margin-bottom:4px}
+.ctl select{width:auto;margin:0;font-size:14px;padding:9px 12px}
+.lang-tag{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 7px;margin-left:8px}
 </style>
 </head>
 <body><div class="wrap">
@@ -46,13 +50,28 @@ h2.sec{font-size:20px;margin:34px 0 14px}
 <div class="card">
   <label>Live web search <span class="badge">BETA</span></label>
   <input type="text" id="lq" maxlength="500" placeholder="e.g. EMO-ARGUS" onkeydown="if(event.key==='Enter')liveSearch()">
-  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-    <select id="ld" style="width:auto;margin:0">
-      <option value="quick">quick — 5 sources</option>
-      <option value="deep">deep — 8 sources</option>
-    </select>
-    <button id="lgo" onclick="liveSearch()">Search live</button>
+  <div class="ctl-row">
+    <div class="ctl"><label>Source type</label><select id="lcat">
+      <option value="all">All sources</option><option value="news">News</option>
+      <option value="research">Research papers</option><option value="pdf">PDF files</option>
+      <option value="github">GitHub &amp; code</option><option value="company">Companies</option>
+      <option value="tweets">Tweets</option></select></div>
+    <div class="ctl"><label>Method</label><select id="lm">
+      <option value="auto">Auto</option><option value="semantic">Semantic</option>
+      <option value="exact">Exact keywords</option></select></div>
+    <div class="ctl"><label>Sources</label><select id="lc">
+      <option value="10">10</option><option value="25" selected>25</option>
+      <option value="50">50</option></select></div>
+    <div class="ctl"><label>Language</label><select id="ll">
+      <option value="auto">Auto</option><option value="ar">Arabic</option>
+      <option value="en">English</option><option value="both">Both</option></select></div>
+    <div class="ctl"><label>Region</label><select id="lr">
+      <option value="all">All regions</option><option value="egypt">Egypt</option>
+      <option value="saudi">Saudi Arabia</option><option value="uae">UAE</option>
+      <option value="qatar">Qatar</option><option value="morocco">Morocco</option>
+      <option value="usa">USA</option><option value="uk">UK</option></select></div>
   </div>
+  <button id="lgo" onclick="liveSearch()">Search live</button>
   <div id="lstatus" style="margin-top:12px"></div>
   <div id="lresults"></div>
 </div>
@@ -122,29 +141,38 @@ async function run(){
 }
 renderHistory();
 async function liveSearch(){
-  var q=document.getElementById('lq').value.trim(), depth=document.getElementById('ld').value;
+  var q=document.getElementById('lq').value.trim();
   var st=document.getElementById('lstatus'), res=document.getElementById('lresults'), btn=document.getElementById('lgo');
   res.innerHTML='';
   if(!q){st.innerHTML='<span class="err">Type a question first.</span>';return;}
-  btn.disabled=true; st.textContent='🔎 Searching the live web…';
+  btn.disabled=true; st.textContent='\uD83D\uDD0E Searching the live web\u2026';
+  var payload={query:q,
+    count:document.getElementById('lc').value,
+    category:document.getElementById('lcat').value,
+    method:document.getElementById('lm').value,
+    lang:document.getElementById('ll').value,
+    region:document.getElementById('lr').value};
   try{
-    var r=await fetch('/api/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,depth:depth})});
+    var r=await fetch('/api/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     var d=await r.json();
     if(r.status===503){st.innerHTML='<span class="err">Live search is not configured yet.</span>';return;}
     if(!r.ok) throw new Error(d.error||'request failed');
     var items=d.results||[];
     if(!items.length){st.textContent='No results found.';return;}
-    st.textContent='⚡ Reading '+items.length+' live sources… ('+d.took_ms+'ms)';
+    var note='\u26A1 Reading '+items.length+' live sources\u2026 ('+d.took_ms+'ms)';
+    if(d.translated_query) note+=' \u2014 translated query: \u201C'+d.translated_query+'\u201D';
+    st.textContent=note;
     items.forEach(function(it,i){
       setTimeout(function(){
         var host=''; try{host=new URL(it.url).hostname;}catch(e){}
         var card=document.createElement('div'); card.className='res-card';
-        card.innerHTML='<a href="'+esc(it.url)+'" target="_blank" rel="noopener"><b>'+esc(it.title||host||'untitled')+'</b></a>'+
+        var ltag=it.lang&&it.lang!=='orig'?' <span class="lang-tag">'+esc(it.lang)+'</span>':'';
+        card.innerHTML='<a href="'+esc(it.url)+'" target="_blank" rel="noopener"><b>'+esc(it.title||host||'untitled')+'</b></a>'+ltag+
           '<div class="host">'+esc(host)+'</div>'+
           ((it.highlights&&it.highlights.length)?'<div class="hl">\u201C'+esc(it.highlights[0])+'\u201D</div>':'')+
           '<div class="ex">'+esc((it.text||'').slice(0,280))+'\u2026</div>';
         res.appendChild(card);
-      }, 140*i);
+      }, 90*i);
     });
   }catch(e){st.innerHTML='<span class="err">'+esc(e.message)+'</span>';}
   btn.disabled=false;

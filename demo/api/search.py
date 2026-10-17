@@ -8,9 +8,13 @@ Params (JSON):
   count     "10" | "25" | "50"            (default "25")
   category  "all" | "news" | "research" | "pdf" | "github" | "company" | "tweets"
   method    "auto" | "semantic" | "exact" (Exa auto / neural / keyword)
-  lang      "auto" | "ar" | "en" | "both"
+  lang      "auto" | "ar" | "en" | "es" | "fr" | "ru" | "zh" | "both" | "all"
+            auto = as typed; a code = search in that language (translating
+            the query as needed); both = Arabic + English; all = all six.
   region    "all" | "egypt" | "saudi" | "uae" | "qatar" | "morocco" | "usa" | "uk"
+  days      "any" | "1" | "7" | "30" | "365"  (published within N days)
 """
+import datetime
 import json
 import os
 import re
@@ -21,6 +25,7 @@ from http.server import BaseHTTPRequestHandler
 
 MAX_QUERY = 500
 COUNTS = {"10": (10, 1200), "25": (25, 700), "50": (50, 400), "100": (100, 250)}
+DAYS = {"any": None, "1": 1, "7": 7, "30": 30, "365": 365}
 # Each category: exa_category and/or includeDomains for Exa, suffix appended
 # to the query, or a dedicated handler (wikimedia needs no Exa key).
 CATEGORIES = {
@@ -37,7 +42,10 @@ CATEGORIES = {
     "tweets":    {"exa_category": "tweet"},
 }
 METHODS = {"auto": "auto", "semantic": "neural", "exact": "keyword"}
-LANGS = ("auto", "ar", "en", "both")
+LANGS = ("auto", "ar", "en", "es", "fr", "ru", "zh", "both", "all")
+ALL_LANGS = ["ar", "en", "es", "fr", "ru", "zh"]
+LANG_CODES = {"ar": "ar", "en": "en", "es": "es",
+              "fr": "fr", "ru": "ru", "zh": "zh-CN"}
 REGIONS = {
     "all": None,
     # Middle East
@@ -70,6 +78,8 @@ REGIONS = {
     "au": "Australia", "nz": "New Zealand",
 }
 AR_RE = re.compile(r"[\u0600-\u06FF]")
+ZH_RE = re.compile(r"[\u4e00-\u9fff]")
+RU_RE = re.compile(r"[\u0400-\u04ff]")
 
 
 def _send(h, code, obj):
@@ -81,10 +91,11 @@ def _send(h, code, obj):
     h.wfile.write(body)
 
 
-def _translate_ar_en(text):
-    """Arabic -> English via the keyless Google endpoint. Raises on failure."""
+def _translate(text, target):
+    """Translate text to target language (auto-detect source). Raises on failure."""
+    tl = LANG_CODES[target]
     url = ("https://translate.googleapis.com/translate_a/single"
-           "?client=gtx&sl=ar&tl=en&dt=t&q=" + urllib.parse.quote(text))
+           "?client=gtx&sl=auto&tl=" + tl + "&dt=t&q=" + urllib.parse.quote(text))
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=5) as r:
         d = json.loads(r.read().decode())
@@ -94,7 +105,18 @@ def _translate_ar_en(text):
     return out
 
 
-def _exa_search(query, key, num, max_chars, exa_category, method, domains):
+def _detect_lang(query):
+    if AR_RE.search(query):
+        return "ar"
+    if ZH_RE.search(query):
+        return "zh"
+    if RU_RE.search(query):
+        return "ru"
+    return None  # latin script: en/es/fr indistinguishable
+
+
+def _exa_search(query, key, num, max_chars, exa_category, method, domains,
+                start_date=None):
     payload = {
         "query": query,
         "numResults": num,
@@ -108,6 +130,8 @@ def _exa_search(query, key, num, max_chars, exa_category, method, domains):
         payload["category"] = exa_category
     if domains:
         payload["includeDomains"] = domains
+    if start_date:
+        payload["startPublishedDate"] = start_date
     req = urllib.request.Request(
         "https://api.exa.ai/search",
         data=json.dumps(payload).encode(),
@@ -160,6 +184,7 @@ class handler(BaseHTTPRequestHandler):
         method = str(data.get("method", "auto"))
         lang = str(data.get("lang", "auto"))
         region = str(data.get("region", "all"))
+        days = str(data.get("days", "any"))
         if not query:
             return _send(self, 400, {"error": "empty query"})
         if count not in COUNTS:
@@ -168,13 +193,40 @@ class handler(BaseHTTPRequestHandler):
             return _send(self, 400, {"error": "bad category/method"})
         if lang not in LANGS or region not in REGIONS:
             return _send(self, 400, {"error": "bad lang/region"})
+        if days not in DAYS:
+            return _send(self, 400, {"error": "bad days"})
         key = os.environ.get("EXA_API_KEY", "").strip()
         cat = CATEGORIES[category]
         num, max_chars = COUNTS[count]
         exa_method = METHODS[method]
         region_name = REGIONS[region]
-        has_ar = bool(AR_RE.search(query))
-        translated = None
+        start_date = None
+        if DAYS[days]:
+            start_date = (datetime.date.today() -
+                          datetime.timedelta(days=DAYS[days])).isoformat() + "T00:00:00.000Z"
+        detected = _detect_lang(query)
+        translations = {}  # lang -> translated query text
+
+        def tr(target):
+            t = _translate(query, target)
+            translations[target] = t
+            return t
+
+        def want_search(langs):
+            """Build (label, query) list for the wanted languages."""
+            det = detected if detected in langs else None
+            if det is None and "en" in langs and detected is None:
+                det = "en"  # assume latin-script query is English
+            qs = []
+            for l in langs:
+                if l == det:
+                    qs.append((l, query))
+                else:
+                    try:
+                        qs.append((l, tr(l)))
+                    except Exception:
+                        continue
+            return qs or [("orig", query)]
 
         # Images go through Wikimedia Commons: keyless, no translation needed.
         if cat.get("handler") == "wikimedia":
@@ -189,29 +241,34 @@ class handler(BaseHTTPRequestHandler):
             return _send(self, 200, {
                 "results": out,
                 "took_ms": int((time.time() - t0) * 1000),
-                "translated_query": None,
+                "translations": {},
             })
 
         if not key:
             return _send(self, 503, {"error": "live search is not configured yet"})
 
         # Build the list of (label, query) searches to run.
-        queries = []
-        if lang == "en" and has_ar:
-            try:
-                translated = _translate_ar_en(query)
-                queries.append(("en", translated))
-            except Exception:
-                queries.append(("orig", query))
-        elif lang == "both" and has_ar:
-            queries.append(("ar", query))
-            try:
-                translated = _translate_ar_en(query)
-                queries.append(("en", translated))
-            except Exception:
-                pass
+        if lang == "auto":
+            queries = [("orig", query)]
+        elif lang == "both":
+            queries = want_search(["ar", "en"])
+        elif lang == "all":
+            ordered = []
+            if detected in ALL_LANGS:
+                ordered.append(detected)
+            ordered += [l for l in ALL_LANGS if l != detected]
+            queries = want_search(ordered)
         else:
-            queries.append(("orig", query))
+            confident = ((lang == "ar" and detected == "ar")
+                         or (lang == "zh" and detected == "zh")
+                         or (lang == "ru" and detected == "ru"))
+            if confident:
+                queries = [(lang, query)]
+            else:
+                try:
+                    queries = [(lang, tr(lang))]
+                except Exception:
+                    queries = [("orig", query)]
         aug = (cat.get("suffix", "") + (" in " + region_name if region_name else "")).strip()
         if aug:
             queries = [(lbl, (q + " " + aug)[:MAX_QUERY]) for lbl, q in queries]
@@ -224,7 +281,7 @@ class handler(BaseHTTPRequestHandler):
             try:
                 results = _exa_search(q, key, num, max_chars,
                                       cat.get("exa_category"), exa_method,
-                                      cat.get("domains"))
+                                      cat.get("domains"), start_date)
             except Exception:
                 continue
             for res in results:
@@ -242,9 +299,9 @@ class handler(BaseHTTPRequestHandler):
                 if len(out) >= num * len(queries):
                     break
         _send(self, 200, {
-            "results": out,
+            "results": out[:300],
             "took_ms": int((time.time() - t0) * 1000),
-            "translated_query": translated,
+            "translations": translations,
         })
 
     def log_message(self, *a):

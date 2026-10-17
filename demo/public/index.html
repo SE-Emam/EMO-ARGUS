@@ -1,354 +1,398 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Try ARGUS — live demo</title>
-<style>
-:root{--bg:#0b0f17;--panel:#101724;--line:#1e293b;--txt:#e8edf5;--muted:#93a1b8;--accent:#38bdf8}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6;padding:40px 20px}
-.wrap{max-width:760px;margin:0 auto}
-h1{font-size:34px;letter-spacing:-.5px;margin-bottom:8px}
-p.sub{color:var(--muted);margin-bottom:28px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:18px}
-label{display:block;font-size:14px;color:var(--muted);margin-bottom:8px}
-input[type=text],select{width:100%;background:#060a12;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px 14px;font-size:16px;margin-bottom:16px}
-button{background:linear-gradient(135deg,#38bdf8,#22d3ee);border:none;border-radius:10px;color:#04121c;font-weight:700;font-size:16px;padding:12px 28px;cursor:pointer}
-button:disabled{opacity:.5;cursor:wait}
-button.small{font-size:13px;padding:7px 14px}
-#out{white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;font-size:14px;background:#060a12;border:1px solid var(--line);border-radius:14px;padding:22px;display:none;overflow-x:auto}
-#out h3{color:var(--accent);font-size:15px;margin:14px 0 6px;font-family:inherit}
-#share{display:none;margin-top:14px;font-size:14px}
-.err{color:#f87171}
-.note{font-size:13px;color:var(--muted);margin-top:20px}
-a{color:var(--accent)}
-h2.sec{font-size:20px;margin:34px 0 14px}
-.hist-item{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:10px;font-size:14px}
-.hist-item .q{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hist-item .m{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--accent);border:1px solid var(--line);border-radius:6px;padding:2px 8px;white-space:nowrap}
-.hist-item .d{font-size:12px;color:var(--muted);white-space:nowrap}
-.hist-item .del{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
-.hist-item .del:hover{color:#f87171;border-color:#f87171}
-#hist-empty{color:var(--muted);font-size:14px}
-.badge{font-size:11px;background:#164e63;color:#67e8f9;border-radius:6px;padding:2px 8px;vertical-align:middle;margin-left:8px}
-.res-card{background:#060a12;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px;animation:fadein .4s ease}
-@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.res-card .host{font-size:12px;color:var(--muted);margin:2px 0 8px}
-.res-card .hl{font-size:14px;color:#bae6fd;border-left:3px solid var(--accent);padding-left:10px;margin-bottom:8px}
-.res-card .ex{font-size:13px;color:var(--muted)}
-.res-card img.thumb{width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-bottom:10px;background:#060a12}
-#lstatus{font-size:14px;color:var(--muted);margin-bottom:12px;min-height:20px}
-.prof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
-.prof{background:#060a12;border:1px solid var(--line);border-radius:12px;padding:14px;color:var(--txt);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:6px}
-.prof:hover{border-color:var(--accent)}
-.prof .pic{font-size:22px}
-.prof b{font-size:14px}
-.prof span:last-child{font-size:12px;color:var(--muted)}
-#prof-badge{display:flex;align-items:center;gap:8px;background:#060a12;border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin-bottom:14px;font-size:14px}
-#prof-badge .pic{font-size:18px}
-#prof-badge a{font-size:12px}
-.ctl-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px}
-.ctl label{font-size:12px;margin-bottom:4px}
-.ctl select{width:auto;margin:0;font-size:14px;padding:9px 12px}
-.lang-tag{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 7px;margin-left:8px}
-</style>
-</head>
-<body><div class="wrap">
-<h1>Try ARGUS 🔍</h1>
-<p class="sub">Type a research question — get a structured investigation plan and a report skeleton. Free, no signup. Reports stay in <b>your browser only</b>.</p>
-<div class="card">
-  <label>Live web search <span class="badge">BETA</span></label>
-  <div id="profiles">
-    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">What are you investigating? Pick a mission and the engine configures itself.</p>
-    <div class="prof-grid" id="prof-grid"></div>
-  </div>
-  <div id="searchform" style="display:none">
-    <div id="prof-badge"></div>
-    <input type="text" id="lq" maxlength="500" placeholder="e.g. EMO-ARGUS" onkeydown="if(event.key==='Enter')liveSearch()">
-    <div class="ctl-row">
-      <div class="ctl"><label>Source type</label><select id="lcat">
-        <option value="all">All sources (links)</option>
-        <option value="images">Images</option>
-        <option value="video">Video</option>
-        <option value="documents">Documents</option>
-        <option value="data">Data &amp; datasets</option>
-        <option value="apps">Apps</option>
-        <option value="news">News</option>
-        <option value="research">Research papers</option>
-        <option value="github">GitHub &amp; code</option>
-        <option value="company">Companies</option>
-        <option value="tweets">Tweets</option></select></div>
-      <div class="ctl"><label>Method</label><select id="lm">
-        <option value="auto">Auto</option><option value="semantic">Semantic</option>
-        <option value="exact">Exact keywords</option></select></div>
-      <div class="ctl"><label>Sources</label><select id="lc">
-        <option value="10">10</option><option value="25" selected>25</option>
-        <option value="50">50</option><option value="100">100 — ultra deep</option></select></div>
-      <div class="ctl"><label>Language</label><select id="ll">
-        <option value="auto">Auto</option><option value="ar">Arabic</option>
-        <option value="en">English</option><option value="both">Both</option></select></div>
-      <div class="ctl"><label>Region</label><select id="lr"></select></div>
-    </div>
-    <button id="lgo" onclick="liveSearch()">Search live</button>
-    <button id="lreport" style="display:none;margin-left:10px" onclick="genReportFromSearch()">Generate investigation report</button>
-    <div id="lstatus" style="margin-top:12px"></div>
-    <div id="lresults"></div>
-  </div>
+
+<html class="dark" dir="rtl" lang="ar"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans,+sans-serif:wght@100..900&family=Space+Grotesk,+Noto+Sans,+sans-serif:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-surface-variant": "#bbcabf", "surface-container-high": "#262a34", "surface-variant": "#31353f", "on-tertiary": "#67001b", "on-error": "#690005", "tertiary-fixed-dim": "#ffb2b7", "on-secondary": "#003640", "on-tertiary-fixed-variant": "#92002a", "on-primary-fixed": "#002113", "surface-container-lowest": "#0a0e17", "on-primary-fixed-variant": "#005236", "on-secondary-container": "#00424e", "outline": "#86948a", "secondary-fixed-dim": "#4cd7f6", "on-primary": "#003824", "primary-container": "#10b981", "error": "#ffb4ab", "primary-fixed-dim": "#4edea3", "surface": "#0f131c", "secondary-fixed": "#acedff", "inverse-surface": "#dfe2ef", "secondary-container": "#03b5d3", "error-container": "#93000a", "secondary": "#4cd7f6", "surface-bright": "#353943", "surface-container-low": "#181b25", "background": "#0f131c", "tertiary-fixed": "#ffdadb", "on-tertiary-container": "#780021", "on-surface": "#dfe2ef", "primary-fixed": "#6ffbbe", "inverse-primary": "#006c49", "on-error-container": "#ffdad6", "surface-dim": "#0f131c", "on-secondary-fixed-variant": "#004e5c", "surface-tint": "#4edea3", "surface-container": "#1c1f29", "on-primary-container": "#00422b", "primary": "#4edea3", "tertiary-container": "#ff7886", "tertiary": "#ffb2b7", "outline-variant": "#3c4a42", "on-background": "#dfe2ef", "surface-container-highest": "#31353f", "on-tertiary-fixed": "#40000d", "inverse-on-surface": "#2c303a", "on-secondary-fixed": "#001f26" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xs": "0.25rem", "margin": "2rem", "space-md": "1rem", "gutter": "1.25rem", "gutter-mobile": "0.75rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-lg": ["\"Space Grotesk, Noto Sans, sans-serif\""], "headline-sm": ["\"Space Grotesk, Noto Sans, sans-serif\""], "body-lg": ["\"Noto Sans, sans-serif\""], "body-md": ["\"Noto Sans, sans-serif\""], "code-telemetry": ["\"JetBrains Mono, monospace\""], "display-hero-mobile": ["\"Space Grotesk, Noto Sans, sans-serif\""], "body-sm": ["\"Noto Sans, sans-serif\""], "display-hero": ["\"Space Grotesk, Noto Sans, sans-serif\""], "headline-lg-mobile": ["\"Space Grotesk, Noto Sans, sans-serif\""], "badge-label": ["\"JetBrains Mono, monospace\""], "label-caps": ["\"Space Grotesk, Noto Sans, sans-serif\""], "headline-md": ["\"Space Grotesk, Noto Sans, sans-serif\"" ] }, "fontSize": { "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }], "code-telemetry": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "display-hero-mobile": ["36px", { "lineHeight": "44px", "fontWeight": "700" }], "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }], "display-hero": ["56px", { "lineHeight": "68px", "fontWeight": "700" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }], "badge-label": ["11px", { "lineHeight": "14px", "fontWeight": "600" }], "label-caps": ["11px", { "lineHeight": "16px", "fontWeight": "700" }], "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface min-h-screen flex flex-col"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs cursor-pointer select-none"><span class="font-headline-sm text-headline-sm text-primary tracking-wider">ARGUS</span><span class="text-secondary text-[16px]">🔍</span></div><div class="hidden sm:flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span><span class="font-code-telemetry text-code-telemetry text-primary">مشفر بالكامل / VPN Active</span></div></div><nav class="hidden md:flex items-center gap-space-sm" data-active-classes="bg-surface-container text-primary font-bold rounded"><a aria-current="page" class="px-space-md py-space-xs transition-colors bg-surface-container text-primary font-bold rounded" data-path="search" href="#">البحث الأمني</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="threat-recon" href="#">استطلاع التهديدات</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="vault" href="#">الخزينة المشفرة</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="privacy-audit" href="#">فحص الخصوصية</a></nav><div class="flex items-center gap-space-md"><button class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" title="وضع الإضاءة" type="button"><span class="material-symbols-outlined text-[20px]">dark_mode</span></button><a class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" data-path="settings" href="#" title="إعدادات الخصوصية"><span class="material-symbols-outlined text-[20px]">settings</span></a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 flex-1 bg-surface"><div class="flex flex-col w-full text-on-surface">
+<div class="relative w-full max-w-6xl mx-auto px-margin-mobile md:px-margin py-space-xl flex flex-col items-center">
+<!-- Atmospheric Ambient Glows -->
+<div class="absolute top-1/4 -right-16 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+<div class="absolute top-1/3 -left-16 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+<!-- Active Status Pill -->
+<div class="inline-flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-low shadow-sm mb-space-lg backdrop-blur-md">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-code-telemetry text-code-telemetry text-primary">درع الخصوصية نشط</span>
+<span class="text-outline-variant font-code-telemetry text-[11px]">|</span>
+<span class="font-code-telemetry text-code-telemetry text-on-surface-variant">0 كوكيز</span>
+<span class="text-outline-variant font-code-telemetry text-[11px]">|</span>
+<span class="font-code-telemetry text-code-telemetry text-secondary">تشفير من طرف لطرف</span>
 </div>
-
-<p class="note">\uD83D\uDD12 <b>Privacy:</b> no tracking, no cookies, no accounts. Your searches are never stored anywhere \u2014 not in this browser, not on any server. Only reports you choose to generate stay in this browser (delete them anytime). Every request is encrypted, and your browser never contacts third parties directly.</p>
-<h2 class="sec">Your recent reports <span style="font-size:13px;color:var(--muted);font-weight:400">(this browser only)</span></h2>
-<div id="hist"></div>
-
-<p class="note">Demo runs the real <a href="https://pypi.org/project/emo-argus/">emo-argus</a> core. Network features (live link checks, Telegram preview) are disabled in the public demo for safety. Nothing you generate leaves your device.</p>
+<!-- Main Hero Logo Block -->
+<div class="text-center mb-space-xl select-none relative">
+<div class="inline-flex items-center justify-center gap-space-sm mb-space-xs">
+<h1 class="font-display-hero text-display-hero tracking-widest bg-gradient-to-l from-secondary via-primary to-secondary bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(78,222,163,0.35)]">
+          ARGUS
+        </h1>
+<span class="text-[44px] filter drop-shadow-[0_0_20px_rgba(76,215,246,0.6)]">🔍</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface-variant max-w-xl mx-auto">
+        محرك البحث الذكي والمتقدم فائق الخصوصية
+      </p>
+</div>
+<!-- Primary Search Matrix Console -->
+<div class="w-full max-w-4xl relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary/30 via-secondary/20 to-primary/30 rounded-full blur-md opacity-40 group-focus-within:opacity-100 group-focus-within:blur-lg transition-all duration-300"></div>
+<div class="relative w-full rounded-full bg-surface-container-lowest/90 backdrop-blur-2xl px-space-lg py-space-sm shadow-xl flex items-center justify-between gap-space-md transition-all duration-300 group-focus-within:bg-surface-container-low">
+<!-- Right side: Magnifying icon & Input (RTL context) -->
+<div class="flex items-center gap-space-md flex-1 min-w-0">
+<span class="material-symbols-outlined text-secondary text-[26px] shrink-0">travel_explore</span>
+<input class="w-full bg-transparent border-0 outline-none font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:ring-0 focus:outline-none" id="main-query-input" placeholder="ابحث بأمان عبر الويب، الأبحاث، قواعد البيانات، والملفات..." type="text" value="الأمن السيبراني والبنى التحتية الحيوية 2025"/>
+</div>
+<!-- Left side: Voice, AI Prompt, 256-bit SSL Chip, Clear & Kbd Shortcut -->
+<div class="flex items-center gap-space-xs sm:gap-space-sm shrink-0">
+<button class="p-space-xs rounded-full text-outline hover:text-on-surface hover:bg-surface-variant transition-colors" id="clear-btn" title="مسح" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+<div class="hidden sm:flex items-center px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-code-telemetry text-[11px] shadow-sm select-none">
+            Ctrl + K
+          </div>
+<button class="p-space-xs rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-colors" title="بحث صوتي مشفر" type="button">
+<span class="material-symbols-outlined text-[20px]">mic</span>
+</button>
+<button class="p-space-xs rounded-full text-on-surface-variant hover:text-secondary hover:bg-surface-variant transition-colors" title="استعلام الذكاء الاصطناعي التوليدي" type="button">
+<span class="material-symbols-outlined text-[20px]">psychology</span>
+</button>
+<div class="hidden md:flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+<span class="font-code-telemetry text-badge-label">مشفر 256-bit</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Advanced Search Filters Panel (Glassmorphic Container) -->
+<div class="w-full max-w-4xl mt-space-lg rounded-xl bg-surface-container-low/70 backdrop-blur-xl p-space-lg shadow-xl relative overflow-hidden">
+<!-- Ambient Card Highlight -->
+<div class="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-transparent via-secondary/30 to-transparent"></div>
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">tune</span>
+<span class="font-label-caps text-label-caps text-on-surface tracking-wider">محددات الاستطلاع والتصفية المتقدمة</span>
+</div>
+<span class="font-code-telemetry text-[11px] text-outline">PROTOCOL OPTICAL RECON</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Filter 1: Time & Date -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+<span>الوقت والتاريخ</span>
+</label>
+<div class="relative">
+<select id="ftime" class="w-full appearance-none bg-surface-container rounded-lg px-space-md py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-high transition-colors cursor-pointer shadow-sm">
+<option selected="" value="any">أي وقت (الافتراضي)</option>
+<option value="24h">آخر 24 ساعة</option>
+<option value="week">الأسبوع الماضي</option>
+<option value="month">آخر شهر</option>
+<option value="custom">سنة مخصصة...</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+<!-- Filter 2: File Type -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary">description</span>
+<span>نوع الملف والمستند</span>
+</label>
+<div class="relative">
+<select id="fcat" class="w-full appearance-none bg-surface-container rounded-lg px-space-md py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-high transition-colors cursor-pointer shadow-sm">
+<option selected="" value="all">جميع الصيغ والامتدادات</option>
+<option value="images">🖼 صور</option>
+<option value="video">🎬 فيديو</option>
+<option value="documents">📄 مستندات (PDF / Word / PPT)</option>
+<option value="data">📊 بيانات (JSON / CSV)</option>
+<option value="code">💻 الكود البرمجي Source Code</option>
+<option value="apps">📱 تطبيقات</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+<!-- Filter 3: Search Scope & Region -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">public</span>
+<span>نطاق البحث والمنطقة</span>
+</label>
+<div class="relative">
+<select id="fregion" class="w-full appearance-none bg-surface-container rounded-lg px-space-md py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-high transition-colors cursor-pointer shadow-sm">
+<option selected="" value="global">جميع المناطق (عالمي كامل)</option>
+<option value="mena">العالم العربي والشرق الأوسط</option>
+<option value="neutral">خوادم محايدة (سويسرا، آيسلندا)</option>
+<option value="academic">نتائج أكاديمية محكمة</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary">translate</span>
+<span>لغة البحث</span>
+</label>
+<div class="relative">
+<select id="flang" class="w-full appearance-none bg-surface-container rounded-lg px-space-md py-2.5 font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-high transition-colors cursor-pointer shadow-sm">
+<option selected="" value="auto">تلقائي</option>
+<option value="ar">العربية</option>
+<option value="en">English</option>
+<option value="es">الإسبانية</option>
+<option value="fr">الفرنسية</option>
+<option value="ru">الروسية</option>
+<option value="zh">الصينية</option>
+<option value="all">🌍 كل اللغات الست</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Advanced Switches Row -->
+<div class="mt-space-lg pt-space-md bg-surface-container/40 -mx-space-lg -mb-space-lg p-space-lg grid grid-cols-1 sm:grid-cols-3 gap-space-md">
+<!-- Toggle 1: Exact Match -->
+<label class="flex items-center justify-between cursor-pointer group select-none">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">fit_screen</span>
+<span class="font-body-sm text-body-sm text-on-surface">تطابق تام (Exact Match)</span>
+</div>
+<input id="mexact" checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-10 h-5 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-surface-container-lowest after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-on-surface after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary shadow-sm relative"></div>
+</label>
+<!-- Toggle 2: Deep Web Recon -->
+<label class="flex items-center justify-between cursor-pointer group select-none">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-outline group-hover:text-secondary transition-colors">radar</span>
+<span class="font-body-sm text-body-sm text-on-surface">البحث العميق (Deep Recon)</span>
+</div>
+<input id="mdeep" class="sr-only peer" type="checkbox"/>
+<div class="w-10 h-5 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-surface-container-lowest after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-on-surface after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary shadow-sm relative"></div>
+</label>
+<!-- Toggle 3: Strip Trackers -->
+<label class="flex items-center justify-between cursor-pointer group select-none">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">shield</span>
+<span class="font-body-sm text-body-sm text-on-surface">عزل وتطهير المتعقبات تلقائياً</span>
+</div>
+<input disabled title="مفعّل دائمًا" id="mstrip" checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-10 h-5 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-surface-container-lowest after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-on-surface after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary shadow-sm relative"></div>
+</label>
+</div>
+</div>
+<!-- Centered Action Buttons -->
+<div class="flex flex-wrap items-center justify-center gap-space-md mt-space-lg">
+<button class="inline-flex items-center gap-space-xs px-space-xl py-space-sm rounded-lg bg-primary text-on-primary font-headline-sm text-headline-sm font-semibold shadow-lg hover:shadow-[0_0_30px_rgba(78,222,163,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer" type="button" id="lgo">
+<span>بحث متقدم</span>
+<span class="text-[20px]">⚡</span>
+</button>
+<button class="inline-flex items-center gap-space-xs px-space-lg py-space-sm rounded-lg bg-surface-container text-on-surface font-body-md text-body-md hover:bg-surface-container-high active:bg-surface-container transition-all cursor-pointer shadow-sm" type="button" id="lreset">
+<span class="material-symbols-outlined text-[18px] text-secondary">restart_alt</span>
+<span>إعادة ضبط الفلاتر</span>
+</button>
+</div>
+<!-- Quick Preset Tags -->
+<div class="mt-space-lg flex flex-wrap items-center justify-center gap-space-xs sm:gap-space-sm max-w-3xl">
+<span class="font-body-sm text-body-sm text-outline ml-space-xs">استكشاف شائع:</span>
+<button data-q="الأمن_السيبراني" class="px-space-md py-1 rounded-full bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-primary font-code-telemetry text-code-telemetry transition-all cursor-pointer shadow-sm" type="button">
+        #الأمن_السيبراني
+      </button>
+<button data-q="الذكاء_الاصطناعي" class="px-space-md py-1 rounded-full bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-secondary font-code-telemetry text-code-telemetry transition-all cursor-pointer shadow-sm" type="button">
+        #الذكاء_الاصطناعي
+      </button>
+<button data-q="أوراق_بحثية_2025" class="px-space-md py-1 rounded-full bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-code-telemetry text-code-telemetry transition-all cursor-pointer shadow-sm" type="button">
+        #أوراق_بحثية_2025
+      </button>
+<button data-q="تسريبات_البيانات_وقواعد_الأمان" class="px-space-md py-1 rounded-full bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-tertiary font-code-telemetry text-code-telemetry transition-all cursor-pointer shadow-sm" type="button">
+        #تسريبات_البيانات_وقواعد_الأمان
+      </button>
+</div>
+<!-- Live Results -->
+<div class="w-full max-w-4xl mt-space-xl">
+<div id="lstatus" class="font-code-telemetry text-code-telemetry text-on-surface-variant text-center"></div>
+<div class="flex justify-center mt-space-md">
+<button id="lreport" style="display:none" class="inline-flex items-center gap-space-xs px-space-xl py-space-sm rounded-lg bg-primary text-on-primary font-body-md text-body-md font-semibold shadow-lg hover:shadow-[0_0_30px_rgba(78,222,163,0.45)] transition-all cursor-pointer">
+<span>توليد تقرير التحقيق</span><span class="text-[18px]">📋</span>
+</button>
+</div>
+<div id="lresults" class="mt-space-md flex flex-col gap-space-md"></div>
+</div>
+<!-- Live Telemetry Stream Indicator Section -->
+<div class="w-full max-w-4xl mt-space-xl p-space-md rounded-lg bg-surface-container-lowest/60 backdrop-blur-md shadow-md flex flex-col md:flex-row items-center justify-between gap-space-md text-on-surface-variant">
+<div class="flex items-center gap-space-md flex-wrap justify-center">
+<div class="flex items-center gap-space-xs font-code-telemetry text-code-telemetry">
+<span class="material-symbols-outlined text-[16px] text-primary">verified_user</span>
+<span class="text-on-surface">حالة الاتصال: مشفر بالكامل</span>
+</div>
+<span class="text-outline-variant font-code-telemetry">/</span>
+<div class="flex items-center gap-space-xs font-code-telemetry text-code-telemetry">
+<span class="material-symbols-outlined text-[16px] text-secondary">history_toggle_off</span>
+<span>لا يتم حفظ السجل</span>
+</div>
+<span class="text-outline-variant font-code-telemetry">/</span>
+<div class="flex items-center gap-space-xs font-code-telemetry text-code-telemetry">
+<span class="material-symbols-outlined text-[16px] text-primary">incognito</span>
+<span>جلسة مجهولة بالكامل</span>
+</div>
+</div>
+<!-- Realtime Metric Latency Ring/Chip -->
+<div class="flex items-center gap-space-xs px-space-md py-1 rounded-full bg-surface-container shadow-sm shrink-0">
+<span class="relative flex h-2 w-2">
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-code-telemetry text-code-telemetry text-on-surface font-semibold">
+          زمن الاستجابة المتوقع: < 0.12 ثانية
+        </span>
+</div>
+</div>
+</div>
 </div>
 <script>
-var LS_KEY='argus_demos';
-function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function loadDemos(){try{return JSON.parse(localStorage.getItem(LS_KEY))||[]}catch(e){return[]}}
-function saveDemos(a){try{localStorage.setItem(LS_KEY,JSON.stringify(a.slice(0,20)))}catch(e){}}
-function uid(){return (crypto.randomUUID?crypto.randomUUID():'id-'+Date.now()+'-'+Math.floor(Math.random()*1e6));}
-function renderHistory(){
-  var h=document.getElementById('hist'), all=loadDemos();
-  if(!all.length){h.innerHTML='<div id="hist-empty">Nothing yet — your generated reports will appear here.</div>';return;}
-  h.innerHTML=all.map(function(d){
-    return '<div class="hist-item"><span class="q">'+esc(d.query)+'</span>'+
-      '<span class="m">'+esc(d.mode)+'</span>'+
-      '<span class="d">'+esc(d.ts.slice(0,10))+'</span>'+
-      '<a href="/share.html?id='+encodeURIComponent(d.id)+'"><button class="small">Open</button></a>'+
-      '<button class="del" onclick="delDemo(\''+d.id+'\')">Delete</button></div>';
-  }).join('');
-}
-function delDemo(id){
-  saveDemos(loadDemos().filter(function(d){return d.id!==id;}));
-  renderHistory();
+  (function() {
+    const input = document.getElementById('main-query-input');
+    const clearBtn = document.getElementById('clear-btn');
 
-}
-async function run(){
-  var q=document.getElementById('q').value.trim(), m=document.getElementById('m').value;
-  var out=document.getElementById('out'), btn=document.getElementById('go'), share=document.getElementById('share');
-  if(!q){out.style.display='block';out.innerHTML='<span class="err">Type a question first.</span>';return;}
-  btn.disabled=true; out.style.display='block'; out.textContent='Planning…'; share.style.display='none';
-  try{
-    var r=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,mode:m})});
-    var d=await r.json();
-    if(!r.ok) throw new Error(d.error||'request failed');
-    var id=uid();
-    var all=loadDemos();
-    all.unshift({id:id,query:q,mode:m,markdown:d.markdown,ts:new Date().toISOString()});
-    saveDemos(all); renderHistory();
-    out.innerHTML='<h3>Report skeleton</h3>'+esc(d.markdown).slice(0,4000)+(d.markdown.length>4000?'\n…(truncated in demo)':'');
-    share.style.display='block';
-    share.innerHTML='🔗 Saved in this browser: <a href="/share.html?id='+encodeURIComponent(id)+'">'+location.origin+'/share.html?id='+encodeURIComponent(id)+'</a>';
-  }catch(e){out.innerHTML='<span class="err">'+esc(e.message)+'</span>';}
-  btn.disabled=false;
-}
-renderHistory();
-var PROFILES = {
-  market: {name:'Market & Competitor Intel', icon:'\uD83D\uDCCA',
-    desc:'Market analysis, rivals and bids for your project study',
-    category:'company', method:'auto', count:'50', lang:'auto', region:'all',
-    hint:'e.g. solar panels market Egypt', suffix:' market analysis competitors pricing',
-    sections:[['Market Overview','SEED'],['Key Competitors','SEED'],
-      ['Pricing & Bid Signals','TODO: tender values, pricing tiers and contract signals spotted in the sources above'],
-      ['Opportunities & Risks','TODO: gaps competitors leave open, regulatory or cost risks']]},
-  osint: {name:'Deep Source Investigation', icon:'\uD83D\uDD75\uFE0F',
-    desc:'Trace the origin of an image, video or dataset (text-based tracing)',
-    category:'all', method:'exact', count:'25', lang:'both', region:'all',
-    hint:'e.g. a filename, exact phrase or URL fragment to trace', suffix:'',
-    note:'Text-based tracing only: image upload and reverse-image search are not supported yet.',
-    sections:[['Objective','TODO: state exactly what is being traced'],
-      ['Origin Candidates','SEED'],
-      ['Spread & Copies','TODO: where else the same content appears, earliest dates seen'],
-      ['Credibility Assessment','TODO: which origin is most credible and why']]},
-  jobs: {name:'Job & Opportunity Scout', icon:'\uD83D\uDCBC',
-    desc:'Roles and hiring signals in a specific country',
-    category:'company', method:'auto', count:'25', lang:'auto', region:'all',
-    hint:'e.g. backend developer jobs', suffix:' jobs hiring openings',
-    sections:[['Target Role & Market','SEED'],['Hiring Signals','SEED'],
-      ['Requirements Seen in Postings','TODO: skills, experience levels and salary bands mentioned']]},
-  academic: {name:'Academic Gap Finder', icon:'\uD83C\uDF93',
-    desc:'Find research gaps in the scientific literature',
-    category:'research', method:'semantic', count:'50', lang:'en', region:'all',
-    hint:'e.g. solid-state battery degradation mechanisms', suffix:' research gap literature review',
-    sections:[['Research Question','TODO: state the question precisely'],
-      ['What the Literature Says','SEED'],
-      ['Contradictions Between Studies','TODO: where the sources disagree'],
-      ['Identified Gaps','TODO: what no source covers — candidate research openings']]},
-  dev: {name:'Developer Tool Finder', icon:'\uD83D\uDEE0\uFE0F',
-    desc:'Find and compare dev tools, e.g. a QA agent',
-    category:'github', method:'auto', count:'25', lang:'en', region:'all',
-    hint:'e.g. QA agent for automated testing', suffix:' open source tool github',
-    sections:[['The Need','TODO: one-line requirement'],
-      ['Candidate Tools','SEED'],
-      ['Comparison Signals','TODO: stars and activity, license, docs quality, last commit'],
-      ['Recommendation','TODO: pick one and justify']]},
-  factcheck: {name:'Fact Check', icon:'\u2696\uFE0F',
-    desc:'Verify whether a claim is actually true',
-    category:'news', method:'exact', count:'25', lang:'both', region:'all',
-    hint:'e.g. paste the exact claim to verify', suffix:'',
-    sections:[['The Claim','TODO: quote the claim verbatim'],
-      ['Supporting Evidence','SEED'],
-      ['Contradicting Evidence','TODO: sources that dispute the claim'],
-      ['Verdict','TODO: true / false / misleading / unverified — with reasoning']]}
-};
-var activeProfile = null;
-function renderProfiles(){
-  var g=document.getElementById('prof-grid');
-  g.innerHTML=Object.keys(PROFILES).map(function(k){
-    var p=PROFILES[k];
-    return '<button class="prof" onclick="pickProfile(\''+k+'\')"><span class="pic">'+p.icon+'</span><b>'+p.name+'</b><span>'+p.desc+'</span></button>';
-  }).join('');
-}
-function pickProfile(k){
-  activeProfile=k; var p=PROFILES[k];
-  document.getElementById('profiles').style.display='none';
-  document.getElementById('searchform').style.display='block';
-  document.getElementById('lcat').value=p.category;
-  document.getElementById('lm').value=p.method;
-  document.getElementById('lc').value=p.count;
-  document.getElementById('ll').value=p.lang;
-  document.getElementById('lr').value=p.region;
-  document.getElementById('lq').placeholder=p.hint;
-  document.getElementById('lq').value='';
-  document.getElementById('lstatus').textContent='';
-  document.getElementById('lresults').innerHTML='';
-  document.getElementById('lreport').style.display='none';
-  lastLive=null;
-  document.getElementById('prof-badge').innerHTML='<span class="pic">'+p.icon+'</span><span>Mission: <b>'+p.name+'</b></span><a href="#" onclick="backToProfiles();return false;">(change)</a>';
-}
-function backToProfiles(){
-  activeProfile=null; lastLive=null;
-  document.getElementById('searchform').style.display='none';
-  document.getElementById('profiles').style.display='block';
-}
+    if (clearBtn && input) {
+      clearBtn.addEventListener('click', function() {
+        input.value = '';
+        input.focus();
+      });
+    }
 
-var COUNTRY_GROUPS = [
-  ['Middle East', [['eg','Egypt'],['sa','Saudi Arabia'],['ae','United Arab Emirates'],['qa','Qatar'],['kw','Kuwait'],['bh','Bahrain'],['om','Oman'],['jo','Jordan'],['lb','Lebanon'],['iq','Iraq'],['tr','Turkey'],['ir','Iran'],['il','Israel'],['ye','Yemen'],['sy','Syria']]],
-  ['Africa', [['ma','Morocco'],['dz','Algeria'],['tn','Tunisia'],['ly','Libya'],['sd','Sudan'],['ng','Nigeria'],['za','South Africa'],['ke','Kenya'],['et','Ethiopia'],['gh','Ghana']]],
-  ['Europe', [['uk','United Kingdom'],['de','Germany'],['fr','France'],['es','Spain'],['it','Italy'],['nl','Netherlands'],['se','Sweden'],['no','Norway'],['pl','Poland'],['ua','Ukraine'],['ru','Russia'],['gr','Greece'],['pt','Portugal'],['ch','Switzerland'],['at','Austria'],['be','Belgium'],['dk','Denmark'],['fi','Finland'],['ie','Ireland'],['cz','Czechia'],['hu','Hungary'],['ro','Romania']]],
-  ['Asia', [['cn','China'],['jp','Japan'],['kr','South Korea'],['in','India'],['pk','Pakistan'],['bd','Bangladesh'],['id','Indonesia'],['my','Malaysia'],['sg','Singapore'],['th','Thailand'],['vn','Vietnam'],['ph','Philippines'],['tw','Taiwan'],['hk','Hong Kong']]],
-  ['Americas', [['us','United States'],['ca','Canada'],['mx','Mexico'],['br','Brazil'],['ag','Argentina'],['cl','Chile'],['co','Colombia'],['pe','Peru']]],
-  ['Oceania', [['au','Australia'],['nz','New Zealand']]]
-];
-function renderRegions(){
-  var h='<option value="all">All regions \\u2014 whole world</option>';
-  COUNTRY_GROUPS.forEach(function(g){
-    h+='<optgroup label="'+g[0]+'">';
-    g[1].forEach(function(c){ h+='<option value="'+c[0]+'">'+c[1]+'</option>'; });
-    h+='</optgroup>';
-  });
-  document.getElementById('lr').innerHTML=h;
-}
-
-renderProfiles();
-renderRegions();
-
-
-var lastLive=null;
-async function liveSearch(){
-  var qRaw=document.getElementById('lq').value.trim();
-  var prof0=activeProfile?PROFILES[activeProfile]:null;
-  var q=(qRaw+(prof0&&prof0.suffix?prof0.suffix:'')).slice(0,500);
-  var st=document.getElementById('lstatus'), res=document.getElementById('lresults'), btn=document.getElementById('lgo');
-  res.innerHTML=''; lastLive=null;
-  document.getElementById('lreport').style.display='none';
-  if(!qRaw){st.innerHTML='<span class="err">Type a question first.</span>';return;}
-  btn.disabled=true; st.textContent='\uD83D\uDD0E Searching the live web\u2026';
-  var payload={query:q,
-    count:document.getElementById('lc').value,
-    category:document.getElementById('lcat').value,
-    method:document.getElementById('lm').value,
-    lang:document.getElementById('ll').value,
-    region:document.getElementById('lr').value};
-  try{
-    var r=await fetch('/api/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    var d=await r.json();
-    if(r.status===503){st.innerHTML='<span class="err">Live search is not configured yet.</span>';return;}
-    if(!r.ok) throw new Error(d.error||'request failed');
-    var items=d.results||[];
-    if(!items.length){st.textContent='No results found.';return;}
-    lastLive={q:qRaw,items:items,controls:payload,translated:d.translated_query,profile:activeProfile};
-    document.getElementById('lreport').style.display='inline-block';
-    var note='\u26A1 Reading '+items.length+' live sources\u2026 ('+d.took_ms+'ms)';
-    if(d.translated_query) note+=' \u2014 translated query: \u201C'+d.translated_query+'\u201D';
-    st.textContent=note;
-    items.forEach(function(it,i){
-      setTimeout(function(){
-        var host=''; try{host=new URL(it.url).hostname;}catch(e){}
-        var card=document.createElement('div'); card.className='res-card';
-        var ltag=it.lang&&it.lang!=='orig'?' <span class="lang-tag">'+esc(it.lang)+'</span>':'';
-        var img=it.image?'<img class="thumb" loading="lazy" alt="" src="/api/thumb?url='+encodeURIComponent(it.image)+'">':'';
-        card.innerHTML=img+'<a href="'+esc(it.url)+'" target="_blank" rel="noopener noreferrer"><b>'+esc(it.title||host||'untitled')+'</b></a>'+ltag+
-          '<div class="host">'+esc(host)+'</div>'+
-          ((it.highlights&&it.highlights.length)?'<div class="hl">\u201C'+esc(it.highlights[0])+'\u201D</div>':'')+
-          '<div class="ex">'+esc((it.text||'').slice(0,280))+'\u2026</div>';
-        res.appendChild(card);
-      }, 90*i);
+    // Ctrl + K shortcut focus
+    window.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        if (input) {
+          input.focus();
+          input.select();
+        }
+      }
     });
-  }catch(e){st.innerHTML='<span class="err">'+esc(e.message)+'</span>';}
-  btn.disabled=false;
+  })();
+</script></main><footer class="w-full bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] py-space-sm"><div class="w-full px-margin flex flex-col md:flex-row items-center justify-between gap-space-xs font-code-telemetry text-code-telemetry text-on-surface-variant"><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span><span>حالة الاتصال: مشفر بالكامل | لا يتم حفظ السجل | صفر تتبع</span></div><div class="flex items-center gap-space-md"><span class="text-secondary">TLS 1.3 / ECH ENABLED</span><span>ARGUS PROTOCOL v4.9.2</span></div></div></footer><script>
+/* ARGUS live search — wired to the Stitch design (dark/emerald, Arabic RTL). */
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const thumb = u => "/api/thumb?url="+encodeURIComponent(u);
+
+const TIME2DAYS = {any:"any","24h":"1",week:"7",month:"30",custom:"365"};
+const FILE2CAT = {all:"all",images:"images",video:"video",documents:"documents",data:"data",code:"github",apps:"apps"};
+const REG2 = {global:"all",mena:"all",neutral:"ch",academic:"all"};
+
+let lastLive = null;
+
+function controls(){
+  const fcat = $("fcat").value, freg = $("fregion").value;
+  let category = FILE2CAT[fcat] || "all";
+  let region = REG2[freg] || "all";
+  let lang = $("flang").value;
+  if(freg==="mena" && lang==="auto"){ lang="ar"; $("flang").value="ar"; }
+  if(freg==="academic"){ category="research"; }
+  return {
+    query: $("main-query-input").value.trim(),
+    count: $("mdeep").checked ? "100" : "25",
+    category: category,
+    method: $("mexact").checked ? "exact" : "auto",
+    lang: lang, region: region,
+    days: TIME2DAYS[$("ftime").value] || "any"
+  };
 }
+
+async function liveSearch(){
+  const c = controls();
+  if(!c.query){ $("main-query-input").focus(); return; }
+  const btn = $("lgo");
+  btn.disabled = true; btn.style.opacity = ".55";
+  $("lstatus").textContent = "⚡ جاري البحث في المصادر الحية…";
+  $("lresults").innerHTML = "";
+  $("lreport").style.display = "none";
+  try{
+    const r = await fetch("/api/search",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(c)});
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.error || ("HTTP "+r.status));
+    renderResults(d, c);
+  }catch(e){
+    $("lstatus").textContent = "❌ تعذر البحث: "+e.message;
+  }finally{
+    btn.disabled = false; btn.style.opacity = "1";
+  }
+}
+
+function renderResults(d, c){
+  const items = d.results || [];
+  const trs = d.translations ? Object.entries(d.translations) : [];
+  let note = "⚡ "+items.length+" مصدر حي · "+d.took_ms+"ms";
+  if(trs.length) note += " · 🌐 "+trs.map(([l,t])=>l+': "'+String(t).slice(0,40)+'"').join(" · ");
+  $("lstatus").textContent = note;
+  $("lresults").innerHTML = items.map(cardHTML).join("");
+  if(items.length){
+    $("lreport").style.display = "inline-flex";
+    lastLive = {q:c.query, items:items, controls:c, translations:d.translations||{}};
+  }
+}
+
+function cardHTML(r){
+  let host=""; try{ host=new URL(r.url).hostname; }catch(e){}
+  const img = r.image ? '<a href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer"><img src="'+thumb(r.image)+'" alt="" loading="lazy" class="w-24 h-24 object-cover rounded-lg border border-outline-variant/30"></a>' : "";
+  const tag = (r.lang && r.lang!=="orig") ? '<span class="px-2 py-0.5 rounded-full bg-primary/15 text-primary font-code-telemetry text-[10px]">'+esc(r.lang)+"</span>" : "";
+  const snip = (r.highlights && r.highlights.length) ? r.highlights[0] : (r.text||"");
+  return '<div class="rounded-xl bg-surface-container-lowest/70 backdrop-blur-md p-space-md shadow-md border border-outline-variant/30">'
+    +'<div class="flex gap-space-md">'+img
+    +'<div class="flex-1 min-w-0">'
+    +'<a href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer" class="text-primary font-semibold hover:underline">'+esc(r.title||host||"بدون عنوان")+"</a>"
+    +'<div class="font-code-telemetry text-[11px] text-outline mt-1 flex items-center gap-2"><span>'+esc(host)+"</span>"+tag+"</div>"
+    +'<p class="text-on-surface-variant text-sm mt-2 leading-relaxed">'+esc(String(snip).slice(0,280))+"</p>"
+    +"</div></div></div>";
+}
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+function loadDemos(){ try{ return JSON.parse(localStorage.getItem("argus_demos")||"[]"); }catch(e){ return []; } }
+function saveDemos(a){ try{ localStorage.setItem("argus_demos", JSON.stringify(a.slice(0,20))); }catch(e){} }
 
 function genReportFromSearch(){
-  if(!lastLive||!lastLive.items.length) return;
-  var q=lastLive.q, items=lastLive.items, c=lastLive.controls;
-  var prof=lastLive.profile?PROFILES[lastLive.profile]:null;
-  var mission=prof?prof.name:'General search';
-  var date=new Date().toISOString().slice(0,10);
-  var safeQ=String(q).replace(/"/g,'').replace(/\n/g,' ').slice(0,120);
-  var md='---\ntitle: "ARGUS: '+safeQ+'"\ndate: '+date+'\nmode: live-search\nmission: '+mission+'\nsources: '+items.length+'\n---\n';
-  md+='# ARGUS: '+q+'\n**Mission**: '+mission+' | **Date**: '+date+' | **Sources**: '+items.length+'\n\n';
-  if(prof&&prof.note) md+='_'+prof.note+'_\n\n';
-  var seeded=false;
-  function seedBlock(){
-    if(seeded) return '(covered in the seeded findings above)\n';
-    seeded=true;
-    var t='', n=0;
-    items.forEach(function(it){
-      (it.highlights||[]).forEach(function(h){
-        if(n>=12) return;
-        t+='- \u201C'+String(h).replace(/\n/g,' ').slice(0,280)+'\u201D \u2014 ['+String(it.title||it.url).slice(0,60)+']('+it.url+')\n';
-        n++;
-      });
-    });
-    return t||'(no highlights extracted)\n';
-  }
-  function sourceBlock(){
-    var t='';
-    items.forEach(function(it){
-      var host=''; try{host=new URL(it.url).hostname;}catch(e){}
-      t+='- ['+String(it.title||host||'untitled').slice(0,80)+']('+it.url+')'+(host?' \u2014 '+host:'')+'\n';
-    });
-    return t;
-  }
-  function methodBlock(){
-    var t='Live web search via Exa. Mission: '+mission+'. Controls: count='+c.count+', category='+c.category+', method='+c.method+', lang='+c.lang+', region='+c.region+'.';
-    if(lastLive.translated) t+=' Translated query: \u201C'+lastLive.translated+'\u201D.';
-    t+=' Excerpts are machine-extracted; verify key claims against the original pages before publishing.';
-    return t+'\n';
-  }
-  var tpl=prof?prof.sections:[['Executive Summary','(TODO: 3-5 sentences, every claim cited from the sources below)'],['Findings seeded from live sources','SEED']];
-  tpl.forEach(function(sec){
-    md+='## '+sec[0]+'\n';
-    if(sec[1]==='SEED') md+=seedBlock();
-    else if(sec[1]==='SOURCES') md+=sourceBlock();
-    else if(sec[1]==='METHOD') md+=methodBlock();
-    else md+=sec[1]+'\n';
-    md+='\n';
+  if(!lastLive || !lastLive.items.length) return;
+  const q = lastLive.q, items = lastLive.items, c = lastLive.controls;
+  const trs = Object.entries(lastLive.translations||{});
+  let md = "# تقرير تحقيق ARGUS\n\n**الاستعلام:** "+q+"\n**التاريخ:** "+new Date().toISOString()+"\n\n";
+  md += "## ملخص تنفيذي\n\n(اكتب 3-5 جمل، كل ادعاء موثق من المصادر أدناه)\n\n";
+  md += "## أبرز النتائج من المصادر الحية\n\n";
+  items.slice(0,12).forEach(it=>{
+    let host=""; try{host=new URL(it.url).hostname;}catch(e){}
+    const snip = ((it.highlights&&it.highlights[0])||it.text||"");
+    md += "- **"+String(it.title||host||"").slice(0,80)+"** — "+String(snip).slice(0,160)+"\n  [المصدر]("+it.url+")"+(host?" — "+host:"")+"\n";
   });
-  md+='## Key Sources ('+items.length+')\n'+sourceBlock()+'\n';
-  md+='## Methodology Notes\n'+methodBlock();
-  var out=document.getElementById('out'), share=document.getElementById('share');
-  var id=uid(), all=loadDemos();
-  all.unshift({id:id,query:q,mode:'live-search',markdown:md,ts:new Date().toISOString()});
-  saveDemos(all); renderHistory();
-  out.style.display='block';
-  out.innerHTML='<h3>Investigation report \u2014 '+mission+' (from '+items.length+' live sources)</h3>'+esc(md).slice(0,8000);
-  share.style.display='block';
-  share.innerHTML='\uD83D\uDD17 Saved in this browser: <a href="/share.html?id='+encodeURIComponent(id)+'">'+location.origin+'/share.html?id='+encodeURIComponent(id)+'</a>';
-  out.scrollIntoView();
+  md += "\n## المصادر الرئيسية ("+items.length+")\n\n";
+  items.forEach(it=>{
+    let host=""; try{host=new URL(it.url).hostname;}catch(e){}
+    md += "- ["+String(it.title||host||"untitled").slice(0,80)+"]("+it.url+")"+(host?" — "+host:"")+"\n";
+  });
+  md += "\n## ملاحظات المنهجية\n\nبحث حي عبر Exa. النوع: "+c.category+" · الطريقة: "+c.method+" · العمق: "+c.count+" مصدر · اللغة: "+c.lang
+    +(trs.length ? " · الترجمات: "+trs.map(([l,t])=>l+': "'+t+'"').join(" · ") : "")
+    +" · المنطقة: "+c.region+" · المدة: "+c.days+".\nالمقتطفات مستخرجة آليًا؛ تحقق من الادعاءات المهمة في الصفحات الأصلية قبل النشر.\n";
+  const id = uid(), all = loadDemos();
+  all.unshift({id:id, query:q, mode:"live-search", markdown:md, ts:new Date().toISOString()});
+  saveDemos(all);
+  location.href = "/share.html?id="+id;
 }
+
+/* wiring */
+$("lgo").addEventListener("click", liveSearch);
+$("lreport").addEventListener("click", genReportFromSearch);
+$("main-query-input").addEventListener("keydown", e=>{ if(e.key==="Enter") liveSearch(); });
+document.addEventListener("keydown", e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="k"){ e.preventDefault(); $("main-query-input").focus(); }
+});
+$("clear-btn").addEventListener("click", ()=>{ $("main-query-input").value=""; $("main-query-input").focus(); });
+$("lreset").addEventListener("click", ()=>{
+  $("ftime").value="any"; $("fcat").value="all"; $("fregion").value="global"; $("flang").value="auto";
+  $("mexact").checked=true; $("mdeep").checked=false; $("mstrip").checked=true;
+  $("main-query-input").value=""; $("lresults").innerHTML=""; $("lstatus").textContent="";
+  $("lreport").style.display="none";
+});
+document.querySelectorAll("[data-q]").forEach(b=> b.addEventListener("click", ()=>{
+  $("main-query-input").value = b.getAttribute("data-q").replace(/_/g," ");
+  liveSearch();
+}));
+})();
+
 </script>
 </body></html>

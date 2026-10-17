@@ -20,7 +20,7 @@ import urllib.request
 from http.server import BaseHTTPRequestHandler
 
 MAX_QUERY = 500
-COUNTS = {"10": (10, 1200), "25": (25, 700), "50": (50, 400)}
+COUNTS = {"10": (10, 1200), "25": (25, 700), "50": (50, 400), "100": (100, 250)}
 CATEGORIES = {
     "all": None, "news": "news", "research": "research paper",
     "pdf": "pdf", "github": "github", "company": "company",
@@ -29,9 +29,35 @@ CATEGORIES = {
 METHODS = {"auto": "auto", "semantic": "neural", "exact": "keyword"}
 LANGS = ("auto", "ar", "en", "both")
 REGIONS = {
-    "all": None, "egypt": "Egypt", "saudi": "Saudi Arabia",
-    "uae": "United Arab Emirates", "qatar": "Qatar",
-    "morocco": "Morocco", "usa": "United States", "uk": "United Kingdom",
+    "all": None,
+    # Middle East
+    "eg": "Egypt", "sa": "Saudi Arabia", "ae": "United Arab Emirates",
+    "qa": "Qatar", "kw": "Kuwait", "bh": "Bahrain", "om": "Oman",
+    "jo": "Jordan", "lb": "Lebanon", "iq": "Iraq", "tr": "Turkey",
+    "ir": "Iran", "il": "Israel", "ye": "Yemen", "sy": "Syria",
+    # Africa
+    "ma": "Morocco", "dz": "Algeria", "tn": "Tunisia", "ly": "Libya",
+    "sd": "Sudan", "ng": "Nigeria", "za": "South Africa", "ke": "Kenya",
+    "et": "Ethiopia", "gh": "Ghana",
+    # Europe
+    "uk": "United Kingdom", "de": "Germany", "fr": "France",
+    "es": "Spain", "it": "Italy", "nl": "Netherlands", "se": "Sweden",
+    "no": "Norway", "pl": "Poland", "ua": "Ukraine", "ru": "Russia",
+    "gr": "Greece", "pt": "Portugal", "ch": "Switzerland",
+    "at": "Austria", "be": "Belgium", "dk": "Denmark", "fi": "Finland",
+    "ie": "Ireland", "cz": "Czechia", "hu": "Hungary", "ro": "Romania",
+    # Asia
+    "cn": "China", "jp": "Japan", "kr": "South Korea", "in": "India",
+    "pk": "Pakistan", "bd": "Bangladesh", "id": "Indonesia",
+    "my": "Malaysia", "sg": "Singapore", "th": "Thailand",
+    "vn": "Vietnam", "ph": "Philippines", "tw": "Taiwan",
+    "hk": "Hong Kong",
+    # Americas
+    "us": "United States", "ca": "Canada", "mx": "Mexico",
+    "br": "Brazil", "ag": "Argentina", "cl": "Chile",
+    "co": "Colombia", "pe": "Peru",
+    # Oceania
+    "au": "Australia", "nz": "New Zealand",
 }
 AR_RE = re.compile(r"[\u0600-\u06FF]")
 

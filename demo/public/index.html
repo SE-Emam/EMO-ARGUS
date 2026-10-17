@@ -76,15 +76,11 @@ h2.sec{font-size:20px;margin:34px 0 14px}
         <option value="exact">Exact keywords</option></select></div>
       <div class="ctl"><label>Sources</label><select id="lc">
         <option value="10">10</option><option value="25" selected>25</option>
-        <option value="50">50</option></select></div>
+        <option value="50">50</option><option value="100">100 — ultra deep</option></select></div>
       <div class="ctl"><label>Language</label><select id="ll">
         <option value="auto">Auto</option><option value="ar">Arabic</option>
         <option value="en">English</option><option value="both">Both</option></select></div>
-      <div class="ctl"><label>Region</label><select id="lr">
-        <option value="all">All regions</option><option value="egypt">Egypt</option>
-        <option value="saudi">Saudi Arabia</option><option value="uae">UAE</option>
-        <option value="qatar">Qatar</option><option value="morocco">Morocco</option>
-        <option value="usa">USA</option><option value="uk">UK</option></select></div>
+      <div class="ctl"><label>Region</label><select id="lr"></select></div>
     </div>
     <button id="lgo" onclick="liveSearch()">Search live</button>
     <button id="lreport" style="display:none;margin-left:10px" onclick="genReportFromSearch()">Generate investigation report</button>
@@ -140,7 +136,6 @@ async function run(){
   btn.disabled=false;
 }
 renderHistory();
-renderProfiles();
 var PROFILES = {
   market: {name:'Market & Competitor Intel', icon:'\uD83D\uDCCA',
     desc:'Market analysis, rivals and bids for your project study',
@@ -219,6 +214,28 @@ function backToProfiles(){
   document.getElementById('searchform').style.display='none';
   document.getElementById('profiles').style.display='block';
 }
+
+var COUNTRY_GROUPS = [
+  ['Middle East', [['eg','Egypt'],['sa','Saudi Arabia'],['ae','United Arab Emirates'],['qa','Qatar'],['kw','Kuwait'],['bh','Bahrain'],['om','Oman'],['jo','Jordan'],['lb','Lebanon'],['iq','Iraq'],['tr','Turkey'],['ir','Iran'],['il','Israel'],['ye','Yemen'],['sy','Syria']]],
+  ['Africa', [['ma','Morocco'],['dz','Algeria'],['tn','Tunisia'],['ly','Libya'],['sd','Sudan'],['ng','Nigeria'],['za','South Africa'],['ke','Kenya'],['et','Ethiopia'],['gh','Ghana']]],
+  ['Europe', [['uk','United Kingdom'],['de','Germany'],['fr','France'],['es','Spain'],['it','Italy'],['nl','Netherlands'],['se','Sweden'],['no','Norway'],['pl','Poland'],['ua','Ukraine'],['ru','Russia'],['gr','Greece'],['pt','Portugal'],['ch','Switzerland'],['at','Austria'],['be','Belgium'],['dk','Denmark'],['fi','Finland'],['ie','Ireland'],['cz','Czechia'],['hu','Hungary'],['ro','Romania']]],
+  ['Asia', [['cn','China'],['jp','Japan'],['kr','South Korea'],['in','India'],['pk','Pakistan'],['bd','Bangladesh'],['id','Indonesia'],['my','Malaysia'],['sg','Singapore'],['th','Thailand'],['vn','Vietnam'],['ph','Philippines'],['tw','Taiwan'],['hk','Hong Kong']]],
+  ['Americas', [['us','United States'],['ca','Canada'],['mx','Mexico'],['br','Brazil'],['ag','Argentina'],['cl','Chile'],['co','Colombia'],['pe','Peru']]],
+  ['Oceania', [['au','Australia'],['nz','New Zealand']]]
+];
+function renderRegions(){
+  var h='<option value="all">All regions \\u2014 whole world</option>';
+  COUNTRY_GROUPS.forEach(function(g){
+    h+='<optgroup label="'+g[0]+'">';
+    g[1].forEach(function(c){ h+='<option value="'+c[0]+'">'+c[1]+'</option>'; });
+    h+='</optgroup>';
+  });
+  document.getElementById('lr').innerHTML=h;
+}
+
+renderProfiles();
+renderRegions();
+
 
 var lastLive=null;
 async function liveSearch(){

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARGUS — AI assistants guess. ARGUS verifies.</title>
+<meta name="description" content="ARGUS turns a vague question into a sourced, multilingual research report — with dead links and uncited claims caught before delivery. Zero-dependency Python CLI.">
+<style>
+:root{
+  --bg:#0b0f17; --panel:#101724; --panel2:#0e1420; --line:#1e293b;
+  --txt:#e8edf5; --muted:#93a1b8; --accent:#38bdf8; --accent2:#22d3ee;
+  --ok:#34d399; --warn:#fbbf24; --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:rgba(11,15,23,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:2px;color:var(--txt)}
+.brand svg{width:30px;height:30px}
+.navlinks{display:flex;gap:26px;font-size:15px}
+.navlinks a{color:var(--muted)}
+.navlinks a:hover{color:var(--txt)}
+.btn{display:inline-block;padding:11px 22px;border-radius:10px;font-weight:600;font-size:15px;border:1px solid var(--line);color:var(--txt);background:var(--panel);transition:.2s}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04121c;border:none}
+.btn.primary:hover{filter:brightness(1.1)}
+@media(max-width:720px){.navlinks{display:none}}
+/* hero */
+.hero{padding:96px 0 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(600px 300px at 50% -50px,rgba(56,189,248,.15),transparent);pointer-events:none}
+.badge{display:inline-block;padding:6px 16px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--muted);margin-bottom:24px;background:var(--panel)}
+.badge b{color:var(--ok)}
+.hero h1{font-size:clamp(38px,6vw,64px);font-weight:800;line-height:1.12;letter-spacing:-1px;margin-bottom:20px}
+.hero h1 .hl{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.sub{font-size:19px;color:var(--muted);max-width:680px;margin:0 auto 36px}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:56px}
+/* terminal */
+.term{max-width:720px;margin:0 auto;background:#060a12;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;text-align:left;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.termbar{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:center}
+.dot{width:12px;height:12px;border-radius:50%}
+.termbar span.t{margin-left:8px;font-size:13px;color:var(--muted);font-family:ui-monospace,Menlo,monospace}
+.termbody{padding:20px 22px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.75;min-height:300px}
+.termbody .p{color:var(--accent)}
+.termbody .c{color:var(--muted)}
+.termbody .ok{color:var(--ok)}
+.termbody .w{color:var(--warn)}
+.cursor{display:inline-block;width:9px;height:18px;background:var(--accent);vertical-align:-3px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:64px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px 18px;text-align:center}
+.stat b{display:block;font-size:34px;color:var(--accent);margin-bottom:4px}
+.stat span{color:var(--muted);font-size:14px}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+/* sections */
+section{padding:72px 0}
+.sec-head{text-align:center;margin-bottom:48px}
+.sec-head h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.5px;margin-bottom:12px}
+.sec-head p{color:var(--muted);max-width:640px;margin:0 auto;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:28px;transition:.2s}
+.card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.card .ico{font-size:28px;margin-bottom:14px}
+.card h3{font-size:18px;margin-bottom:8px}
+.card p{color:var(--muted);font-size:15px}
+/* modes */
+.mode{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+.mode code{display:inline-block;background:#060a12;border:1px solid var(--line);border-radius:8px;padding:4px 12px;color:var(--accent2);font-size:14px;margin-bottom:10px}
+.mode p{color:var(--muted);font-size:14.5px}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:st}
+@media(max-width:800px){.steps{grid-template-columns:1fr}}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:30px;position:relative}
+.step::before{counter-increment:st;content:counter(st);position:absolute;top:-18px;left:24px;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04121c;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:17px}
+.step h3{margin:8px 0 8px;font-size:18px}
+.step p{color:var(--muted);font-size:15px}
+.step code{color:var(--accent2);font-size:13.5px}
+/* install */
+.codeblock{background:#060a12;border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;font-family:ui-monospace,Menlo,monospace;font-size:14.5px;position:relative;margin-bottom:14px;overflow-x:auto}
+.codeblock .p{color:var(--accent)}
+.copy{position:absolute;top:12px;right:12px;background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer;font-family:inherit}
+.copy:hover{color:var(--txt);border-color:var(--accent)}
+.install-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:800px){.install-grid{grid-template-columns:1fr}}
+.install-note{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+.install-note h3{margin-bottom:10px}
+.install-note ul{color:var(--muted);font-size:15px;padding-left:20px}
+.install-note li{margin-bottom:8px}
+/* security */
+.sec-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:700px){.sec-list{grid-template-columns:1fr}}
+.sec-item{display:flex;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+.sec-item .ok{font-size:20px;color:var(--ok)}
+.sec-item p{font-size:15px;color:var(--muted)}
+.sec-item p b{color:var(--txt)}
+/* final cta */
+.final{text-align:center;background:linear-gradient(180deg,transparent,rgba(56,189,248,.06));border-top:1px solid var(--line)}
+.final h2{font-size:clamp(28px,4vw,42px);margin-bottom:14px}
+.final p{color:var(--muted);margin-bottom:30px;font-size:17px}
+footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.reveal.vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top">
+    <svg viewBox="0 0 32 32" fill="none"><ellipse cx="16" cy="16" rx="14" ry="9" stroke="#38bdf8" stroke-width="2.5"/><circle cx="16" cy="16" r="4.5" fill="#38bdf8"/><circle cx="16" cy="16" r="2" fill="#0b0f17"/></svg>
+    ARGUS
+  </a>
+  <div class="navlinks">
+    <a href="#features">Features</a><a href="#modes">Modes</a><a href="#how">How it works</a><a href="#install">Install</a><a href="#security">Security</a>
+  </div>
+  <a class="btn" href="https://github.com/SE-Emam/EMO-ARGUS" target="_blank" rel="noopener">GitHub ★</a>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap">
+  <div class="badge"><b>●</b> v1.2.1 live on PyPI · zero dependencies</div>
+  <h1>AI assistants guess.<br><span class="hl">ARGUS verifies.</span></h1>
+  <p class="sub">One command turns a vague question into a sourced, multilingual research report — with dead links and uncited claims caught <em>before</em> delivery.</p>
+  <div class="cta">
+    <a class="btn primary" href="#install">Get started</a>
+    <a class="btn" href="https://github.com/SE-Emam/EMO-ARGUS" target="_blank" rel="noopener">View on GitHub</a>
+  </div>
+  <div class="term">
+    <div class="termbar"><div class="dot" style="background:#f87171"></div><div class="dot" style="background:#fbbf24"></div><div class="dot" style="background:#34d399"></div><span class="t">argus — zsh</span></div>
+    <div class="termbody" id="termbody"></div>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <div class="stats reveal">
+    <div class="stat"><b>7</b><span>research modes</span></div>
+    <div class="stat"><b>14</b><span>languages by default</span></div>
+    <div class="stat"><b>0</b><span>dependencies (stdlib only)</span></div>
+    <div class="stat"><b>5</b><span>wave research method</span></div>
+  </div>
+</div>
+
+<section id="features"><div class="wrap">
+  <div class="sec-head reveal"><h2>Built for rigorous research</h2><p>ARGUS is a research planner and verifier. You (or your AI agent) do the reading — ARGUS makes sure nothing ships unverified.</p></div>
+  <div class="grid">
+    <div class="card reveal"><div class="ico">🗺️</div><h3>Research planner</h3><p>A vague question becomes a structured 5-wave plan: sub-questions, modes, and consent gates — broad → regional → technical → discussion → verify.</p></div>
+    <div class="card reveal"><div class="ico">🛡️</div><h3>Verify gate</h3><p>Audits the finished report: structure, live links, citation coverage, and language breadth. Nothing ships with dead links.</p></div>
+    <div class="card reveal"><div class="ico">🌍</div><h3>14 languages</h3><p>Cross-language evidence by default — Arabic, Chinese, Spanish, Russian, Hindi and more, not Google-only English answers.</p></div>
+    <div class="card reveal"><div class="ico">📦</div><h3>Zero dependencies</h3><p>Pure Python stdlib. No supply-chain risk, auditable line by line, runs even in air-gapped environments.</p></div>
+    <div class="card reveal"><div class="ico">📡</div><h3>Telegram preview</h3><p>Safe channel previews with strict URL validation and pinned hosts. Scraping and forums stay behind explicit consent gates — silence always means SKIP.</p></div>
+    <div class="card reveal"><div class="ico">🤖</div><h3>Agent-native</h3><p>MCP server for AI assistants, plus a loopback-only local bridge with Chrome and VS Code companions for field work.</p></div>
+  </div>
+</div></section>
+
+<section id="modes" style="background:var(--panel2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+  <div class="sec-head reveal"><h2>Seven modes, one CLI</h2><p>From a 100-word verified answer to a 5,000-word deep investigation — pick the depth the question deserves.</p></div>
+  <div class="grid">
+    <div class="mode reveal"><code>quick</code><p>The single verified answer — one authoritative source, cited. For questions with one right answer.</p></div>
+    <div class="mode reveal"><code>compare</code><p>A vs B, side by side — definitions, ownership, pricing models. For decisions.</p></div>
+    <div class="mode reveal"><code>deep</code><p>The full investigation — scope, timeline, key players, evidence. Up to 5,000 words.</p></div>
+    <div class="mode reveal"><code>platform</code><p>What exists about the topic on one platform — content, formats, voices.</p></div>
+    <div class="mode reveal"><code>timeboxed</code><p>A dated timeline spine of key events inside your window — each one cited.</p></div>
+    <div class="mode reveal"><code>regional</code><p>Region-first research — which countries, why these, what is excluded.</p></div>
+    <div class="mode reveal"><code>narrow</code><p>Laser scope — a precise definition plus verified facts only. No fluff.</p></div>
+  </div>
+  <p style="text-align:center;color:var(--muted);margin-top:28px;font-size:15px">Plus <b style="color:var(--txt)">argus-lite</b> — an institutional preset with silent gates for fast team use.</p>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <div class="sec-head reveal"><h2>How it works</h2><p>Three steps. No API keys, no accounts, no cloud.</p></div>
+  <div class="steps">
+    <div class="step reveal"><h3>You ask</h3><p>One vague question in. <code>argus plan "EV battery supply chains" --mode deep</code> → sub-questions, waves, consent gates.</p></div>
+    <div class="step reveal"><h3>You research</h3><p>Follow the plan — yourself or with your AI agent via the MCP server. ARGUS generates the report skeleton; you fill in findings.</p></div>
+    <div class="step reveal"><h3>ARGUS audits</h3><p><code>argus verify report.md --live-links</code> checks structure, every link, citations, and language coverage before anything ships.</p></div>
+  </div>
+</div></section>
+
+<section id="install" style="background:var(--panel2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+  <div class="sec-head reveal"><h2>Install in 30 seconds</h2><p>Python 3.9+ · macOS, Linux, WSL · Apache-2.0</p></div>
+  <div class="install-grid">
+    <div>
+      <div class="codeblock"><button class="copy" data-cmd="pipx install emo-argus">copy</button><span class="p">$</span> pipx install emo-argus</div>
+      <div class="codeblock"><button class="copy" data-cmd='argus plan "your question" --mode deep'>copy</button><span class="p">$</span> argus plan "your question" --mode deep</div>
+      <div class="codeblock"><button class="copy" data-cmd="argus verify report.md --live-links">copy</button><span class="p">$</span> argus verify report.md --live-links</div>
+    </div>
+    <div class="install-note reveal">
+      <h3>Why pipx?</h3>
+      <ul>
+        <li>Isolated install — never touches your system Python</li>
+        <li><code style="color:var(--accent2)">argus</code>, <code style="color:var(--accent2)">argus-lite</code>, <code style="color:var(--accent2)">argus-mcp</code> and <code style="color:var(--accent2)">argus-bridge</code> on your PATH</li>
+        <li>Upgrade any time: <code style="color:var(--accent2)">pipx upgrade emo-argus</code></li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section id="security"><div class="wrap">
+  <div class="sec-head reveal"><h2>Security is a feature</h2><p>Designed for researchers who handle sensitive topics — hardened by default, not by configuration.</p></div>
+  <div class="sec-list">
+    <div class="sec-item reveal"><span class="ok">✓</span><p><b>Loopback-only bridge.</b> The local bridge binds 127.0.0.1 with a per-boot HMAC token — no LAN exposure, no DNS rebinding.</p></div>
+    <div class="sec-item reveal"><span class="ok">✓</span><p><b>Path traversal guards.</b> Every file write is jailed to the working directory; MCP tools can't escape it.</p></div>
+    <div class="sec-item reveal"><span class="ok">✓</span><p><b>Consent gates.</b> Scraping and forums require explicit approval. Silence always means SKIP.</p></div>
+    <div class="sec-item reveal"><span class="ok">✓</span><p><b>Zero dependencies.</b> Pure stdlib core means no supply-chain attack surface to audit.</p></div>
+  </div>
+</div></section>
+
+<section class="final"><div class="wrap reveal">
+  <h2>Stop shipping unverified research.</h2>
+  <p>Free, open source, and auditable line by line.</p>
+  <div class="cta" style="margin-bottom:0">
+    <a class="btn primary" href="https://pypi.org/project/emo-argus/" target="_blank" rel="noopener">Install from PyPI</a>
+    <a class="btn" href="https://github.com/SE-Emam/EMO-ARGUS" target="_blank" rel="noopener">Star on GitHub</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>ARGUS · Apache-2.0 · by <a href="https://github.com/SE-Emam">SE-Emam</a></span>
+  <span><a href="https://pypi.org/project/emo-argus/">PyPI</a> · <a href="https://github.com/SE-Emam/EMO-ARGUS">GitHub</a> · <a href="https://github.com/SE-Emam/EMO-ARGUS/tree/main/docs">Docs</a></span>
+</div></footer>
+
+<script>
+/* terminal typing demo */
+const lines=[
+ {t:'$ ',c:'p',s:'argus plan "solid-state battery supply chains" --mode deep',d:34},
+ {t:'Mode: deep · 5 waves · 14 languages',c:'c',d:0,pause:350},
+ {t:'Sub-questions: 12 — scope, timeline, key players, evidence…',c:'c',d:0,pause:250},
+ {t:'Consent gates: scraping=SKIP  forums=SKIP',c:'w',d:0,pause:400},
+ {t:'Plan saved → ./ARGUS-2026-10-17/',c:'c',d:0,pause:700},
+ {t:'$ ',c:'p',s:'argus verify report.md --live-links',d:34},
+ {t:'✓ structure   ✓ 14/14 links live   ✓ citations   ✓ languages',c:'ok',d:0,pause:500},
+ {t:'VERDICT: PASS — ready to ship',c:'ok',d:0,pause:2600,restart:true},
+];
+const body=document.getElementById('termbody');
+let li=0;
+/* terminal typing driver (loops forever) */
+
+body.innerHTML='';li=0;
+(function driver(){
+  if(li>=lines.length){setTimeout(()=>{body.innerHTML='';li=0;driver();},2800);return;}
+  const L=lines[li],div=document.createElement('div');
+  const pre=document.createElement('span');pre.className=L.c;pre.textContent=L.t;div.appendChild(pre);body.appendChild(div);
+  if(!L.s){li++;setTimeout(driver,Math.max(L.pause||300,300));return;}
+  const cur=document.createElement('span');cur.className='cursor';div.appendChild(cur);
+  let i=0;(function tick(){
+    if(i<L.s.length){pre.textContent=L.t+L.s.slice(0,++i);setTimeout(tick,L.d);}
+    else{cur.remove();li++;setTimeout(driver,L.pause||400);}
+  })();
+})();
+</script>
+</body>
+</html>

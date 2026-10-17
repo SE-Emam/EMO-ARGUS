@@ -37,6 +37,7 @@ h2.sec{font-size:20px;margin:34px 0 14px}
 .res-card .host{font-size:12px;color:var(--muted);margin:2px 0 8px}
 .res-card .hl{font-size:14px;color:#bae6fd;border-left:3px solid var(--accent);padding-left:10px;margin-bottom:8px}
 .res-card .ex{font-size:13px;color:var(--muted)}
+.res-card img.thumb{width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-bottom:10px;background:#060a12}
 #lstatus{font-size:14px;color:var(--muted);margin-bottom:12px;min-height:20px}
 .prof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
 .prof{background:#060a12;border:1px solid var(--line);border-radius:12px;padding:14px;color:var(--txt);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:6px}
@@ -67,9 +68,16 @@ h2.sec{font-size:20px;margin:34px 0 14px}
     <input type="text" id="lq" maxlength="500" placeholder="e.g. EMO-ARGUS" onkeydown="if(event.key==='Enter')liveSearch()">
     <div class="ctl-row">
       <div class="ctl"><label>Source type</label><select id="lcat">
-        <option value="all">All sources</option><option value="news">News</option>
-        <option value="research">Research papers</option><option value="pdf">PDF files</option>
-        <option value="github">GitHub &amp; code</option><option value="company">Companies</option>
+        <option value="all">All sources (links)</option>
+        <option value="images">Images</option>
+        <option value="video">Video</option>
+        <option value="documents">Documents</option>
+        <option value="data">Data &amp; datasets</option>
+        <option value="apps">Apps</option>
+        <option value="news">News</option>
+        <option value="research">Research papers</option>
+        <option value="github">GitHub &amp; code</option>
+        <option value="company">Companies</option>
         <option value="tweets">Tweets</option></select></div>
       <div class="ctl"><label>Method</label><select id="lm">
         <option value="auto">Auto</option><option value="semantic">Semantic</option>
@@ -89,6 +97,7 @@ h2.sec{font-size:20px;margin:34px 0 14px}
   </div>
 </div>
 
+<p class="note">\uD83D\uDD12 <b>Privacy:</b> no tracking, no cookies, no accounts. Your searches are never stored anywhere \u2014 not in this browser, not on any server. Only reports you choose to generate stay in this browser (delete them anytime). Every request is encrypted, and your browser never contacts third parties directly.</p>
 <h2 class="sec">Your recent reports <span style="font-size:13px;color:var(--muted);font-weight:400">(this browser only)</span></h2>
 <div id="hist"></div>
 
@@ -270,7 +279,8 @@ async function liveSearch(){
         var host=''; try{host=new URL(it.url).hostname;}catch(e){}
         var card=document.createElement('div'); card.className='res-card';
         var ltag=it.lang&&it.lang!=='orig'?' <span class="lang-tag">'+esc(it.lang)+'</span>':'';
-        card.innerHTML='<a href="'+esc(it.url)+'" target="_blank" rel="noopener"><b>'+esc(it.title||host||'untitled')+'</b></a>'+ltag+
+        var img=it.image?'<img class="thumb" loading="lazy" alt="" src="/api/thumb?url='+encodeURIComponent(it.image)+'">':'';
+        card.innerHTML=img+'<a href="'+esc(it.url)+'" target="_blank" rel="noopener noreferrer"><b>'+esc(it.title||host||'untitled')+'</b></a>'+ltag+
           '<div class="host">'+esc(host)+'</div>'+
           ((it.highlights&&it.highlights.length)?'<div class="hl">\u201C'+esc(it.highlights[0])+'\u201D</div>':'')+
           '<div class="ex">'+esc((it.text||'').slice(0,280))+'\u2026</div>';

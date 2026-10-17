@@ -21,10 +21,20 @@ from http.server import BaseHTTPRequestHandler
 
 MAX_QUERY = 500
 COUNTS = {"10": (10, 1200), "25": (25, 700), "50": (50, 400), "100": (100, 250)}
+# Each category: exa_category and/or includeDomains for Exa, suffix appended
+# to the query, or a dedicated handler (wikimedia needs no Exa key).
 CATEGORIES = {
-    "all": None, "news": "news", "research": "research paper",
-    "pdf": "pdf", "github": "github", "company": "company",
-    "tweets": "tweet",
+    "all":       {},
+    "images":    {"handler": "wikimedia"},
+    "video":     {"domains": ["youtube.com", "vimeo.com"]},
+    "documents": {"exa_category": "pdf"},
+    "data":      {"suffix": " dataset statistics data"},
+    "apps":      {"domains": ["play.google.com", "apps.apple.com"]},
+    "news":      {"exa_category": "news"},
+    "research":  {"exa_category": "research paper"},
+    "github":    {"exa_category": "github"},
+    "company":   {"exa_category": "company"},
+    "tweets":    {"exa_category": "tweet"},
 }
 METHODS = {"auto": "auto", "semantic": "neural", "exact": "keyword"}
 LANGS = ("auto", "ar", "en", "both")
@@ -84,7 +94,7 @@ def _translate_ar_en(text):
     return out
 
 
-def _exa_search(query, key, num, max_chars, category, method):
+def _exa_search(query, key, num, max_chars, exa_category, method, domains):
     payload = {
         "query": query,
         "numResults": num,
@@ -94,8 +104,10 @@ def _exa_search(query, key, num, max_chars, category, method):
             "highlights": True,
         },
     }
-    if category:
-        payload["category"] = category
+    if exa_category:
+        payload["category"] = exa_category
+    if domains:
+        payload["includeDomains"] = domains
     req = urllib.request.Request(
         "https://api.exa.ai/search",
         data=json.dumps(payload).encode(),
@@ -103,6 +115,35 @@ def _exa_search(query, key, num, max_chars, category, method):
     )
     with urllib.request.urlopen(req, timeout=8) as r:
         return json.loads(r.read().decode()).get("results", [])
+
+
+def _wikimedia_search(query, num):
+    """Image search via Wikimedia Commons (keyless, no Exa needed)."""
+    url = ("https://commons.wikimedia.org/w/api.php?action=query&format=json"
+           "&generator=search&gsrnamespace=6&gsrlimit=" + str(min(num, 50)) +
+           "&gsrsearch=" + urllib.parse.quote(query) +
+           "&prop=imageinfo&iiprop=url|size|extmetadata&iiurlwidth=400")
+    req = urllib.request.Request(url, headers={"User-Agent": "ARGUS-demo/1.0"})
+    with urllib.request.urlopen(req, timeout=8) as r:
+        d = json.loads(r.read().decode())
+    out = []
+    for p in (d.get("query", {}).get("pages") or {}).values():
+        ii = (p.get("imageinfo") or [{}])[0]
+        thumb = ii.get("thumburl") or ii.get("url") or ""
+        if not thumb:
+            continue
+        desc = ""
+        em = ii.get("extmetadata") or {}
+        if isinstance(em.get("ImageDescription"), dict):
+            desc = re.sub(r"<[^>]+>", " ", em["ImageDescription"].get("value", ""))
+            desc = re.sub(r"\s+", " ", desc).strip()[:300]
+        out.append({
+            "title": str(p.get("title", "")).replace("File:", "")[:150],
+            "url": str(ii.get("descriptionurl", ""))[:500],
+            "image": thumb[:500],
+            "text": desc,
+        })
+    return out
 
 
 class handler(BaseHTTPRequestHandler):
@@ -128,15 +169,31 @@ class handler(BaseHTTPRequestHandler):
         if lang not in LANGS or region not in REGIONS:
             return _send(self, 400, {"error": "bad lang/region"})
         key = os.environ.get("EXA_API_KEY", "").strip()
-        if not key:
-            return _send(self, 503, {"error": "live search is not configured yet"})
-
+        cat = CATEGORIES[category]
         num, max_chars = COUNTS[count]
-        exa_cat = CATEGORIES[category]
         exa_method = METHODS[method]
         region_name = REGIONS[region]
         has_ar = bool(AR_RE.search(query))
         translated = None
+
+        # Images go through Wikimedia Commons: keyless, no translation needed.
+        if cat.get("handler") == "wikimedia":
+            try:
+                results = _wikimedia_search(query, num)
+            except Exception:
+                results = []
+            out = [{
+                "title": r["title"], "url": r["url"], "lang": "orig",
+                "text": r["text"], "highlights": [], "image": r["image"],
+            } for r in results]
+            return _send(self, 200, {
+                "results": out,
+                "took_ms": int((time.time() - t0) * 1000),
+                "translated_query": None,
+            })
+
+        if not key:
+            return _send(self, 503, {"error": "live search is not configured yet"})
 
         # Build the list of (label, query) searches to run.
         queries = []
@@ -155,8 +212,9 @@ class handler(BaseHTTPRequestHandler):
                 pass
         else:
             queries.append(("orig", query))
-        if region_name:
-            queries = [(lbl, q + " in " + region_name) for lbl, q in queries]
+        aug = (cat.get("suffix", "") + (" in " + region_name if region_name else "")).strip()
+        if aug:
+            queries = [(lbl, (q + " " + aug)[:MAX_QUERY]) for lbl, q in queries]
 
         # Run sequentially with a time budget so the 10s function limit holds.
         seen, out = set(), []
@@ -164,7 +222,9 @@ class handler(BaseHTTPRequestHandler):
             if time.time() - t0 > 7:
                 break
             try:
-                results = _exa_search(q, key, num, max_chars, exa_cat, exa_method)
+                results = _exa_search(q, key, num, max_chars,
+                                      cat.get("exa_category"), exa_method,
+                                      cat.get("domains"))
             except Exception:
                 continue
             for res in results:

@@ -1197,6 +1197,12 @@ function applyTheme(mode){
   document.documentElement.dataset.theme = resolveTheme(m);
   try{ markSettingsActive(); }catch(e){}
 }
+window.__toggleTheme=function(){
+  try{
+    var cur=document.documentElement.dataset.theme||"dark";
+    applyTheme(cur==="dark"?"light":"dark");
+  }catch(e){}
+};
 window.setTheme = applyTheme;
 try{
   const _mm = window.matchMedia && matchMedia("(prefers-color-scheme: light)");
@@ -1234,10 +1240,6 @@ function detectLang(){
   applyTheme(_tm);
   try{ markSettingsActive(); }catch(e){}
   var _tq = document.getElementById("theme-quick");
-  window.__toggleTheme=function(){
-    var cur=document.documentElement.dataset.theme||"dark";
-    applyTheme(cur==="dark"?"light":"dark");
-  };
   if(_tq) _tq.addEventListener("click",window.__toggleTheme);
 })();
 </script>

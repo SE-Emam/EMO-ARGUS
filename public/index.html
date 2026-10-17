@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<script>try{var _m=localStorage.getItem("argus_theme")||"system";var _r=_m==="system"?((window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark"):_m;document.documentElement.dataset.theme=_r;}catch(e){document.documentElement.dataset.theme="dark";}</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARGUS — محرك البحث الخاص</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Noto+Sans+Arabic:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    @layer base {
+      html, body { margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 2px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+
+    /* Geometric spiderweb / network topology mesh overlay */
+    .network-spiderweb-bg {
+      background-image: 
+        radial-gradient(circle at 50% 38%, rgba(59, 130, 246, 0.14) 0%, transparent 60%),
+        repeating-radial-gradient(circle at 50% 38%, transparent 0, transparent 48px, rgba(255, 255, 255, 0.05) 49px, rgba(255, 255, 255, 0.05) 50px),
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+    }
+  @layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": {"surface-canvas": "var(--a-surface-canvas)", "surface-subtle": "var(--a-surface-subtle)", "surface-elevated": "var(--a-surface-elevated)", "surface-border": "var(--a-surface-border)", "surface-border-subtle": "var(--a-surface-border-subtle)", "primary-hover": "var(--a-primary-hover)", "primary-muted": "var(--a-primary-muted)", "text-dim": "var(--a-text-dim)",  "on-surface-variant": "var(--a-on-surface-variant)", "surface-container-high": "var(--a-surface-container-high)", "surface-variant": "var(--a-surface-variant)", "on-tertiary": "var(--a-on-tertiary)", "on-error": "var(--a-on-error)", "tertiary-fixed-dim": "var(--a-tertiary-fixed-dim)", "on-secondary": "var(--a-on-secondary)", "on-tertiary-fixed-variant": "var(--a-on-tertiary-fixed-variant)", "on-primary-fixed": "var(--a-on-primary-fixed)", "surface-container-lowest": "var(--a-surface-container-lowest)", "on-primary-fixed-variant": "var(--a-on-primary-fixed-variant)", "on-secondary-container": "var(--a-on-secondary-container)", "outline": "var(--a-outline)", "secondary-fixed-dim": "var(--a-secondary-fixed-dim)", "on-primary": "var(--a-on-primary)", "primary-container": "var(--a-primary-container)", "error": "var(--a-error)", "primary-fixed-dim": "var(--a-primary-fixed-dim)", "surface": "var(--a-surface)", "secondary-fixed": "var(--a-secondary-fixed)", "inverse-surface": "var(--a-inverse-surface)", "secondary-container": "var(--a-secondary-container)", "error-container": "var(--a-error-container)", "secondary": "var(--a-secondary)", "surface-bright": "var(--a-surface-bright)", "surface-container-low": "var(--a-surface-container-low)", "background": "var(--a-background)", "tertiary-fixed": "var(--a-tertiary-fixed)", "on-tertiary-container": "var(--a-on-tertiary-container)", "on-surface": "var(--a-on-surface)", "primary-fixed": "var(--a-primary-fixed)", "inverse-primary": "var(--a-inverse-primary)", "on-error-container": "var(--a-on-error-container)", "surface-dim": "var(--a-surface-dim)", "on-secondary-fixed-variant": "var(--a-on-secondary-fixed-variant)", "surface-tint": "var(--a-surface-tint)", "surface-container": "var(--a-surface-container)", "on-primary-container": "var(--a-on-primary-container)", "primary": "var(--a-primary)", "tertiary-container": "var(--a-tertiary-container)", "tertiary": "var(--a-tertiary)", "outline-variant": "var(--a-outline-variant)", "on-background": "var(--a-on-background)", "surface-container-highest": "var(--a-surface-container-highest)", "on-tertiary-fixed": "var(--a-on-tertiary-fixed)", "inverse-on-surface": "var(--a-inverse-on-surface)", "on-secondary-fixed": "var(--a-on-secondary-fixed)" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xs": "0.25rem", "margin": "2rem", "space-md": "1rem", "gutter": "1.25rem", "gutter-mobile": "0.75rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-lg": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "headline-sm": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "body-lg": ["Noto Sans Arabic", "sans-serif"], "body-md": ["Noto Sans Arabic", "sans-serif"], "code-telemetry": ["JetBrains Mono", "monospace"], "display-hero-mobile": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "body-sm": ["Noto Sans Arabic", "sans-serif"], "display-hero": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "headline-lg-mobile": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "badge-label": ["JetBrains Mono", "monospace"], "label-caps": ["Space Grotesk", "monospace"], "headline-md": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"] }, "fontSize": { "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }], "code-telemetry": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "display-hero-mobile": ["36px", { "lineHeight": "44px", "fontWeight": "700" }], "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }], "display-hero": ["56px", { "lineHeight": "68px", "fontWeight": "700" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }], "badge-label": ["11px", { "lineHeight": "14px", "fontWeight": "600" }], "label-caps": ["11px", { "lineHeight": "16px", "fontWeight": "700" }], "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }] } } } };</script>
+<style>.font-argus{font-family:"Archivo Black","Inter",sans-serif!important;letter-spacing:.015em}</style>
+<style>
+:root{
+  --a-background:#060b17;
+  --a-error:#ffb4ab;
+  --a-error-container:#93000a;
+  --a-inverse-on-surface:#2a303f;
+  --a-inverse-primary:#005ac2;
+  --a-inverse-surface:#dde2f5;
+  --a-on-background:#dde2f5;
+  --a-on-error:#690005;
+  --a-on-error-container:#ffdad6;
+  --a-on-primary:#ffffff;
+  --a-on-primary-container:#dbeafe;
+  --a-on-primary-fixed:#001a42;
+  --a-on-primary-fixed-variant:#004395;
+  --a-on-secondary:#003640;
+  --a-on-secondary-container:#00424e;
+  --a-on-secondary-fixed:#001f26;
+  --a-on-secondary-fixed-variant:#004e5c;
+  --a-on-surface:#dde2f5;
+  --a-on-surface-variant:#c2c6d6;
+  --a-on-tertiary:#002682;
+  --a-on-tertiary-container:#002072;
+  --a-on-tertiary-fixed:#001551;
+  --a-on-tertiary-fixed-variant:#0039b5;
+  --a-outline:#8c909f;
+  --a-outline-variant:#2a3754;
+  --a-primary:#3b82f6;
+  --a-primary-container:#2563eb;
+  --a-primary-fixed:#d8e2ff;
+  --a-primary-fixed-dim:#adc6ff;
+  --a-primary-hover:#2563eb;
+  --a-primary-muted:#1e3a8a;
+  --a-secondary:#38bdf8;
+  --a-secondary-container:#03b5d3;
+  --a-secondary-fixed:#acedff;
+  --a-secondary-fixed-dim:#4cd7f6;
+  --a-surface:#060b17;
+  --a-surface-border:#1e2c4a;
+  --a-surface-border-subtle:#162238;
+  --a-surface-bright:#222c44;
+  --a-surface-canvas:#060b17;
+  --a-surface-container:#10192e;
+  --a-surface-container-high:#182033;
+  --a-surface-container-highest:#222c44;
+  --a-surface-container-low:#0b1222;
+  --a-surface-container-lowest:#050811;
+  --a-surface-dim:#060b17;
+  --a-surface-elevated:#17233d;
+  --a-surface-subtle:#0c1322;
+  --a-surface-tint:#3b82f6;
+  --a-surface-variant:#1c253b;
+  --a-tertiary:#b7c4ff;
+  --a-tertiary-container:#6989ff;
+  --a-tertiary-fixed:#dce1ff;
+  --a-tertiary-fixed-dim:#b7c4ff;
+  --a-text-dim:#64748b;
+color-scheme:dark;
+}
+html[data-theme="light"]{
+  --a-background:#edf1f7;
+  --a-error:#ba1a1a;
+  --a-error-container:#f7dcd9;
+  --a-inverse-on-surface:#edf0f7;
+  --a-inverse-primary:#3b82f6;
+  --a-inverse-surface:#17202f;
+  --a-on-background:#0f1c31;
+  --a-on-error:#ffffff;
+  --a-on-error-container:#5f1410;
+  --a-on-primary:#ffffff;
+  --a-on-primary-container:#143a8c;
+  --a-on-primary-fixed:#0f2c5f;
+  --a-on-primary-fixed-variant:#1e4fae;
+  --a-on-secondary:#074652;
+  --a-on-secondary-container:#074652;
+  --a-on-secondary-fixed:#083e49;
+  --a-on-secondary-fixed-variant:#0b5b6a;
+  --a-on-surface:#0f1c31;
+  --a-on-surface-variant:#43536b;
+  --a-on-tertiary:#1e3a9e;
+  --a-on-tertiary-container:#1c358c;
+  --a-on-tertiary-fixed:#1a2f7d;
+  --a-on-tertiary-fixed-variant:#2c4fc4;
+  --a-outline:#98a2b5;
+  --a-outline-variant:#bfcbdd;
+  --a-primary:#1d4ed8;
+  --a-primary-container:#d7e5fd;
+  --a-primary-fixed:#d7e5fd;
+  --a-primary-fixed-dim:#a9c2f7;
+  --a-primary-hover:#1e40af;
+  --a-primary-muted:#c3d6f8;
+  --a-secondary:#0284c7;
+  --a-secondary-container:#c8edf9;
+  --a-secondary-fixed:#bfe9fa;
+  --a-secondary-fixed-dim:#7fd8f2;
+  --a-surface:#edf1f7;
+  --a-surface-border:#c6d2e4;
+  --a-surface-border-subtle:#dbe3ef;
+  --a-surface-bright:#d3dcea;
+  --a-surface-canvas:#edf1f7;
+  --a-surface-container:#e8eef6;
+  --a-surface-container-high:#dde6f1;
+  --a-surface-container-highest:#d3dcea;
+  --a-surface-container-low:#f6f8fb;
+  --a-surface-container-lowest:#ffffff;
+  --a-surface-dim:#e2e9f2;
+  --a-surface-elevated:#ffffff;
+  --a-surface-subtle:#ffffff;
+  --a-surface-tint:#1d4ed8;
+  --a-surface-variant:#e0e8f2;
+  --a-tertiary:#4d68f0;
+  --a-tertiary-container:#d3dcfd;
+  --a-tertiary-fixed:#d3dcfd;
+  --a-tertiary-fixed-dim:#a9baf7;
+  --a-text-dim:#67788f;
+color-scheme:light;
+}
+html[data-theme="light"] .bg-\[\#02050c\]{background-color:#ffffff!important}
+html[data-theme="light"] .bg-\[\#050811\]{background-color:#ffffff!important}
+html[data-theme="light"] .bg-\[\#060b17\]{background-color:#edf1f7!important}
+html[data-theme="light"] .bg-\[\#080e1e\]{background-color:#f6f8fb!important}
+html[data-theme="light"] .bg-\[\#080f21\]{background-color:#f6f8fb!important}
+html[data-theme="light"] .bg-\[\#091024\]{background-color:#ffffff!important}
+html[data-theme="light"] .bg-\[\#0b1222\]{background-color:#f6f8fb!important}
+html[data-theme="light"] .bg-\[\#0b1326\]{background-color:#eef2f8!important}
+html[data-theme="light"] .bg-\[\#0c192e\]{background-color:#e9eff7!important}
+html[data-theme="light"] .bg-\[\#0d162b\]{background-color:#eef2f8!important}
+html[data-theme="light"] .bg-\[\#0e172e\]{background-color:#eef2f8!important}
+html[data-theme="light"] .bg-\[\#0e1d3d\]{background-color:#e9eff7!important}
+html[data-theme="light"] .bg-\[\#0f1a34\]{background-color:#f2f6fb!important}
+html[data-theme="light"] .bg-\[\#0f1a36\]{background-color:#ffffff!important}
+html[data-theme="light"] .bg-\[\#10192e\]{background-color:#e9eff7!important}
+html[data-theme="light"] .bg-\[\#101a30\]{background-color:#e9eff7!important}
+html[data-theme="light"] .bg-\[\#111a33\]{background-color:#e9eff7!important}
+html[data-theme="light"] .bg-\[\#182547\]{background-color:#dfe7f2!important}
+html[data-theme="light"] .bg-\[\#1d4ed8\]{background-color:#1e40af!important}
+html[data-theme="light"] .bg-\[\#1e40af\]{background-color:#1e3a8a!important}
+html[data-theme="light"] .bg-\[\#2563eb\]{background-color:#1d4ed8!important}
+html[data-theme="light"] .bg-\[\#38bdf8\]{background-color:#0284c7!important}
+html[data-theme="light"] .border-\[\#1b2640\]{border-color:#c9d5e8!important}
+html[data-theme="light"] .border-\[\#1b2742\]{border-color:#c9d5e8!important}
+html[data-theme="light"] .border-\[\#1e2f52\]{border-color:#b9c8e0!important}
+html[data-theme="light"] .border-\[\#1e3a5f\]{border-color:#b9c8e0!important}
+html[data-theme="light"] .border-\[\#23355b\]{border-color:#b9c8e0!important}
+html[data-theme="light"] .border-\[\#2a3f6a\]{border-color:#b9c8e0!important}
+html[data-theme="light"] .text-\[\#223152\]{color:#8a97a8!important}
+html[data-theme="light"] .text-\[\#38bdf8\]{color:#0284c7!important}
+html[data-theme="light"] .text-\[\#60a5fa\]{color:#2563eb!important}
+html[data-theme="light"] .text-\[\#93c5fd\]{color:#1d4ed8!important}
+html[data-theme="light"] .text-\[\#bfdbfe\]{color:#1e40af!important}
+html[data-theme="light"] .bg-\[\#02050c\]\/80{background-color:rgb(255 255 255 / .8)!important}
+html[data-theme="light"] .bg-\[\#060b17\]\/85{background-color:rgb(237 241 247 / .85)!important}
+html[data-theme="light"] .bg-\[\#091024\]\/90{background-color:rgb(255 255 255 / .9)!important}
+html[data-theme="light"] .bg-\[\#2563eb\]\/85{background-color:rgb(29 78 216 / .85)!important}
+html[data-theme="light"] .bg-\[\#38bdf8\]\/85{background-color:rgb(2 132 199 / .85)!important}
+html[data-theme="light"] .font-argus{color:#1d4ed8!important}
+
+html[data-theme="light"] .network-spiderweb-bg{background-image:radial-gradient(circle at 50% 38%, rgba(37, 99, 235, 0.08) 0%, transparent 60%),repeating-radial-gradient(circle at 50% 38%, transparent 0, transparent 48px, rgba(100, 116, 139, 0.28) 49px, rgba(100, 116, 139, 0.28) 50px),linear-gradient(to right, rgba(100, 116, 139, 0.32) 1px, transparent 1px),linear-gradient(to bottom, rgba(100, 116, 139, 0.32) 1px, transparent 1px)!important}
+html[data-theme="light"] .mesh-overlay svg{color:#8a97a8!important}
+html[data-theme="light"] polygon[stroke="#ffffff"]{stroke:#94a3b8!important}
+html[data-theme="light"] line[stroke="#ffffff"]{stroke:#94a3b8!important}
+html[data-theme="light"] circle[fill="#ffffff"]{fill:#94a3b8!important}
+html[data-theme="light"] circle[fill="#60a5fa"]{fill:#64748b!important}
+</style>
+<style>
+details#settings-wrap > summary::-webkit-details-marker{display:none}
+details#settings-wrap > summary::marker{display:none}
+#settings-menu .set-opt{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:4px;font-size:12px;color:var(--a-on-surface-variant);transition:background .15s,color .15s;cursor:pointer;text-align:start;width:100%}
+#settings-menu .set-opt:hover{background:var(--a-surface-container);color:var(--a-on-surface)}
+#settings-menu .set-opt[data-active="1"]{background:rgba(59,130,246,.15);color:var(--a-secondary);font-weight:700}
+</style>
+</head>
+<body class="bg-surface-canvas text-body font-body text-on-surface min-h-screen flex flex-col antialiased selection:bg-primary/25 selection:text-white relative">
+<div id="splash" class="fixed inset-0 z-[100] overflow-y-auto bg-[#060b17] font-body-md text-body-md text-on-surface">
+
+<!-- Subtle White Network Topology Spiderweb / Mesh Overlay Vector Layer -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.14] mesh-overlay">
+<svg class="w-full h-full text-white" fill="none" height="100%" stroke="currentColor" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="60" id="subtle-network-mesh" patternunits="userSpaceOnUse" width="60">
+<path d="M 60 0 L 0 0 0 60" stroke="currentColor" stroke-dasharray="2,4" stroke-width="0.75"></path>
+<circle cx="0" cy="0" fill="currentColor" opacity="0.6" r="1.5"></circle>
+<circle cx="60" cy="0" fill="currentColor" opacity="0.6" r="1.5"></circle>
+<circle cx="0" cy="60" fill="currentColor" opacity="0.6" r="1.5"></circle>
+</pattern>
+<!-- Central Spiderweb Constellation Lines -->
+<radialgradient cx="50%" cy="45%" id="topology-glow" r="50%">
+<stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"></stop>
+<stop offset="60%" stop-color="#60a5fa" stop-opacity="0.08"></stop>
+<stop offset="100%" stop-color="#060b17" stop-opacity="0"></stop>
+</radialgradient>
+</defs>
+<!-- Background regular grid -->
+<rect fill="url(#subtle-network-mesh)" height="100%" width="100%"></rect>
+<!-- Spiderweb Radiating Web Topology Nodes -->
+<g stroke="currentColor" stroke-width="0.8">
+<!-- Concentric Web Rings -->
+<circle cx="50%" cy="42%" fill="none" opacity="0.4" r="110" stroke-dasharray="4,6"></circle>
+<circle cx="50%" cy="42%" fill="none" opacity="0.4" r="230" stroke-dasharray="6,8"></circle>
+<circle cx="50%" cy="42%" fill="none" opacity="0.3" r="370" stroke-dasharray="8,10"></circle>
+<circle cx="50%" cy="42%" fill="none" opacity="0.25" r="520" stroke-dasharray="10,12"></circle>
+<circle cx="50%" cy="42%" fill="none" opacity="0.18" r="680" stroke-dasharray="12,14"></circle>
+<!-- Spiderweb Radial Spine Lines -->
+<line opacity="0.4" x1="50%" x2="50%" y1="0%" y2="100%"></line>
+<line opacity="0.4" x1="0%" x2="100%" y1="42%" y2="42%"></line>
+<line opacity="0.35" x1="10%" x2="90%" y1="10%" y2="74%"></line>
+<line opacity="0.35" x1="90%" x2="10%" y1="10%" y2="74%"></line>
+<line opacity="0.3" x1="25%" x2="75%" y1="0%" y2="84%"></line>
+<line opacity="0.3" x1="75%" x2="25%" y1="0%" y2="84%"></line>
+<!-- Topology Interconnected Hex Nodes -->
+<circle cx="50%" cy="42%" fill="currentColor" opacity="0.9" r="3.5"></circle>
+<circle cx="42%" cy="34%" fill="currentColor" opacity="0.7" r="2.5"></circle>
+<circle cx="58%" cy="34%" fill="currentColor" opacity="0.7" r="2.5"></circle>
+<circle cx="36%" cy="42%" fill="currentColor" opacity="0.7" r="2.5"></circle>
+<circle cx="64%" cy="42%" fill="currentColor" opacity="0.7" r="2.5"></circle>
+<circle cx="44%" cy="52%" fill="currentColor" opacity="0.7" r="2.5"></circle>
+<circle cx="56%" cy="52%" fill="currentColor" opacity="0.7" r="2.5"></circle>
+<circle cx="30%" cy="22%" fill="currentColor" opacity="0.6" r="2"></circle>
+<circle cx="70%" cy="22%" fill="currentColor" opacity="0.6" r="2"></circle>
+<circle cx="22%" cy="42%" fill="currentColor" opacity="0.6" r="2"></circle>
+<circle cx="78%" cy="42%" fill="currentColor" opacity="0.6" r="2"></circle>
+<circle cx="33%" cy="63%" fill="currentColor" opacity="0.6" r="2"></circle>
+<circle cx="67%" cy="63%" fill="currentColor" opacity="0.6" r="2"></circle>
+<!-- Connective Inter-node Lines -->
+<line opacity="0.5" stroke-dasharray="3,3" x1="42%" x2="58%" y1="34%" y2="34%"></line>
+<line opacity="0.5" stroke-dasharray="3,3" x1="58%" x2="64%" y1="34%" y2="42%"></line>
+<line opacity="0.5" stroke-dasharray="3,3" x1="64%" x2="56%" y1="42%" y2="52%"></line>
+<line opacity="0.5" stroke-dasharray="3,3" x1="56%" x2="44%" y1="52%" y2="52%"></line>
+<line opacity="0.5" stroke-dasharray="3,3" x1="44%" x2="36%" y1="52%" y2="42%"></line>
+<line opacity="0.5" stroke-dasharray="3,3" x1="36%" x2="42%" y1="42%" y2="34%"></line>
+</g>
+<!-- Soft radial glow centered on web -->
+<rect fill="url(#topology-glow)" height="100%" width="100%"></rect>
+</svg>
+</div>
+<header class="fixed top-0 left-0 right-0 z-40 bg-[#060b17]/85 backdrop-blur-xl border-b border-[#1b2640]"><div class="h-16 w-full px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs cursor-pointer select-none"><span class="font-headline-sm text-headline-sm text-primary tracking-wider font-bold font-argus">ARGUS</span><span class="font-code-telemetry text-[11px] text-[#38bdf8] px-1.5 py-0.5 rounded border border-[#1e3a5f] bg-[#0c192e]">100-EYE</span></div><div class="hidden sm:flex items-center gap-space-xs px-space-sm py-1 rounded bg-[#0b1222] border border-[#1b2640]"><span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span><span class="font-code-telemetry text-[11px] text-primary" data-i18n="hdr_vpn">مشفر بالكامل / VPN Active</span></div></div><nav class="hidden md:flex items-center gap-space-sm" data-active-classes="bg-surface-container text-primary font-bold rounded"><a aria-current="page" class="px-space-md py-space-xs transition-colors bg-[#101a30] text-primary border border-blue-500/20 font-bold rounded" data-path="search" href="#" data-i18n="nav_search">البحث الأمني</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="threat-recon" href="#" data-i18n="nav_threats">استطلاع التهديدات</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="vault" href="#" data-i18n="nav_vault">الخزينة المشفرة</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="privacy-audit" href="#" data-i18n="nav_privacy">فحص الخصوصية</a></nav><div class="flex items-center gap-space-md"><button onclick="window.__toggleTheme&&window.__toggleTheme()" id="theme-quick" class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors cursor-pointer" title="وضع الإضاءة" data-i18n-tip="tip_theme" type="button"><span class="material-symbols-outlined text-[20px]">dark_mode</span></button><details class="relative" id="settings-wrap">
+<summary id="settings-btn" class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors cursor-pointer" data-i18n-tip="tip_settings" title="إعدادات الخصوصية" style="list-style:none">
+<span class="material-symbols-outlined text-[20px] pointer-events-none">settings</span>
+</summary>
+<div id="settings-menu" class="absolute end-0 top-full mt-2 w-60 rounded-[6px] border border-surface-border bg-surface-elevated shadow-[0_12px_40px_rgba(0,0,0,0.45)] z-50 p-2">
+<div class="px-2 pt-1 pb-1.5 font-code-telemetry text-[10px] text-text-dim" data-i18n="set_language">اللغة</div>
+<div id="set-langs" class="grid grid-cols-2 gap-1"><button type="button" data-setlang="ar" onclick="pickLang('ar')" class="set-opt"><span>العربية</span></button><button type="button" data-setlang="en" onclick="pickLang('en')" class="set-opt"><span>English</span></button><button type="button" data-setlang="ru" onclick="pickLang('ru')" class="set-opt"><span>Русский</span></button><button type="button" data-setlang="zh" onclick="pickLang('zh')" class="set-opt"><span>中文</span></button><button type="button" data-setlang="es" onclick="pickLang('es')" class="set-opt"><span>Español</span></button><button type="button" data-setlang="fr" onclick="pickLang('fr')" class="set-opt"><span>Français</span></button></div>
+<div class="my-2 border-t border-surface-border-subtle"></div>
+<div class="px-2 pt-1 pb-1.5 font-code-telemetry text-[10px] text-text-dim" data-i18n="set_theme">المظهر</div>
+<div id="set-themes" class="flex flex-col gap-1"><button type="button" data-settheme="system" onclick="pickTheme('system')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">settings_suggest</span><span data-i18n="theme_system" class="pointer-events-none">حسب النظام</span></span></button><button type="button" data-settheme="dark" onclick="pickTheme('dark')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">dark_mode</span><span data-i18n="theme_dark" class="pointer-events-none">داكن</span></span></button><button type="button" data-settheme="light" onclick="pickTheme('light')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">light_mode</span><span data-i18n="theme_light" class="pointer-events-none">فاتح</span></span></button></div>
+</div>
+<div class="px-3 py-1.5 text-[10px] text-text-dim font-code-telemetry border-t border-surface-border" dir="ltr">build 2026-10-17-v4</div>
+</details><div class="w-8 h-8 rounded bg-[#10192e] border border-[#1b2640] flex items-center justify-center font-code-telemetry text-[11px] text-primary font-bold">AG</div></div></div></header><main class="w-full pt-16 flex-1 bg-transparent relative z-10"><div class="flex flex-col w-full relative">
+<!-- High-Craft Utilitarian Security Attestation Modal in Deep Midnight Navy -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-space-md bg-[#02050c]/80 backdrop-blur-md transition-all duration-300" id="argus-splash-modal">
+<div class="relative w-full max-w-2xl bg-[#080e1e] border border-[#1b2742] shadow-[0_20px_50px_rgba(3,7,18,0.85)] rounded-lg p-6 md:p-8 flex flex-col gap-6 text-right relative overflow-hidden">
+<!-- Micro spiderweb/mesh accent in modal corner -->
+<div class="absolute -top-12 -left-12 w-48 h-48 pointer-events-none opacity-20">
+<svg class="w-full h-full text-blue-400" fill="none" stroke="currentColor" stroke-width="0.75" viewbox="0 0 100 100">
+<circle cx="0" cy="0" r="30" stroke-dasharray="2,3"></circle>
+<circle cx="0" cy="0" r="60" stroke-dasharray="3,4"></circle>
+<circle cx="0" cy="0" r="90" stroke-dasharray="4,5"></circle>
+<line x1="0" x2="100" y1="0" y2="25"></line>
+<line x1="0" x2="100" y1="0" y2="60"></line>
+<line x1="0" x2="60" y1="0" y2="100"></line>
+<line x1="0" x2="25" y1="0" y2="100"></line>
+</svg>
+</div>
+<!-- Header & Branding Clearance Bar -->
+<div class="w-full flex items-center justify-between border-b border-[#1b2742] pb-4 relative z-10">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded border border-blue-500/30 bg-[#0d162b] flex items-center justify-center text-primary shrink-0 shadow-[0_0_12px_rgba(59,130,246,0.2)]">
+<svg class="w-4 h-4 text-[#38bdf8]" fill="none" stroke="currentColor" stroke-width="1.75" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"></path><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="flex flex-col text-right">
+<div class="flex items-center gap-2">
+<span class="font-code-telemetry text-[11px] font-semibold text-primary uppercase tracking-wider" data-i18n="sp_kicker">ARGUS SECURITY CLEARANCE</span>
+<span class="font-code-telemetry text-[10px] text-on-surface-variant/60">// PROTOCOL v4.9</span>
+</div>
+<span class="font-code-telemetry text-[11px] text-[#38bdf8] dir-ltr text-right">NODE_INTEGRITY: 100_EYES_SYNCHRONIZED</span>
+</div>
+</div>
+<div class="flex items-center gap-2 font-code-telemetry text-[11px]">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_#3b82f6]"></span>
+<span class="text-on-surface-variant"><span data-i18n="sp_syslabel">حالة النظام:</span> <strong class="text-on-surface font-semibold" data-i18n="sp_sysval">100% محصن</strong></span>
+</div>
+</div>
+<!-- Primary Statement & Clear Typography -->
+<div class="space-y-2 relative z-10">
+<h1 class="font-headline-md text-[21px] md:text-[23px] text-on-surface font-semibold leading-snug" data-i18n="sp_t1">
+أنت الآن تستخدم <span class="font-code-telemetry font-bold text-primary font-argus">ARGUS</span><span data-i18n="sp_t2">.. متخصص بالبحث بـ</span> <span class="text-[#38bdf8] font-semibold" data-i18n="sp_eyes">100 عين</span> <span data-i18n="sp_t3">من أجل مساعدتك</span> </h1>
+<p class="font-body-md text-[13.5px] text-on-surface-variant leading-relaxed" data-i18n="sp_sub">
+محرك البحث فائق الأمان والخصوصية المبني لحماية هويتك الرقمية وتوفير نتائج استخباراتية عميقة ودقيقة بدون أي أثر رقمي.
+</p>
+</div>
+<!-- Security & Privacy Attestation Matrix (Utilitarian Modular Table Styled to Royal Blue & Deep Midnight Navy) -->
+<div class="border border-[#1b2742] rounded bg-[#0b1326] divide-y divide-[#151f36] text-[13px] relative z-10 shadow-inner">
+<!-- Item 01 -->
+<div class="p-3.5 flex items-start gap-3.5 hover:bg-[#0f1a34] transition-colors">
+<span class="font-code-telemetry text-[11px] text-primary font-semibold pt-0.5">01</span>
+<div class="flex-1 flex flex-col md:flex-row md:items-baseline md:justify-between gap-1">
+<div>
+<span class="font-semibold text-on-surface" data-i18n="sp_a1t">درع الأمان التام:</span>
+<span class="text-on-surface-variant mr-1" data-i18n="sp_a1d">تحصين كامل ضد حقن البيانات وتسريب الاستعلامات</span>
+</div>
+<span class="font-code-telemetry text-[11px] text-[#93c5fd] border border-blue-500/30 bg-blue-500/10 px-2.5 py-0.5 rounded w-max dir-ltr shrink-0 font-medium">SHA-256 Verified</span>
+</div>
+</div>
+<!-- Item 02 -->
+<div class="p-3.5 flex items-start gap-3.5 hover:bg-[#0f1a34] transition-colors">
+<span class="font-code-telemetry text-[11px] text-[#38bdf8] font-semibold pt-0.5">02</span>
+<div class="flex-1 flex flex-col md:flex-row md:items-baseline md:justify-between gap-1">
+<div>
+<span class="font-semibold text-on-surface" data-i18n="sp_a2t">انعدام التتبع:</span>
+<span class="text-on-surface-variant mr-1" data-i18n="sp_a2d">حظر ملفات الارتباط التابعة لأطراف ثالثة وبصمات المتصفح</span>
+</div>
+<span class="font-code-telemetry text-[11px] text-[#38bdf8] border border-sky-500/30 bg-sky-500/10 px-2.5 py-0.5 rounded w-max dir-ltr shrink-0 font-medium">Zero Fingerprinting</span>
+</div>
+</div>
+<!-- Item 03 -->
+<div class="p-3.5 flex items-start gap-3.5 hover:bg-[#0f1a34] transition-colors">
+<span class="font-code-telemetry text-[11px] text-primary font-semibold pt-0.5">03</span>
+<div class="flex-1 flex flex-col md:flex-row md:items-baseline md:justify-between gap-1">
+<div>
+<span class="font-semibold text-on-surface" data-i18n="sp_a3t">معالجة مؤقتة مشفرة:</span>
+<span class="text-on-surface-variant mr-1" data-i18n="sp_a3d">لا حفظ في قواعد بيانات؛ تخزين متطاير (Volatile RAM) يُمسح فور إغلاق الجلسة</span>
+</div>
+<span class="font-code-telemetry text-[11px] text-[#bfdbfe] border border-[#23355b] bg-[#111a33] px-2.5 py-0.5 rounded w-max dir-ltr shrink-0 font-medium">Volatile RAM Only</span>
+</div>
+</div>
+<!-- Item 04 -->
+<div class="p-3.5 flex items-start gap-3.5 hover:bg-[#0f1a34] transition-colors">
+<span class="font-code-telemetry text-[11px] text-[#38bdf8] font-semibold pt-0.5">04</span>
+<div class="flex-1 flex flex-col md:flex-row md:items-baseline md:justify-between gap-1">
+<div>
+<span class="font-semibold text-on-surface" data-i18n="sp_a4t">تشفير كامل للمسار:</span>
+<span class="text-on-surface-variant mr-1" data-i18n="sp_a4d">توجيه عبر خوادم آمنة متعددة الطبقات</span>
+</div>
+<span class="font-code-telemetry text-[11px] text-[#38bdf8] border border-blue-500/40 bg-[#0e1d3d] px-2.5 py-0.5 rounded w-max dir-ltr shrink-0 font-medium">AES-256-GCM / ECH Enabled</span>
+</div>
+</div>
+</div>
+<!-- Footer Action & Telemetry Metadata -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1 relative z-10">
+<!-- Cryptographic Attestation Metadata -->
+<div class="flex items-center gap-2 font-code-telemetry text-[11.5px] text-on-surface-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_6px_#3b82f6]"></span>
+<span>Session: <span class="text-[#60a5fa] font-semibold">#ARG-9942</span></span>
+<span class="text-[#223152]">|</span>
+<span>TOR-Routing</span>
+<span class="text-[#223152]">|</span>
+<span>Perfect Forward Secrecy</span>
+</div>
+<!-- High-Contrast Bright Royal Blue CTA Button -->
+<button class="w-full sm:w-auto px-6 py-2.5 bg-[#2563eb] hover:bg-[#1d4ed8] active:bg-[#1e40af] text-white font-medium text-[13.5px] rounded border border-blue-400/60 shadow-[0_4px_14px_rgba(37,99,235,0.45)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.6)] transition-all flex items-center justify-center gap-2.5 cursor-pointer active:translate-y-0.5 select-none" id="close-splash-btn" type="button">
+<span class="font-semibold text-white tracking-wide" data-i18n="sp_enter">ابدأ البحث الآمن</span>
+<kbd class="font-code-telemetry text-[10px] px-1.5 py-0.5 rounded bg-white/20 text-white border border-white/35 font-semibold uppercase tracking-wider">Enter</kbd>
+</button>
+</div>
+</div>
+</div>
+<!-- Background Search Console Dashboard -->
+<div class="w-full max-w-7xl mx-auto px-space-md md:px-margin py-space-lg flex flex-col gap-space-xl relative z-10">
+<!-- Top Tactical Status Bar -->
+<div class="flex flex-wrap items-center justify-between gap-space-md p-space-md rounded border border-[#1b2742] bg-[#091024]/90 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs px-space-sm py-1 rounded bg-[#0f1a36] border border-[#1e2f52]">
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_#3b82f6]"></span>
+<span class="font-code-telemetry text-code-telemetry text-[#93c5fd] font-bold" data-i18n="sp_sync">100/100 عين استطلاع متزامنة</span>
+</div>
+<span class="hidden md:inline font-code-telemetry text-code-telemetry text-on-surface-variant">زمن الاستجابة: 12ms</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="font-code-telemetry text-code-telemetry text-secondary">عقد التشفير: زيورخ / ريكيافيك / سنغافورة</span>
+<button class="px-space-sm py-1 rounded border border-[#1b2742] bg-[#0e172e] hover:bg-[#182547] text-on-surface font-body-sm text-body-sm transition-colors flex items-center gap-space-xs" id="reopen-splash-btn" title="معلومات الأمان" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">info</span>
+<span>بروتوكول الأمان</span>
+</button>
+</div>
+</div>
+<!-- Central Hero & Futuristic Search Matrix Bar -->
+<div class="flex flex-col items-center text-center my-space-md space-y-space-md">
+<div class="inline-flex items-center gap-space-xs px-3 py-1 rounded border border-[#1b2742] bg-[#091024] shadow-sm">
+<span class="font-code-telemetry text-[11px] text-primary font-bold">● SECURE</span>
+<span class="font-code-telemetry text-[11px] text-on-surface-variant font-medium">ARGUS DEEP-SEARCH MATRIX v4.9</span>
+</div>
+<h2 class="font-display-hero-mobile md:font-display-hero text-display-hero-mobile md:text-display-hero text-on-surface font-bold tracking-tight">
+        ابحث بحرية. <span class="text-primary font-bold">بـ 100 عين</span> تحميك.
+      </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+        استكشف شبكة الويب المفتوحة ومصادر التهديدات بدون تتبع أو بصمات رقمية. لا سجلات. لا تلاعب بالنتائج.
+      </p>
+<!-- Advanced Main Search Box Input -->
+<div class="w-full max-w-3xl mt-space-md">
+<div class="relative flex items-center bg-[#080f21] border border-[#1b2742] rounded shadow-[0_10px_30px_rgba(2,6,23,0.7)] p-space-xs transition-all duration-300 focus-within:border-primary focus-within:shadow-[0_0_20px_rgba(59,130,246,0.25)]">
+<div class="p-space-md text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</div>
+<input class="w-full bg-transparent text-on-surface placeholder:text-on-surface-variant/60 font-body-lg text-body-lg focus:outline-none px-space-xs py-space-sm" dir="rtl" placeholder="اكتب استعلامك الأمني، النطاق المستهدف، أو الموضوع السري للبحث بـ 100 عين..." type="text" value="تحليل تسريبات البيانات الأمنية 2024"/>
+<div class="flex items-center gap-space-xs px-space-sm">
+<button class="p-space-xs text-on-surface-variant hover:text-primary transition-colors" title="إدخال صوتي مشفر" type="button">
+<span class="material-symbols-outlined text-[20px]">mic</span>
+</button>
+<button class="p-space-xs text-on-surface-variant hover:text-secondary transition-colors" title="وضع المحطة الطرفية (Terminal)" type="button">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+</button>
+<button class="px-space-lg py-space-sm rounded bg-[#2563eb] text-white font-headline-sm text-body-md font-bold hover:bg-[#1d4ed8] active:scale-95 transition-all shadow-md border border-blue-400/50" type="button">
+              استكشاف
+            </button>
+</div>
+</div>
+<!-- Search Mode Filters Tray -->
+<div class="flex items-center justify-center flex-wrap gap-space-sm mt-space-md font-code-telemetry text-code-telemetry">
+<button class="px-space-md py-1.5 rounded border border-blue-500/40 bg-[#0e1d3d] text-primary flex items-center gap-space-xs font-semibold shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">public</span>
+<span>الويب المفتوح</span>
+</button>
+<button class="px-space-md py-1.5 rounded border border-[#1b2742] bg-[#091024] text-on-surface-variant hover:text-on-surface hover:bg-[#0f1a36] transition-colors flex items-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[16px]">shield_lock</span>
+<span>الثغرات والتهديدات</span>
+</button>
+<button class="px-space-md py-1.5 rounded border border-[#1b2742] bg-[#091024] text-on-surface-variant hover:text-on-surface hover:bg-[#0f1a36] transition-colors flex items-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[16px]">database</span>
+<span>قواعد بيانات التسريب</span>
+</button>
+<button class="px-space-md py-1.5 rounded border border-[#1b2742] bg-[#091024] text-on-surface-variant hover:text-on-surface hover:bg-[#0f1a36] transition-colors flex items-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[16px]">fingerprint</span>
+<span>أبحاث الهوية الرقمية</span>
+</button>
+<button class="px-space-md py-1.5 rounded border border-[#1b2742] bg-[#091024] text-on-surface-variant hover:text-on-surface hover:bg-[#0f1a36] transition-colors flex items-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>تصفية مخصصة</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Telemetry Panels & Live Results Mockup Preview -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg mt-space-md">
+<!-- Left Panel (8 Cols in RTL): Search Stream & Discovered Nodes -->
+<div class="lg:col-span-8 flex flex-col gap-space-md">
+<div class="flex items-center justify-between font-headline-sm text-headline-sm text-on-surface">
+<div class="flex items-center gap-space-sm">
+<span>النتائج المستطلعة عبر 100 عين</span>
+<span class="text-body-sm text-on-surface-variant font-code-telemetry">(4,812 نتيجة خلال 0.04 ثانية)</span>
+</div>
+<span class="font-code-telemetry text-code-telemetry text-primary">آمن 100% • لا بصمات</span>
+</div>
+<!-- Result Card 1 -->
+<div class="p-space-lg rounded border border-[#1b2742] bg-[#091024]/90 hover:border-[#2a3f6a] transition-all group flex flex-col gap-space-sm">
+<div class="flex items-center justify-between text-code-telemetry text-on-surface-variant">
+<div class="flex items-center gap-space-xs font-code-telemetry">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="text-primary font-bold">CVE-RECON-VAULT</span>
+<span>•</span>
+<span class="dir-ltr text-left">https://security.node.is/advisory/2024-deep-report</span>
+</div>
+<span class="px-space-xs py-0.5 rounded border border-blue-500/30 bg-blue-500/10 text-[#93c5fd] text-[10px] font-bold">مشفر ومرئي</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors cursor-pointer">
+            دليل استباقي حول حماية المؤسسات الرقمية من تسريبات قواعد البيانات 2024
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            فحص شامل لأبرز 100 ناقل هجوم تم رصدها هذا العام، مع نماذج التحقق دون كشف هوية المستعلم، وتحليل تدفقات الذاكرة المشفرة...
+          </p>
+<div class="flex flex-wrap items-center gap-space-md pt-space-xs font-code-telemetry text-code-telemetry text-on-surface-variant">
+<span class="text-secondary">TLS 1.3 / ChaCha20</span>
+<span>الخادم: آيسلندا (Privacy Shield)</span>
+<span>التقييم: موثوق ومعزول</span>
+</div>
+</div>
+<!-- Result Card 2 -->
+<div class="p-space-lg rounded border border-[#1b2742] bg-[#091024]/90 hover:border-[#2a3f6a] transition-all group flex flex-col gap-space-sm">
+<div class="flex items-center justify-between text-code-telemetry text-on-surface-variant">
+<div class="flex items-center gap-space-xs font-code-telemetry">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="text-secondary font-bold">CRYPTO-INTEL</span>
+<span>•</span>
+<span class="dir-ltr text-left">https://zero-trace.research.net/osint/privacy-first</span>
+</div>
+<span class="px-space-xs py-0.5 rounded border border-secondary/30 bg-secondary/10 text-secondary text-[10px] font-bold">فحص معمق</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary transition-colors cursor-pointer">
+            كيف تعيد تقنيات Zero-Knowledge بناء محركات البحث الاستخباراتية؟
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            استعراض البنية المرجعية المستخدمة في محرك ARGUS لتفكيك الاستعلامات وتوزيعها على 100 مسار مشفر لمنع ربط النمط بالسلوك الفردي.
+          </p>
+<div class="flex flex-wrap items-center gap-space-md pt-space-xs font-code-telemetry text-code-telemetry text-on-surface-variant">
+<span class="text-secondary">ECH نشط</span>
+<span>عقدة الاتصال: سويسرا (Zero-Log)</span>
+<span>زمن التشفير: 0.8ms</span>
+</div>
+</div>
+</div>
+<!-- Right Panel (4 Cols in RTL): Live Security Telemetry & Metrics -->
+<div class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- Live Eyes Telemetry Widget -->
+<div class="p-space-lg rounded border border-[#1b2742] bg-[#091024]/90 flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-[16px] text-on-surface font-bold">مصفوفة الرصد (100 عين)</span>
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_#3b82f6]"></span>
+</div>
+<!-- Micro Grid of 100 Sensing Nodes (Clean Vector Aesthetic) -->
+<div class="p-space-sm rounded bg-[#060b17] border border-[#1b2742]">
+<div class="grid grid-cols-10 gap-1.5" id="eyes-grid">
+<!-- Dynamically populated 100 dots via loop -->
+</div>
+</div>
+<div class="flex items-center justify-between text-code-telemetry text-on-surface-variant font-code-telemetry">
+<span>العقد النشطة: 100 / 100</span>
+<span class="text-primary font-bold">سلامة المسار 100%</span>
+</div>
+</div>
+<!-- Privacy Shield Status Box -->
+<div class="p-space-lg rounded border border-[#1b2742] bg-[#091024]/90 space-y-space-md">
+<div class="flex items-center gap-space-sm text-on-surface">
+<span class="material-symbols-outlined text-primary text-[20px]">verified</span>
+<span class="font-headline-sm text-[16px] font-bold">ضمانات خصوصية الجلسة</span>
+</div>
+<ul class="space-y-space-sm font-body-sm text-body-sm text-on-surface-variant">
+<li class="flex items-center justify-between">
+<span>عنوان IP الحقيقي:</span>
+<span class="font-code-telemetry text-primary font-semibold">محجوب تماماً (Proxy Onion)</span>
+</li>
+<li class="flex items-center justify-between">
+<span>بصمة المتصفح (Fingerprint):</span>
+<span class="font-code-telemetry text-secondary font-semibold">عشوائية ومبدلة</span>
+</li>
+<li class="flex items-center justify-between">
+<span>تشفير DNS:</span>
+<span class="font-code-telemetry text-on-surface font-semibold">DoH / DNSSEC</span>
+</li>
+<li class="flex items-center justify-between">
+<span>تخزين السجل المحلي:</span>
+<span class="font-code-telemetry text-primary font-semibold">معطل (RAM فقط)</span>
+</li>
+</ul>
+<div class="p-space-sm rounded border border-[#1b2742] bg-[#060b17] flex items-center justify-between text-code-telemetry text-on-surface-variant">
+<span>معرف التحقق الفوري:</span>
+<span class="text-secondary font-code-telemetry font-bold">SHA-0994-SEC</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    // Generate the 100 Eyes Matrix Micro-Visualizer in Royal Blue & Sky Accents
+    const gridContainer = document.getElementById('eyes-grid');
+    if (gridContainer && gridContainer.children.length === 0) {
+      for (let i = 0; i < 100; i++) {
+        const dot = document.createElement('div');
+        const isSky = i % 7 === 0;
+        dot.className = `w-full aspect-square rounded-[1px] ${isSky ? 'bg-[#38bdf8]/85' : 'bg-[#2563eb]/85'} hover:opacity-100 hover:scale-110 transition-all cursor-pointer`;
+        dot.title = `العين الرصدية #${i + 1}: نشطة ومؤمنة`;
+        gridContainer.appendChild(dot);
+      }
+    }
+
+    // Modal Interaction Handlers
+    const splashModal = document.getElementById('argus-splash-modal');
+    const closeBtn = document.getElementById('close-splash-btn');
+    const reopenBtn = document.getElementById('reopen-splash-btn');
+
+    function closeModal() {
+      if (splashModal) {
+        splashModal.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => {
+          splashModal.classList.add('hidden');
+        }, 300);
+      }
+    }
+
+    function openModal() {
+      if (splashModal) {
+        splashModal.classList.remove('hidden');
+        setTimeout(() => {
+          splashModal.classList.remove('opacity-0', 'pointer-events-none');
+        }, 10);
+      }
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeModal);
+    }
+
+    if (reopenBtn) {
+      reopenBtn.addEventListener('click', openModal);
+    }
+
+    // Enter / Escape Key Listener to dismiss
+    window.addEventListener('keydown', (e) => {
+      if ((e.key === 'Escape' || e.key === 'Enter') && splashModal && !splashModal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+  })();
+</script></main><footer class="w-full bg-[#050811] border-t border-[#1b2640] py-space-sm relative z-10"><div class="w-full px-margin flex flex-col md:flex-row items-center justify-between gap-space-xs font-code-telemetry text-code-telemetry text-on-surface-variant"><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_#3b82f6]"></span><span data-i18n="foot_status">حالة الاتصال: مشفر بالكامل | لا يتم حفظ السجل | صفر تتبع</span></div><div class="flex items-center gap-space-md"><span class="text-secondary">TLS 1.3 / ECH ENABLED</span><span>ARGUS PROTOCOL v4.9.2</span></div></div></footer>
+</div>
+<div id="app">
+
+<!-- Elegant Spiderweb Network Topology Vector Backdrop -->
+<div class="fixed inset-0 pointer-events-none network-spiderweb-bg z-0 opacity-80"></div>
+<svg class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-[0.14]" preserveaspectratio="xMidYMid slice" viewbox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialgradient cx="50%" cy="38%" id="webGlow" r="50%">
+<stop offset="0%" stop-color="#3b82f6" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#060b17" stop-opacity="0"></stop>
+</radialgradient>
+</defs>
+<!-- Concentric spiderweb radar polys -->
+<polygon fill="none" points="720,160 890,210 990,340 940,490 720,550 500,490 450,340 550,210" stroke="#ffffff" stroke-dasharray="3 3" stroke-width="0.8"></polygon>
+<polygon fill="none" points="720,90 990,160 1140,340 1060,560 720,650 380,560 300,340 450,160" stroke="#ffffff" stroke-width="0.9"></polygon>
+<polygon fill="none" points="720,20 1080,100 1280,340 1190,630 720,740 250,630 160,340 360,100" stroke="#ffffff" stroke-dasharray="4 4" stroke-width="0.8"></polygon>
+<!-- Network spokes radiating from center -->
+<line stroke="#ffffff" stroke-width="0.8" x1="720" x2="720" y1="20" y2="740"></line>
+<line stroke="#ffffff" stroke-width="0.8" x1="360" x2="1080" y1="100" y2="580"></line>
+<line stroke="#ffffff" stroke-width="0.8" x1="160" x2="1280" y1="340" y2="340"></line>
+<line stroke="#ffffff" stroke-width="0.8" x1="250" x2="1190" y1="630" y2="50"></line>
+<line stroke="#ffffff" stroke-width="0.8" x1="1080" x2="360" y1="100" y2="580"></line>
+<!-- Node Intersections (Tech constellation) -->
+<circle cx="720" cy="340" fill="#3b82f6" r="3"></circle>
+<circle cx="890" cy="210" fill="#ffffff" r="2"></circle>
+<circle cx="990" cy="340" fill="#60a5fa" r="2.5"></circle>
+<circle cx="940" cy="490" fill="#ffffff" r="2"></circle>
+<circle cx="720" cy="550" fill="#60a5fa" r="2.5"></circle>
+<circle cx="500" cy="490" fill="#ffffff" r="2"></circle>
+<circle cx="450" cy="340" fill="#60a5fa" r="2.5"></circle>
+<circle cx="550" cy="210" fill="#ffffff" r="2"></circle>
+<circle cx="720" cy="160" fill="#60a5fa" r="2.5"></circle>
+<circle cx="990" cy="160" fill="#ffffff" r="2"></circle>
+<circle cx="1140" cy="340" fill="#3b82f6" r="3"></circle>
+<circle cx="1060" cy="560" fill="#ffffff" r="2"></circle>
+<circle cx="720" cy="650" fill="#3b82f6" r="2.5"></circle>
+<circle cx="380" cy="560" fill="#ffffff" r="2"></circle>
+<circle cx="300" cy="340" fill="#3b82f6" r="3"></circle>
+<circle cx="450" cy="160" fill="#ffffff" r="2"></circle>
+</svg>
+<!-- Header: Sleek, compact top navigation bar (Linear / Raycast aesthetic) -->
+<header class="fixed top-0 left-0 right-0 z-50 h-12 bg-surface-canvas/90 backdrop-blur-md border-b border-surface-border">
+<div class="h-full max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+<!-- Brand & Security Indicators -->
+<div class="flex items-center gap-4">
+<a class="flex items-center gap-2 group py-1" href="#">
+<div class="w-4 h-4 rounded-[3px] bg-primary/20 border border-primary/50 flex items-center justify-center shadow-[0_0_8px_rgba(59,130,246,0.4)]">
+<span class="w-1.5 h-1.5 rounded-[1px] bg-primary"></span>
+</div>
+<span class="font-display-hero text-sm font-bold tracking-wider text-on-surface group-hover:text-primary transition-colors">ARGUS</span>
+</a>
+<div class="h-3.5 w-px bg-surface-border hidden sm:block"></div>
+<!-- Telemetry Indicators in Header -->
+<div class="hidden sm:flex items-center gap-3 text-xs font-code-telemetry text-text-dim">
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_rgba(59,130,246,0.8)]"></span>
+<span class="text-on-surface-variant" data-i18n="net_secure">شبكة مشفرة TLS 1.3</span>
+</div>
+<span class="text-surface-border">/</span>
+<span class="text-on-surface-variant">DNS over HTTPS</span>
+<span class="text-surface-border">/</span>
+<span class="text-on-surface-variant" data-i18n="net_zero">0 ملفات تعريف</span>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="hidden md:flex items-center gap-1 bg-surface-subtle p-0.5 rounded-[5px] border border-surface-border">
+<a aria-current="page" class="px-3 py-1 rounded-[4px] text-xs font-medium bg-surface-elevated text-primary border border-primary/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]" href="#" data-i18n="nav_search">البحث الأمني</a>
+<a class="px-3 py-1 rounded-[4px] text-xs font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#" data-i18n="nav_threats">استطلاع التهديدات</a>
+<a class="px-3 py-1 rounded-[4px] text-xs font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#" data-i18n="nav_vault">الخزينة المشفرة</a>
+<a class="px-3 py-1 rounded-[4px] text-xs font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#" data-i18n="nav_privacy">فحص الخصوصية</a>
+</nav>
+<!-- Utility Actions -->
+<div class="flex items-center gap-2">
+<button class="w-7 h-7 flex items-center justify-center rounded-[4px] border border-surface-border bg-surface-subtle text-on-surface-variant hover:text-on-surface hover:border-text-dim transition-colors" title="وضع الإضاءة" data-i18n-tip="tip_theme" type="button">
+<span class="material-symbols-outlined text-[15px]">dark_mode</span>
+</button>
+<details class="relative" id="settings-wrap-2">
+<summary id="settings-btn-2" class="w-7 h-7 flex items-center justify-center rounded-[4px] border border-surface-border bg-surface-subtle text-on-surface-variant hover:text-on-surface hover:border-text-dim transition-colors cursor-pointer" data-i18n-tip="tip_settings" title="إعدادات الخصوصية" style="list-style:none">
+<span class="material-symbols-outlined text-[20px] pointer-events-none">settings</span>
+</summary>
+<div id="settings-menu" class="absolute end-0 top-full mt-2 w-60 rounded-[6px] border border-surface-border bg-surface-elevated shadow-[0_12px_40px_rgba(0,0,0,0.45)] z-50 p-2">
+<div class="px-2 pt-1 pb-1.5 font-code-telemetry text-[10px] text-text-dim" data-i18n="set_language">اللغة</div>
+<div id="set-langs" class="grid grid-cols-2 gap-1"><button type="button" data-setlang="ar" onclick="pickLang('ar')" class="set-opt"><span>العربية</span></button><button type="button" data-setlang="en" onclick="pickLang('en')" class="set-opt"><span>English</span></button><button type="button" data-setlang="ru" onclick="pickLang('ru')" class="set-opt"><span>Русский</span></button><button type="button" data-setlang="zh" onclick="pickLang('zh')" class="set-opt"><span>中文</span></button><button type="button" data-setlang="es" onclick="pickLang('es')" class="set-opt"><span>Español</span></button><button type="button" data-setlang="fr" onclick="pickLang('fr')" class="set-opt"><span>Français</span></button></div>
+<div class="my-2 border-t border-surface-border-subtle"></div>
+<div class="px-2 pt-1 pb-1.5 font-code-telemetry text-[10px] text-text-dim" data-i18n="set_theme">المظهر</div>
+<div id="set-themes" class="flex flex-col gap-1"><button type="button" data-settheme="system" onclick="pickTheme('system')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">settings_suggest</span><span data-i18n="theme_system" class="pointer-events-none">حسب النظام</span></span></button><button type="button" data-settheme="dark" onclick="pickTheme('dark')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">dark_mode</span><span data-i18n="theme_dark" class="pointer-events-none">داكن</span></span></button><button type="button" data-settheme="light" onclick="pickTheme('light')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">light_mode</span><span data-i18n="theme_light" class="pointer-events-none">فاتح</span></span></button></div>
+</div>
+<div class="px-3 py-1.5 text-[10px] text-text-dim font-code-telemetry border-t border-surface-border" dir="ltr">build 2026-10-17-v4</div>
+</details>
+<div class="w-7 h-7 rounded-[4px] border border-primary/40 bg-surface-elevated flex items-center justify-center text-xs font-code-telemetry text-primary font-medium shadow-[0_0_8px_rgba(59,130,246,0.25)]">
+          OP
+        </div>
+</div>
+</div>
+</header>
+<!-- Main Work Area -->
+<main class="w-full pt-12 flex-1 flex flex-col bg-transparent relative z-10">
+<div class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14 flex flex-col items-center flex-1 justify-center">
+<!-- Technical Moniker & Refined Typographical Logo -->
+<div class="text-center mb-8 select-none">
+<div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-[4px] border border-surface-border bg-surface-subtle/80 backdrop-blur-sm font-code-telemetry text-[11px] text-text-dim mb-3 shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_rgba(59,130,246,0.9)]"></span>
+<span>SECURE RECON // VER. 4.9.2</span>
+<span class="text-surface-border">|</span>
+<span class="text-primary font-medium">ISOLATED ENCLAVE</span>
+</div>
+<h1 class="font-display-hero text-4xl sm:text-5xl font-bold tracking-tight text-on-surface mb-2 font-argus">
+          ARGUS
+        </h1>
+<p class="font-body text-xs sm:text-sm text-text-dim max-w-md mx-auto" data-i18n="hero_sub">
+          محرك بحث واستطلاع تقني محايد — بدون تتبع، بدون تخزين سجلات، وبتوجيه مشفر
+        </p>
+</div>
+<!-- Precision Search Bar -->
+<div class="w-full">
+<div class="relative w-full rounded-[6px] border border-surface-border bg-surface-subtle/90 backdrop-blur-md focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/50 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<div class="flex items-center px-3.5 py-2.5 gap-3">
+<!-- Search Icon (embedded sharp SVG aesthetic) -->
+<svg class="w-4 h-4 text-text-dim shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="11" cy="11" r="8"></circle>
+<line x1="21" x2="16.65" y1="21" y2="16.65"></line>
+</svg>
+<!-- Text Input -->
+<input class="w-full bg-transparent border-0 outline-none p-0 text-sm text-on-surface placeholder:text-text-dim focus:ring-0 focus:outline-none" id="main-query-input" data-i18n-ph="search_ph" placeholder="أدخل استعلام الاستطلاع أو الكلمات المفتاحية..." type="text" value="الأمن السيبراني والبنى التحتية الحيوية 2025"/>
+<!-- Clear Action -->
+<button class="text-text-dim hover:text-on-surface p-1 rounded transition-colors" id="clear-btn" title="مسح" type="button">
+<span class="material-symbols-outlined text-[16px] block">close</span>
+</button>
+<!-- Keycap Cue [Ctrl + K] -->
+<div class="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded-[3px] border border-surface-border bg-surface-elevated font-code-telemetry text-[10px] text-text-dim select-none">
+<span class="font-sans text-[11px]">⌃</span>K
+            </div>
+<!-- Submit Button (Bright Royal Blue Action) -->
+<button class="shrink-0 px-3.5 py-1.5 rounded-[4px] bg-primary text-white font-medium text-xs hover:bg-primary-hover active:scale-[0.98] transition-all shadow-[0_0_14px_rgba(37,99,235,0.45)] border border-blue-400/30" type="button" id="lgo"><span data-i18n="btn_search">بحث</span></button>
+</div>
+<!-- Quick Syntax Helpers in the search bar footer -->
+<div class="px-3.5 py-1.5 border-t border-surface-border-subtle bg-surface-canvas/60 rounded-b-[5px] flex items-center justify-between text-[11px] font-code-telemetry text-text-dim overflow-x-auto">
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-text-dim" data-i18n="ops_label">محددات سريعة:</span>
+<button class="px-1.5 py-0.5 rounded hover:bg-surface-elevated hover:text-on-surface transition-colors cursor-pointer border border-transparent hover:border-surface-border" type="button" data-op="filetype:pdf">filetype:pdf</button>
+<button class="px-1.5 py-0.5 rounded hover:bg-surface-elevated hover:text-on-surface transition-colors cursor-pointer border border-transparent hover:border-surface-border" type="button" data-op="site:.gov">site:.gov</button>
+<button class="px-1.5 py-0.5 rounded hover:bg-surface-elevated hover:text-on-surface transition-colors cursor-pointer border border-transparent hover:border-surface-border" type="button" data-op=""exact match"">"exact match"</button>
+<button class="px-1.5 py-0.5 rounded hover:bg-surface-elevated hover:text-on-surface transition-colors cursor-pointer border border-transparent hover:border-surface-border" type="button" data-op="after:2024">after:2024</button>
+</div>
+<div class="hidden sm:flex items-center gap-1.5 text-text-dim">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_rgba(59,130,246,0.8)]"></span>
+<span>256-BIT ENCRYPTION</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Advanced Query Matrix (Modular Developer/Analyst Grid) -->
+<div class="w-full mt-4 rounded-[6px] border border-surface-border bg-surface-subtle/85 backdrop-blur-md p-3.5 sm:p-4 shadow-[0_4px_20px_rgba(0,0,0,0.35)]">
+<div class="flex items-center justify-between pb-3 mb-3 border-b border-surface-border">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[15px]">tune</span>
+<span class="font-code-telemetry text-xs font-semibold text-on-surface tracking-wide">QUERY MATRIX // <span data-i18n="qm_sub">محددات الاستطلاع المتقدمة</span></span>
+</div>
+<span class="font-code-telemetry text-[10px] text-text-dim">PARAM_FILTER_STRICT_MODE</span>
+</div>
+<!-- 3-Column Parameter Control -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<!-- Control 1: Time Scope (Segmented Tab Selector) -->
+<div class="flex flex-col gap-1.5">
+<span class="font-code-telemetry text-[11px] text-text-dim" data-i18n="time_label">نطاق التوقيت (TIME SCOPE)</span>
+<div class="flex flex-wrap gap-0.5 bg-surface-canvas p-0.5 rounded-[4px] border border-surface-border text-center font-code-telemetry text-xs">
+<button style="flex:1 1 0;min-width:70px" data-days="any" data-tbtn class="py-1 rounded-[3px] bg-primary text-white font-medium border border-blue-400/40 shadow-[0_0_8px_rgba(37,99,235,0.35)] transition-colors" type="button" data-i18n="t_all">الكل</button><button style="flex:1 1 0;min-width:70px" data-days="1" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_24h">24س</button>
+<button style="flex:1 1 0;min-width:70px" data-days="7" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_7d">7أيام</button>
+<button style="flex:1 1 0;min-width:70px" data-days="30" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_month">شهر</button>
+<button style="flex:1 1 0;min-width:70px" data-days="365" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_year">سنة</button>
+<button style="flex:1 1 0;min-width:70px" data-days="365" data-tbtn class="py-1 rounded-[3px] text-text-dim hover:text-on-surface transition-colors" type="button" data-i18n="t_custom">مخصص</button>
+</div>
+</div>
+<!-- Control 2: File Format -->
+<div class="flex flex-col gap-1.5">
+<span class="font-code-telemetry text-[11px] text-text-dim" data-i18n="file_label">نوع المحتوى (FILE FORMAT)</span>
+<div class="relative">
+<select id="fcat" class="w-full appearance-none bg-surface-canvas rounded-[4px] border border-surface-border px-2.5 py-1 text-xs text-on-surface focus:outline-none focus:border-primary transition-colors cursor-pointer font-code-telemetry">
+<option selected="" value="all" data-i18n="f_all">جميع الصيغ والامتدادات</option>
+<option value="images" data-i18n="f_images">\U0001F5BC صور</option>
+<option value="video" data-i18n="f_video">\U0001F3AC فيديو</option>
+<option value="documents" data-i18n="f_docs">\U0001F4C4 مستندات (PDF / Word)</option>
+<option value="data" data-i18n="f_data">\U0001F4CA بيانات (JSON / CSV)</option>
+<option value="code" data-i18n="f_code">\U0001F4BB الكود البرمجي Source Code</option>
+<option value="apps" data-i18n="f_apps">\U0001F4F1 تطبيقات</option>
+</select>
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-text-dim pointer-events-none text-[15px]">expand_more</span>
+</div>
+</div>
+<!-- Control 3: Region & Routing -->
+<div class="flex flex-col gap-1.5">
+<span class="font-code-telemetry text-[11px] text-text-dim" data-i18n="region_label">المنطقة والمسار (REGION &amp; ROUTING)</span>
+<div class="relative">
+<select id="fregion" class="w-full appearance-none bg-surface-canvas rounded-[4px] border border-surface-border px-2.5 py-1 text-xs text-on-surface focus:outline-none focus:border-primary transition-colors cursor-pointer font-code-telemetry">
+<option value="mena" data-i18n="r_mena">العالم العربي والشرق الأوسط (MENA)</option>
+<option value="neutral" data-i18n="r_neutral">عقد محايدة (سويسرا، آيسلندا)</option>
+<option selected="" value="global" data-i18n="r_global">توجيه عالمي شامل</option>
+</select>
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-text-dim pointer-events-none text-[15px]">expand_more</span>
+</div>
+</div>
+</div>
+
+<!-- Control 4: Language -->
+<div class="flex flex-col gap-1.5">
+<span class="font-code-telemetry text-[11px] text-text-dim" data-i18n="lang_label">لغة البحث (LANGUAGE)</span>
+<div class="relative">
+<select id="flang" class="w-full appearance-none bg-surface-canvas rounded-[4px] border border-surface-border px-2.5 py-1 text-xs text-on-surface focus:outline-none focus:border-primary transition-colors cursor-pointer font-code-telemetry">
+<option selected="" value="auto" data-i18n="l_auto">تلقائي</option>
+<option value="ar" data-i18n="l_ar">العربية</option>
+<option value="en" data-i18n="l_en">English</option>
+<option value="es" data-i18n="l_es">الإسبانية</option>
+<option value="fr" data-i18n="l_fr">الفرنسية</option>
+<option value="ru" data-i18n="l_ru">الروسية</option>
+<option value="zh" data-i18n="l_zh">الصينية</option>
+<option value="all" data-i18n="l_all">\U0001F30D كل اللغات الست</option>
+</select>
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-text-dim pointer-events-none text-[15px]">expand_more</span>
+</div>
+</div>
+<!-- Precision Toggles (Royal blue switches) -->
+<div class="mt-3 pt-3 border-t border-surface-border grid grid-cols-1 sm:grid-cols-3 gap-3">
+<label class="flex items-center justify-between p-2 rounded-[4px] bg-surface-canvas/60 border border-surface-border-subtle cursor-pointer hover:border-surface-border transition-colors group">
+<div class="flex flex-col">
+<span class="text-xs font-medium text-on-surface" data-i18n="tg_exact">تطابق تام</span>
+<span class="font-code-telemetry text-[10px] text-text-dim">Strict Boolean Match</span>
+</div>
+<input id="mexact" checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-7 h-4 bg-surface-elevated rounded-full peer peer-checked:bg-primary transition-colors relative after:content-[''] after:absolute after:top-[2px] after:right-[2px] peer-checked:after:-translate-x-3 after:bg-on-surface peer-checked:after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+</label>
+<label class="flex items-center justify-between p-2 rounded-[4px] bg-surface-canvas/60 border border-surface-border-subtle cursor-pointer hover:border-surface-border transition-colors group">
+<div class="flex flex-col">
+<span class="text-xs font-medium text-on-surface" data-i18n="tg_deep">بحث معمق</span>
+<span class="font-code-telemetry text-[10px] text-text-dim">Deep Index &amp; Raw Recon</span>
+</div>
+<input id="mdeep" class="sr-only peer" type="checkbox"/>
+<div class="w-7 h-4 bg-surface-elevated rounded-full peer peer-checked:bg-primary transition-colors relative after:content-[''] after:absolute after:top-[2px] after:right-[2px] peer-checked:after:-translate-x-3 after:bg-on-surface peer-checked:after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+</label>
+<label class="flex items-center justify-between p-2 rounded-[4px] bg-surface-canvas/60 border border-surface-border-subtle cursor-pointer hover:border-surface-border transition-colors group">
+<div class="flex flex-col">
+<span class="text-xs font-medium text-on-surface" data-i18n="tg_strip">عزل الروابط التتبعية</span>
+<span class="font-code-telemetry text-[10px] text-text-dim">Strip UTM &amp; Click Trackers</span>
+</div>
+<input disabled title="مفعّل دائمًا" id="mstrip" checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-7 h-4 bg-surface-elevated rounded-full peer peer-checked:bg-primary transition-colors relative after:content-[''] after:absolute after:top-[2px] after:right-[2px] peer-checked:after:-translate-x-3 after:bg-on-surface peer-checked:after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+</label>
+</div>
+</div>
+<!-- Action Row & Popular Tags -->
+<div class="w-full mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+<!-- Minimal Popular Tags -->
+<div class="flex items-center gap-1.5 flex-wrap text-xs text-text-dim">
+<span class="font-code-telemetry text-[11px] text-text-dim" data-i18n="presets_label">استعلامات شائعة:</span>
+<button data-q="الأمن_السيبراني" class="px-2 py-0.5 rounded-[3px] bg-surface-subtle border border-surface-border text-on-surface-variant hover:text-primary hover:border-primary/40 font-code-telemetry text-[11px] transition-colors" type="button">
+            #الأمن_السيبراني
+          </button>
+<button data-q="الذكاء_الاصطناعي" class="px-2 py-0.5 rounded-[3px] bg-surface-subtle border border-surface-border text-on-surface-variant hover:text-primary hover:border-primary/40 font-code-telemetry text-[11px] transition-colors" type="button">
+            #الذكاء_الاصطناعي
+          </button>
+<button data-q="أوراق_بحثية" class="px-2 py-0.5 rounded-[3px] bg-surface-subtle border border-surface-border text-on-surface-variant hover:text-primary hover:border-primary/40 font-code-telemetry text-[11px] transition-colors" type="button">
+            #أوراق_بحثية
+          </button>
+</div>
+<!-- High-craft, Understated Action Buttons -->
+<div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
+<button id="lreset" class="px-3 py-1.5 rounded-[4px] border border-surface-border bg-surface-subtle text-on-surface-variant hover:text-on-surface hover:border-text-dim font-medium text-xs transition-colors" type="button" data-i18n="btn_reset">
+            إعادة ضبط
+          </button>
+<button class="px-4 py-1.5 rounded-[4px] bg-primary text-white font-semibold text-xs hover:bg-primary-hover active:scale-[0.98] transition-all shadow-[0_0_16px_rgba(37,99,235,0.45)] border border-blue-400/40" type="button" id="lgo2" data-i18n="btn_adv">
+            بحث متقدم
+          </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Status Bar / System Telemetry (Ultra-crisp bottom bar) -->
+
+<!-- Live Results -->
+<div class="w-full max-w-5xl mx-auto px-4 mt-6">
+<div id="lstatus" class="font-code-telemetry text-xs text-text-dim text-center"></div>
+<div class="flex justify-center mt-3">
+<button id="lreport" style="display:none" class="px-4 py-1.5 rounded-[4px] bg-primary text-white font-medium text-xs hover:bg-primary-hover transition-all shadow-[0_0_14px_rgba(37,99,235,0.45)]"><span data-i18n="btn_report">\U0001F4CB توليد تقرير التحقيق</span></button>
+</div>
+<div id="lresults" class="mt-4 flex flex-col gap-3"></div>
+<div class="flex justify-center mt-3"><button id="lmore" style="display:none" class="px-5 py-2 rounded-[4px] border border-blue-500/40 text-secondary font-medium text-xs hover:bg-blue-500/10 active:scale-[0.98] transition-all"></button></div>
+</div>
+<footer class="w-full border-t border-surface-border bg-surface-canvas/95 backdrop-blur-md h-8 flex items-center relative z-20">
+<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between font-code-telemetry text-[11px] text-text-dim">
+<!-- Telemetry Status Line -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_rgba(59,130,246,0.8)]"></span>
+<span>حالة الاتصال: مشفر بالكامل</span>
+</div>
+<span class="text-surface-border">/</span>
+<span class="hidden sm:inline">ZERO-LOG SHA-256 VERIFIED [0x8f2a]</span>
+<span class="text-surface-border hidden sm:inline">/</span>
+<span class="hidden md:inline">E2EE CONFIRMED</span>
+</div>
+<!-- Performance & Protocol Moniker -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5">
+<span class="text-text-dim">زمن الاستجابة:</span>
+<span class="text-primary font-medium">0.08s</span>
+</div>
+<span class="text-surface-border">/</span>
+<span class="text-on-surface-variant">ARGUS CORE v4.9.2</span>
+</div>
+</div>
+</footer>
+<script>
+    (function() {
+      const input = document.getElementById('main-query-input');
+      const clearBtn = document.getElementById('clear-btn');
+
+      if (clearBtn && input) {
+        clearBtn.addEventListener('click', function() {
+          input.value = '';
+          input.focus();
+        });
+      }
+
+      // Ctrl + K shortcut focus
+      window.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+          e.preventDefault();
+          if (input) {
+            input.focus();
+            input.select();
+          }
+        }
+      });
+    })();
+  </script>
+
+</div>
+<script>
+/* ARGUS UI language engine — 6 languages, browser detection */
+/* ARGUS UI translations: ar, en, ru, zh, es, fr */
+/* ARGUS UI translations: ar, en, ru, zh, es, fr */
+const I18N = {
+ar: {
+nav_search:"البحث الأمني", nav_threats:"استطلاع التهديدات", nav_vault:"الخزينة المشفرة", nav_privacy:"فحص الخصوصية",
+net_secure:"شبكة مشفرة", net_tls:"TLS 1.3", net_doh:"DNS over HTTPS", net_zero:"0 ملفات تعريف",
+sp_kicker:"ARGUS SECURITY CLEARANCE", sp_t1:"أنت الآن تستخدم", sp_t2:".. متخصص بالبحث بـ", sp_eyes:"100 عين", sp_t3:"من أجل مساعدتك",
+sp_sub:"محرك البحث فائق الأمان والخصوصية المبني لحماية هويتك الرقمية",
+sp_a1t:"درع الأمان التام:", sp_a1d:"تحصين كامل ضد حقن البيانات وتسريب الاستعلامات",
+sp_a2t:"انعدام التتبع:", sp_a2d:"حظر ملفات الارتباط التابعة لأطراف ثالثة وبصمات المتصفح",
+sp_a3t:"معالجة مؤقتة مشفرة:", sp_a3d:"لا حفظ في قواعد بيانات؛ تخزين متطاير يُمسح فور إغلاق الجلسة",
+sp_a4t:"تشفير كامل للمسار:", sp_a4d:"توجيه عبر خوادم آمنة متعددة الطبقات",
+sp_enter:"ابدأ البحث الآمن", sp_sync:"100/100 عين استطلاع متزامنة",
+hero_kicker:"ISOLATED ENCLAVE | SECURE RECON // VER. 4.9.2",
+hero_sub:"محرك بحث واستطلاع تقني محايد — بدون تتبع، بدون تخزين سجلات، وبتوجيه مشفر",
+search_ph:"أدخل استعلام الاستطلاع أو الكلمات المفتاحية...", ops_label:"محددات سريعة:", btn_search:"بحث",
+time_label:"نطاق التوقيت (TIME SCOPE)", t_all:"الكل", t_24h:"24س", t_7d:"7أيام", t_month:"شهر", t_year:"سنة", t_custom:"مخصص",
+file_label:"نوع المحتوى (FILE FORMAT)", f_all:"جميع الصيغ والامتدادات", f_images:"🖼 صور", f_video:"🎬 فيديو", f_docs:"📄 مستندات (PDF / Word)", f_data:"📊 بيانات (JSON / CSV)", f_code:"💻 الكود البرمجي Source Code", f_apps:"📱 تطبيقات",
+region_label:"المنطقة والمسار (REGION & ROUTING)", r_mena:"العالم العربي والشرق الأوسط (MENA)", r_neutral:"عقد محايدة (سويسرا، آيسلندا)", r_global:"توجيه عالمي شامل",
+lang_label:"لغة البحث (LANGUAGE)", l_auto:"تلقائي", l_ar:"العربية", l_en:"English", l_es:"الإسبانية", l_fr:"الفرنسية", l_ru:"الروسية", l_zh:"الصينية", l_all:"🌍 كل اللغات الست",
+tg_exact:"تطابق تام", tg_deep:"بحث معمق", tg_strip:"عزل الروابط التتبعية",
+btn_adv:"بحث متقدم", btn_reset:"إعادة ضبط", presets_label:"استعلامات شائعة:",
+st_searching:"⚡ جاري البحث في المصادر الحية…", st_results:"مصدر حي", st_error:"❌ تعذر البحث: ",
+btn_report:"📋 توليد تقرير التحقيق", btn_more:"المزيد ↓", btn_deep:"🔍 بحث أعمق",
+foot_status:"حالة الاتصال: مشفر بالكامل | لا يتم حفظ السجل | صفر تتبع",
+rep_title:"تقرير تحقيق ARGUS", rep_q:"الاستعلام:", rep_date:"التاريخ:", rep_sum:"ملخص تنفيذي",
+rep_sum_ph:"(اكتب 3-5 جمل، كل ادعاء موثق من المصادر أدناه)",
+rep_find:"أبرز النتائج من المصادر الحية", rep_src:"المصادر الرئيسية", rep_method:"ملاحظات المنهجية",
+rep_method_body:"المقتطفات مستخرجة آليًا؛ تحقق من الادعاءات المهمة في الصفحات الأصلية قبل النشر.",
+rep_src_link:"المصدر", ui_lang_label:"🌐 اللغة",
+hdr_vpn:"مشفر بالكامل / VPN Active", page_title:"ARGUS — محرك البحث الخاص", no_title:"بدون عنوان",
+tip_theme:"وضع الإضاءة", tip_settings:"إعدادات الخصوصية",
+set_language:"اللغة", set_theme:"المظهر", theme_system:"حسب النظام", theme_dark:"داكن", theme_light:"فاتح",
+sp_syslabel:"حالة النظام:", sp_sysval:"100% محصن", qm_sub:"محددات الاستطلاع المتقدمة"
+},
+en: {
+nav_search:"Secure Search", nav_threats:"Threat Intel", nav_vault:"Encrypted Vault", nav_privacy:"Privacy Audit",
+net_secure:"Encrypted network", net_tls:"TLS 1.3", net_doh:"DNS over HTTPS", net_zero:"0 trackers",
+sp_kicker:"ARGUS SECURITY CLEARANCE", sp_t1:"You are now using", sp_t2:".. specialized in searching with", sp_eyes:"100 eyes", sp_t3:"to help you",
+sp_sub:"An ultra-secure, privacy-first search engine built to protect your digital identity",
+sp_a1t:"Total security shield:", sp_a1d:"Full hardening against data injection and query leaks",
+sp_a2t:"Zero tracking:", sp_a2d:"Blocks third-party cookies and browser fingerprints",
+sp_a3t:"Encrypted ephemeral processing:", sp_a3d:"No database storage; volatile RAM wiped when the session ends",
+sp_a4t:"Full-path encryption:", sp_a4d:"Routing through multi-layer secure servers",
+sp_enter:"Start secure search", sp_sync:"100/100 recon eyes synchronized",
+hero_kicker:"ISOLATED ENCLAVE | SECURE RECON // VER. 4.9.2",
+hero_sub:"A neutral technical search & recon engine — no tracking, no log storage, encrypted routing",
+search_ph:"Enter your recon query or keywords...", ops_label:"Quick operators:", btn_search:"Search",
+time_label:"TIME SCOPE", t_all:"All", t_24h:"24h", t_7d:"7 days", t_month:"Month", t_year:"Year", t_custom:"Custom",
+file_label:"FILE FORMAT", f_all:"All formats", f_images:"🖼 Images", f_video:"🎬 Video", f_docs:"📄 Documents (PDF / Word)", f_data:"📊 Data (JSON / CSV)", f_code:"💻 Source Code", f_apps:"📱 Apps",
+region_label:"REGION & ROUTING", r_mena:"Arab world & Middle East (MENA)", r_neutral:"Neutral nodes (Switzerland, Iceland)", r_global:"Global routing",
+lang_label:"SEARCH LANGUAGE", l_auto:"Auto", l_ar:"Arabic", l_en:"English", l_es:"Spanish", l_fr:"French", l_ru:"Russian", l_zh:"Chinese", l_all:"🌍 All six languages",
+tg_exact:"Exact match", tg_deep:"Deep search", tg_strip:"Strip tracking links",
+btn_adv:"Advanced search", btn_reset:"Reset", presets_label:"Trending queries:",
+st_searching:"⚡ Searching live sources…", st_results:"live sources", st_error:"❌ Search failed: ",
+btn_report:"📋 Generate investigation report", btn_more:"More ↓", btn_deep:"🔍 Deeper search",
+foot_status:"Connection: fully encrypted | no logs kept | zero tracking",
+rep_title:"ARGUS Investigation Report", rep_q:"Query:", rep_date:"Date:", rep_sum:"Executive Summary",
+rep_sum_ph:"(Write 3-5 sentences, every claim cited from the sources below)",
+rep_find:"Top findings from live sources", rep_src:"Key Sources", rep_method:"Methodology Notes",
+rep_method_body:"Excerpts are machine-extracted; verify key claims against the original pages before publishing.",
+rep_src_link:"Source", ui_lang_label:"🌐 Language",
+hdr_vpn:"Fully encrypted / VPN Active", page_title:"ARGUS — Private Search Engine", no_title:"Untitled",
+tip_theme:"Theme", tip_settings:"Privacy settings",
+set_language:"Language", set_theme:"Appearance", theme_system:"System", theme_dark:"Dark", theme_light:"Light",
+sp_syslabel:"System status:", sp_sysval:"100% hardened", qm_sub:"Advanced recon filters"
+},
+ru: {
+nav_search:"Безопасный поиск", nav_threats:"Разведка угроз", nav_vault:"Шифрованное хранилище", nav_privacy:"Аудит приватности",
+net_secure:"Зашифрованная сеть", net_tls:"TLS 1.3", net_doh:"DNS over HTTPS", net_zero:"0 трекеров",
+sp_kicker:"ARGUS SECURITY CLEARANCE", sp_t1:"Вы используете", sp_t2:".. поиск со", sp_eyes:"100 глаз", sp_t3:"чтобы помочь вам",
+sp_sub:"Сверхбезопасная поисковая система, созданная для защиты вашей цифровой личности",
+sp_a1t:"Полный щит безопасности:", sp_a1d:"Защита от инъекций данных и утечек запросов",
+sp_a2t:"Нулевое отслеживание:", sp_a2d:"Блокировка сторонних cookie и отпечатков браузера",
+sp_a3t:"Шифрованная временная обработка:", sp_a3d:"Без баз данных; volatile RAM очищается после сессии",
+sp_a4t:"Сквозное шифрование:", sp_a4d:"Маршрутизация через многоуровневые защищённые серверы",
+sp_enter:"Начать безопасный поиск", sp_sync:"100/100 глаз разведки синхронизированы",
+hero_kicker:"ISOLATED ENCLAVE | SECURE RECON // VER. 4.9.2",
+hero_sub:"Нейтральная поисковая система — без отслеживания, без логов, с шифрованием",
+search_ph:"Введите запрос или ключевые слова...", ops_label:"Быстрые операторы:", btn_search:"Поиск",
+time_label:"ПЕРИОД", t_all:"Всё", t_24h:"24ч", t_7d:"7 дней", t_month:"Месяц", t_year:"Год", t_custom:"Свой",
+file_label:"ФОРМАТ", f_all:"Все форматы", f_images:"🖼 Картинки", f_video:"🎬 Видео", f_docs:"📄 Документы (PDF / Word)", f_data:"📊 Данные (JSON / CSV)", f_code:"💻 Исходный код", f_apps:"📱 Приложения",
+region_label:"РЕГИОН", r_mena:"Арабский мир и Ближний Восток", r_neutral:"Нейтральные узлы (Швейцария, Исландия)", r_global:"Глобальная маршрутизация",
+lang_label:"ЯЗЫК ПОИСКА", l_auto:"Авто", l_ar:"Арабский", l_en:"Английский", l_es:"Испанский", l_fr:"Французский", l_ru:"Русский", l_zh:"Китайский", l_all:"🌍 Все шесть языков",
+tg_exact:"Точное совпадение", tg_deep:"Глубокий поиск", tg_strip:"Удалять трекеры",
+btn_adv:"Расширенный поиск", btn_reset:"Сбросить", presets_label:"Популярные запросы:",
+st_searching:"⚡ Поиск по живым источникам…", st_results:"источников", st_error:"❌ Ошибка поиска: ",
+btn_report:"📋 Создать отчёт", btn_more:"Ещё ↓", btn_deep:"🔍 Глубже",
+foot_status:"Соединение: зашифровано | логи не хранятся | ноль отслеживания",
+rep_title:"Отчёт расследования ARGUS", rep_q:"Запрос:", rep_date:"Дата:", rep_sum:"Резюме",
+rep_sum_ph:"(3–5 предложений, каждый факт со ссылкой на источники ниже)",
+rep_find:"Главные находки", rep_src:"Ключевые источники", rep_method:"Методология",
+rep_method_body:"Фрагменты извлечены автоматически; проверьте ключевые факты по оригиналам перед публикацией.",
+rep_src_link:"Источник", ui_lang_label:"🌐 Язык",
+hdr_vpn:"Полное шифрование / VPN Active", page_title:"ARGUS — Приватная поисковая система", no_title:"Без названия",
+tip_theme:"Тема", tip_settings:"Настройки приватности",
+set_language:"Язык", set_theme:"Оформление", theme_system:"Системная", theme_dark:"Тёмная", theme_light:"Светлая",
+sp_syslabel:"Статус системы:", sp_sysval:"100% защищено", qm_sub:"Расширенные фильтры"
+},
+zh: {
+nav_search:"安全搜索", nav_threats:"威胁情报", nav_vault:"加密保险库", nav_privacy:"隐私审计",
+net_secure:"加密网络", net_tls:"TLS 1.3", net_doh:"DNS over HTTPS", net_zero:"0 跟踪器",
+sp_kicker:"ARGUS SECURITY CLEARANCE", sp_t1:"您正在使用", sp_t2:".. 以", sp_eyes:"100 只眼睛", sp_t3:"为您搜索",
+sp_sub:"超安全的隐私搜索引擎,保护您的数字身份",
+sp_a1t:"全面安全防护:", sp_a1d:"防范数据注入与查询泄露",
+sp_a2t:"零跟踪:", sp_a2d:"阻止第三方 Cookie 与浏览器指纹",
+sp_a3t:"加密临时处理:", sp_a3d:"无数据库存储;会话结束即清除内存",
+sp_a4t:"全程加密:", sp_a4d:"经多层安全服务器路由",
+sp_enter:"开始安全搜索", sp_sync:"100/100 侦察之眼已同步",
+hero_kicker:"ISOLATED ENCLAVE | SECURE RECON // VER. 4.9.2",
+hero_sub:"中立的技术搜索引擎 — 无跟踪,无日志,加密路由",
+search_ph:"输入搜索查询或关键词...", ops_label:"快捷操作符:", btn_search:"搜索",
+time_label:"时间范围", t_all:"全部", t_24h:"24小时", t_7d:"7天", t_month:"1个月", t_year:"1年", t_custom:"自定义",
+file_label:"文件格式", f_all:"所有格式", f_images:"🖼 图片", f_video:"🎬 视频", f_docs:"📄 文档 (PDF / Word)", f_data:"📊 数据 (JSON / CSV)", f_code:"💻 源代码", f_apps:"📱 应用",
+region_label:"地区与路由", r_mena:"阿拉伯世界和中东", r_neutral:"中立节点(瑞士,冰岛)", r_global:"全球路由",
+lang_label:"搜索语言", l_auto:"自动", l_ar:"阿拉伯语", l_en:"英语", l_es:"西班牙语", l_fr:"法语", l_ru:"俄语", l_zh:"中文", l_all:"🌍 全部六种语言",
+tg_exact:"精确匹配", tg_deep:"深度搜索", tg_strip:"去除跟踪链接",
+btn_adv:"高级搜索", btn_reset:"重置", presets_label:"热门查询:",
+st_searching:"⚡ 正在搜索实时来源...", st_results:"个来源", st_error:"❌ 搜索失败: ",
+btn_report:"📋 生成调查报告", btn_more:"更多 ↓", btn_deep:"🔍 更深搜索",
+foot_status:"连接:完全加密 | 不保留日志 | 零跟踪",
+rep_title:"ARGUS 调查报告", rep_q:"查询:", rep_date:"日期:", rep_sum:"执行摘要",
+rep_sum_ph:"(写 3-5 句话,每个论断均引用以下来源)",
+rep_find:"主要发现", rep_src:"关键来源", rep_method:"方法说明",
+rep_method_body:"摘录由机器自动提取;发布前请对照原始页面核实关键论断。",
+rep_src_link:"来源", ui_lang_label:"🌐 语言",
+hdr_vpn:"完全加密 / VPN Active", page_title:"ARGUS — 私人搜索引擎", no_title:"无标题",
+tip_theme:"主题", tip_settings:"隐私设置",
+set_language:"语言", set_theme:"外观", theme_system:"跟随系统", theme_dark:"深色", theme_light:"浅色",
+sp_syslabel:"系统状态:", sp_sysval:"100% 加固", qm_sub:"高级侦察过滤器"
+},
+es: {
+nav_search:"Búsqueda segura", nav_threats:"Inteligencia de amenazas", nav_vault:"Bóveda cifrada", nav_privacy:"Auditoría de privacidad",
+net_secure:"Red cifrada", net_tls:"TLS 1.3", net_doh:"DNS over HTTPS", net_zero:"0 rastreadores",
+sp_kicker:"ARGUS SECURITY CLEARANCE", sp_t1:"Estás usando", sp_t2:".. búsqueda con", sp_eyes:"100 ojos", sp_t3:"para ayudarte",
+sp_sub:"Un motor de búsqueda ultra seguro, creado para proteger tu identidad digital",
+sp_a1t:"Escudo total:", sp_a1d:"Protección contra inyección de datos y fugas de consultas",
+sp_a2t:"Cero rastreo:", sp_a2d:"Bloquea cookies de terceros y huellas del navegador",
+sp_a3t:"Procesamiento cifrado efímero:", sp_a3d:"Sin bases de datos; la RAM se borra al cerrar la sesión",
+sp_a4t:"Cifrado total:", sp_a4d:"Enrutado por servidores seguros multicapa",
+sp_enter:"Iniciar búsqueda segura", sp_sync:"100/100 ojos sincronizados",
+hero_kicker:"ISOLATED ENCLAVE | SECURE RECON // VER. 4.9.2",
+hero_sub:"Motor de búsqueda neutral — sin rastreo, sin registros, con cifrado",
+search_ph:"Escribe tu consulta o palabras clave...", ops_label:"Operadores rápidos:", btn_search:"Buscar",
+time_label:"PERIODO", t_all:"Todo", t_24h:"24h", t_7d:"7 días", t_month:"Mes", t_year:"Año", t_custom:"Personalizado",
+file_label:"FORMATO", f_all:"Todos los formatos", f_images:"🖼 Imágenes", f_video:"🎬 Video", f_docs:"📄 Documentos (PDF / Word)", f_data:"📊 Datos (JSON / CSV)", f_code:"💻 Código fuente", f_apps:"📱 Apps",
+region_label:"REGIÓN", r_mena:"Mundo árabe y Oriente Medio", r_neutral:"Nodos neutrales (Suiza, Islandia)", r_global:"Enrutamiento global",
+lang_label:"IDIOMA", l_auto:"Auto", l_ar:"Árabe", l_en:"Inglés", l_es:"Español", l_fr:"Francés", l_ru:"Ruso", l_zh:"Chino", l_all:"🌍 Los seis idiomas",
+tg_exact:"Coincidencia exacta", tg_deep:"Búsqueda profunda", tg_strip:"Quitar rastreadores",
+btn_adv:"Búsqueda avanzada", btn_reset:"Restablecer", presets_label:"Consultas populares:",
+st_searching:"⚡ Buscando en fuentes en vivo…", st_results:"fuentes", st_error:"❌ Error: ",
+btn_report:"📋 Generar informe", btn_more:"Más ↓", btn_deep:"🔍 Más profundo",
+foot_status:"Conexión cifrada | sin registros | cero rastreo",
+rep_title:"Informe ARGUS", rep_q:"Consulta:", rep_date:"Fecha:", rep_sum:"Resumen",
+rep_sum_ph:"(3–5 frases, cada afirmación citada abajo)",
+rep_find:"Hallazgos principales", rep_src:"Fuentes clave", rep_method:"Metodología",
+rep_method_body:"Extractos automáticos; verifica los datos clave en las páginas originales antes de publicar.",
+rep_src_link:"Fuente", ui_lang_label:"🌐 Idioma",
+hdr_vpn:"Cifrado total / VPN Active", page_title:"ARGUS — Motor de búsqueda privado", no_title:"Sin título",
+tip_theme:"Tema", tip_settings:"Ajustes de privacidad",
+set_language:"Idioma", set_theme:"Apariencia", theme_system:"Sistema", theme_dark:"Oscuro", theme_light:"Claro",
+sp_syslabel:"Estado del sistema:", sp_sysval:"100% protegido", qm_sub:"Filtros avanzados"
+},
+fr: {
+nav_search:"Recherche sécurisée", nav_threats:"Renseignement menaces", nav_vault:"Coffre chiffré", nav_privacy:"Audit confidentialité",
+net_secure:"Réseau chiffré", net_tls:"TLS 1.3", net_doh:"DNS over HTTPS", net_zero:"0 traqueurs",
+sp_kicker:"ARGUS SECURITY CLEARANCE", sp_t1:"Vous utilisez", sp_t2:".. recherche avec", sp_eyes:"100 yeux", sp_t3:"pour vous aider",
+sp_sub:"Un moteur de recherche ultra-sécurisé, conçu pour protéger votre identité numérique",
+sp_a1t:"Bouclier total :", sp_a1d:"Protection contre l'injection de données et les fuites de requêtes",
+sp_a2t:"Zéro traçage :", sp_a2d:"Bloque les cookies tiers et les empreintes du navigateur",
+sp_a3t:"Traitement chiffré éphémère :", sp_a3d:"Aucune base de données ; RAM effacée en fin de session",
+sp_a4t:"Chiffrement complet :", sp_a4d:"Routage via des serveurs sécurisés multicouches",
+sp_enter:"Démarrer la recherche sécurisée", sp_sync:"100/100 yeux synchronisés",
+hero_kicker:"ISOLATED ENCLAVE | SECURE RECON // VER. 4.9.2",
+hero_sub:"Moteur de recherche neutre — sans traçage, sans journaux, routage chiffré",
+search_ph:"Saisissez votre requête ou mots-clés...", ops_label:"Opérateurs rapides :", btn_search:"Chercher",
+time_label:"PÉRIODE", t_all:"Tout", t_24h:"24h", t_7d:"7 jours", t_month:"Mois", t_year:"Année", t_custom:"Perso",
+file_label:"FORMAT", f_all:"Tous formats", f_images:"🖼 Images", f_video:"🎬 Vidéo", f_docs:"📄 Documents (PDF / Word)", f_data:"📊 Données (JSON / CSV)", f_code:"💻 Code source", f_apps:"📱 Apps",
+region_label:"RÉGION", r_mena:"Monde arabe et Moyen-Orient", r_neutral:"Nœuds neutres (Suisse, Islande)", r_global:"Routage mondial",
+lang_label:"LANGUE", l_auto:"Auto", l_ar:"Arabe", l_en:"Anglais", l_es:"Espagnol", l_fr:"Français", l_ru:"Russe", l_zh:"Chinois", l_all:"🌍 Six langues",
+tg_exact:"Correspondance exacte", tg_deep:"Recherche approfondie", tg_strip:"Supprimer les traqueurs",
+btn_adv:"Recherche avancée", btn_reset:"Réinitialiser", presets_label:"Requêtes populaires :",
+st_searching:"⚡ Recherche en cours…", st_results:"sources", st_error:"❌ Échec : ",
+btn_report:"📋 Générer le rapport", btn_more:"Plus ↓", btn_deep:"🔍 Plus profond",
+foot_status:"Connexion chiffrée | aucun journal | zéro traçage",
+rep_title:"Rapport d'enquête ARGUS", rep_q:"Requête :", rep_date:"Date :", rep_sum:"Résumé",
+rep_sum_ph:"(3–5 phrases, chaque affirmation citée ci-dessous)",
+rep_find:"Principales découvertes", rep_src:"Sources clés", rep_method:"Méthodologie",
+rep_method_body:"Extraits automatiques ; vérifiez les faits clés sur les pages d'origine avant publication.",
+rep_src_link:"Source", ui_lang_label:"🌐 Langue",
+hdr_vpn:"Chiffrement total / VPN Active", page_title:"ARGUS — Moteur de recherche privé", no_title:"Sans titre",
+tip_theme:"Thème", tip_settings:"Paramètres de confidentialité",
+set_language:"Langue", set_theme:"Apparence", theme_system:"Système", theme_dark:"Sombre", theme_light:"Clair",
+sp_syslabel:"État du système :", sp_sysval:"100% protégé", qm_sub:"Filtres avancés"
+}
+};
+const UI_LANGS = ["ar","en","ru","zh","es","fr"];
+const UI_NAMES = {ar:"العربية", en:"English", ru:"Русский", zh:"中文", es:"Español", fr:"Français"};
+let _ul = "ar";
+function t(k){ const d = I18N[_ul]||{}; return d[k]!==undefined ? d[k] : (I18N.en[k]!==undefined ? I18N.en[k] : k); }
+window.t = t;
+Object.defineProperty(window, "UI_LANG", {get:function(){ return _ul; }});
+function setLang(l){
+  if(!I18N[l]) l = "en";
+  _ul = l;
+  document.querySelectorAll("[data-i18n]").forEach(function(el){ el.textContent = t(el.getAttribute("data-i18n")); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(function(el){ el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph"))); });
+  document.querySelectorAll("[data-i18n-tip]").forEach(function(el){ el.setAttribute("title", t(el.getAttribute("data-i18n-tip"))); });
+  document.documentElement.dir = (l === "ar") ? "rtl" : "ltr";
+  document.documentElement.lang = l;
+  try{ document.title = t("page_title"); }catch(e){}
+  try{ localStorage.setItem("argus_ui_lang", l); }catch(e){}
+  if(window.refreshDynamicUI) window.refreshDynamicUI();
+  try{ markSettingsActive(); }catch(e){}
+}
+
+/* ---- theme: system / dark / light ---- */
+function resolveTheme(mode){
+  if(mode === "system"){
+    try{ return (window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark"; }
+    catch(e){ return "dark"; }
+  }
+  return mode;
+}
+function applyTheme(mode){
+  let m = mode || "system";
+  if(m !== "system" && m !== "dark" && m !== "light") m = "system";
+  try{ localStorage.setItem("argus_theme", m); }catch(e){}
+  document.documentElement.dataset.theme = resolveTheme(m);
+  try{ markSettingsActive(); }catch(e){}
+}
+window.__toggleTheme=function(){
+  try{
+    var cur=document.documentElement.dataset.theme||"dark";
+    applyTheme(cur==="dark"?"light":"dark");
+  }catch(e){}
+};
+window.setTheme = applyTheme;
+try{
+  const _mm = window.matchMedia && matchMedia("(prefers-color-scheme: light)");
+  if(_mm && _mm.addEventListener) _mm.addEventListener("change", function(){
+    let cur = "system";
+    try{ cur = localStorage.getItem("argus_theme") || "system"; }catch(e){}
+    if(cur === "system") document.documentElement.dataset.theme = resolveTheme("system");
+  });
+}catch(e){}
+/* ---- settings menu (native details toggle) ---- */
+function markSettingsActive(){
+  var cur = "system";
+  try{ cur = localStorage.getItem("argus_theme") || "system"; }catch(e){}
+  document.querySelectorAll("[data-setlang]").forEach(function(b){
+    b.setAttribute("data-active", b.getAttribute("data-setlang") === _ul ? "1" : "0");
+  });
+  document.querySelectorAll("[data-settheme]").forEach(function(b){
+    b.setAttribute("data-active", b.getAttribute("data-settheme") === cur ? "1" : "0");
+  });
+}
+function closeSettings(){ ["settings-wrap","settings-wrap-2"].forEach(function(id){ var d=document.getElementById(id); if(d) d.open=false; }); }
+function pickLang(l){ setLang(l); markSettingsActive(); closeSettings(); }
+function pickTheme(m){ applyTheme(m); markSettingsActive(); closeSettings(); }
+window.pickLang = pickLang; window.pickTheme = pickTheme;
+window.setLang = setLang;
+function detectLang(){
+  try{ const sv = localStorage.getItem("argus_ui_lang"); if(sv && I18N[sv]) return sv; }catch(e){}
+  const b = (navigator.language || "en").slice(0,2).toLowerCase();
+  return I18N[b] ? b : "en";
+}
+(function(){
+  setLang(detectLang());
+  var _tm = "system";
+  try{ _tm = localStorage.getItem("argus_theme") || "system"; }catch(e){}
+  applyTheme(_tm);
+  try{ markSettingsActive(); }catch(e){}
+  var _tq = document.getElementById("theme-quick");
+  if(_tq) _tq.addEventListener("click",window.__toggleTheme);
+})();
+</script>
+<script>
+/* ARGUS live search — wired to the Stitch "Argus Shield" design (blue, Arabic RTL). */
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const thumb = u => "/api/thumb?url="+encodeURIComponent(u);
+
+const FILE2CAT = {all:"all",images:"images",video:"video",documents:"documents",data:"data",code:"github",apps:"apps"};
+const REG2 = {global:"all",mena:"all",neutral:"ch"};
+
+/* ---- splash gate ---- */
+const splash = $("splash");
+function dismissSplash(){ if(splash){ splash.style.display="none"; try{sessionStorage.setItem("argus_splash","1");}catch(e){} } }
+try{ if(sessionStorage.getItem("argus_splash")==="1" && splash) splash.style.display="none"; }catch(e){}
+const closeBtn = $("close-splash-btn");
+if(closeBtn) closeBtn.addEventListener("click", dismissSplash);
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") dismissSplash(); });
+
+/* ---- time segmented ---- */
+const T_ACTIVE = ["bg-primary","text-white","font-medium","border","border-blue-400/40","shadow-[0_0_8px_rgba(37,99,235,0.35)]"];
+const T_IDLE = ["text-text-dim","hover:text-on-surface"];
+let curDays = "any";
+function setTime(btn){
+  curDays = btn.getAttribute("data-days");
+  document.querySelectorAll("[data-tbtn]").forEach(b=>{
+    T_ACTIVE.forEach(c=>b.classList.remove(c));
+    T_IDLE.forEach(c=>b.classList.remove(c));
+    (b===btn?T_ACTIVE:T_IDLE).forEach(c=>b.classList.add(c));
+  });
+}
+document.querySelectorAll("[data-tbtn]").forEach(b=> b.addEventListener("click", ()=>setTime(b)));
+
+/* ---- operator chips ---- */
+document.querySelectorAll("[data-op]").forEach(b=> b.addEventListener("click", ()=>{
+  const op = b.getAttribute("data-op"), inp = $("main-query-input");
+  const v = inp.value.trim();
+  if(!v.includes(op)) inp.value = (v ? v+" " : "") + op;
+  inp.focus();
+}));
+
+let lastLive = null;
+
+function controls(){
+  const fcat = $("fcat").value, freg = $("fregion").value;
+  let category = FILE2CAT[fcat] || "all";
+  let region = REG2[freg] || "all";
+  let lang = $("flang").value;
+  if(freg==="mena" && lang==="auto"){ lang="ar"; $("flang").value="ar"; }
+  return {
+    query: $("main-query-input").value.trim(),
+    count: $("mdeep").checked ? "100" : "25",
+    category: category,
+    method: $("mexact").checked ? "exact" : "auto",
+    lang: lang, region: region,
+    days: curDays
+  };
+}
+
+async function liveSearch(){
+  const c = controls();
+  if(!c.query){ $("main-query-input").focus(); return; }
+  ["lgo","lgo2"].forEach(id=>{ const b=$(id); if(b){ b.disabled=true; b.style.opacity=".55"; } });
+  $("lstatus").textContent = t("st_searching");
+  $("lresults").innerHTML = "";
+  $("lreport").style.display = "none";
+  $("lmore").style.display = "none"; allItems = []; shownCount = 0;
+  try{
+    const r = await fetch("/api/search",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(c)});
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.error || ("HTTP "+r.status));
+    renderResults(d, c);
+  }catch(e){
+    $("lstatus").textContent = t("st_error")+e.message;
+  }finally{
+    ["lgo","lgo2"].forEach(id=>{ const b=$(id); if(b){ b.disabled=false; b.style.opacity="1"; } });
+  }
+}
+
+const PAGE = 12;
+let shownCount = 0, allItems = [];
+function updateStatus(d){
+  const items = d.results || [];
+  const trs = d.translations ? Object.entries(d.translations) : [];
+  const n = items.length, unit = t("st_results");
+  let note = "⚡ "+(UI_LANG==="zh" ? n+unit : n+" "+unit)+" · "+d.took_ms+"ms";
+  if(trs.length) note += " · 🌐 "+trs.map(([l,x])=>l+': "'+String(x).slice(0,40)+'"').join(" · ");
+  $("lstatus").textContent = note;
+}
+function renderResults(d, c){
+  const items = d.results || [];
+  allItems = items; shownCount = 0;
+  $("lresults").innerHTML = "";
+  updateStatus(d);
+  showMore();
+  if(items.length){
+    $("lreport").style.display = "inline-block";
+    $("lreport").textContent = t("btn_report");
+    lastLive = {q:c.query, items:items, controls:c, translations:d.translations||{}, took:d.took_ms};
+  } else {
+    $("lmore").style.display = "none";
+  }
+}
+function showMore(){
+  const next = allItems.slice(shownCount, shownCount+PAGE);
+  if(next.length) $("lresults").innerHTML += next.map(cardHTML).join("");
+  shownCount += next.length;
+  updateMoreBtn();
+}
+function updateMoreBtn(){
+  const b = $("lmore"); if(!b) return;
+  const remaining = allItems.length - shownCount;
+  if(remaining > 0){
+    b.style.display = "inline-block";
+    b.textContent = t("btn_more")+" ("+remaining+")";
+    b.onclick = showMore;
+  } else if(allItems.length > 0 && lastLive && lastLive.controls.count !== "100"){
+    b.style.display = "inline-block";
+    b.textContent = t("btn_deep");
+    b.onclick = function(){ $("mdeep").checked = true; liveSearch(); };
+  } else {
+    b.style.display = "none";
+  }
+}
+window.refreshDynamicUI = function(){
+  const rb = $("lreport");
+  if(rb && rb.style.display !== "none") rb.textContent = t("btn_report");
+  if(lastLive) updateStatus({results:lastLive.items, translations:lastLive.translations, took_ms:lastLive.took});
+  updateMoreBtn();
+};
+
+function cardHTML(r){
+  let host=""; try{ host=new URL(r.url).hostname; }catch(e){}
+  const img = r.image ? '<a href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer" class="shrink-0"><img src="'+thumb(r.image)+'" alt="" loading="lazy" class="w-20 h-20 object-cover rounded-[4px] border border-surface-border"></a>' : "";
+  const tag = (r.lang && r.lang!=="orig") ? '<span class="px-1.5 py-0.5 rounded-[3px] bg-primary/15 text-secondary font-code-telemetry text-[10px]">'+esc(r.lang)+"</span>" : "";
+  const snip = (r.highlights && r.highlights.length) ? r.highlights[0] : (r.text||"");
+  return '<div class="rounded-[4px] bg-surface-subtle border border-surface-border p-3">'
+    +'<div class="flex gap-3">'+img
+    +'<div class="flex-1 min-w-0">'
+    +'<a href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer" class="text-secondary font-medium hover:underline text-sm">'+esc(r.title||host||t("no_title"))+"</a>"
+    +'<div class="font-code-telemetry text-[10px] text-text-dim mt-1 flex items-center gap-2"><span>'+esc(host)+"</span>"+tag+"</div>"
+    +'<p class="text-on-surface-variant text-xs mt-1.5 leading-relaxed">'+esc(String(snip).slice(0,280))+"</p>"
+    +"</div></div></div>";
+}
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+function loadDemos(){ try{ return JSON.parse(localStorage.getItem("argus_demos")||"[]"); }catch(e){ return []; } }
+function saveDemos(a){ try{ localStorage.setItem("argus_demos", JSON.stringify(a.slice(0,20))); }catch(e){} }
+
+function genReportFromSearch(){
+  if(!lastLive || !lastLive.items.length) return;
+  const q = lastLive.q, items = lastLive.items, c = lastLive.controls;
+  const trs = Object.entries(lastLive.translations||{});
+  let md = "# "+t("rep_title")+"\n\n**"+t("rep_q")+"** "+q+"\n**"+t("rep_date")+"** "+new Date().toISOString()+"\n\n";
+  md += "## "+t("rep_sum")+"\n\n"+t("rep_sum_ph")+"\n\n";
+  md += "## "+t("rep_find")+"\n\n";
+  items.slice(0,12).forEach(it=>{
+    let host=""; try{host=new URL(it.url).hostname;}catch(e){}
+    const snip = ((it.highlights&&it.highlights[0])||it.text||"");
+    md += "- **"+String(it.title||host||"").slice(0,80)+"** — "+String(snip).slice(0,160)+"\n  ["+t("rep_src_link")+"]("+it.url+")"+(host?" — "+host:"")+"\n";
+  });
+  md += "\n## "+t("rep_src")+" ("+items.length+")\n\n";
+  items.forEach(it=>{
+    let host=""; try{host=new URL(it.url).hostname;}catch(e){}
+    md += "- ["+String(it.title||host||"untitled").slice(0,80)+"]("+it.url+")"+(host?" — "+host:"")+"\n";
+  });
+  md += "\n## "+t("rep_method")+"\n\nExa live search · "+c.category+" · "+c.method+" · "+c.count+" · "+c.lang+" · "+c.region+" · "+c.days
+    +(trs.length ? " · "+trs.map(([l,x])=>l+': "'+x+'"').join(" · ") : "")
+    +".\n"+t("rep_method_body")+"\n";
+  const id = uid(), all = loadDemos();
+  all.unshift({id:id, query:q, mode:"live-search", markdown:md, ts:new Date().toISOString()});
+  saveDemos(all);
+  location.href = "/share.html?id="+id;
+}
+
+/* wiring */
+["lgo","lgo2"].forEach(id=>{ const b=$(id); if(b) b.addEventListener("click", liveSearch); });
+$("lreport").addEventListener("click", genReportFromSearch);
+$("main-query-input").addEventListener("keydown", e=>{ if(e.key==="Enter") liveSearch(); });
+document.addEventListener("keydown", e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="k"){ e.preventDefault(); dismissSplash(); $("main-query-input").focus(); }
+});
+const clr = $("clear-btn"); if(clr) clr.addEventListener("click", ()=>{ $("main-query-input").value=""; $("main-query-input").focus(); });
+const rst = $("lreset"); if(rst) rst.addEventListener("click", ()=>{
+  $("fcat").value="all"; $("fregion").value="global"; $("flang").value="auto";
+  $("mexact").checked=true; $("mdeep").checked=false; $("mstrip").checked=true;
+  const first=document.querySelector('[data-days="any"]'); if(first) setTime(first);
+  $("main-query-input").value=""; $("lresults").innerHTML=""; $("lstatus").textContent="";
+  $("lreport").style.display="none";
+  $("lmore").style.display="none"; allItems=[]; shownCount=0;
+});
+document.querySelectorAll("[data-q]").forEach(b=> b.addEventListener("click", ()=>{
+  dismissSplash();
+  $("main-query-input").value = b.getAttribute("data-q").replace(/_/g," ");
+  liveSearch();
+}));
+})();
+</script>
+</body>
+</html>

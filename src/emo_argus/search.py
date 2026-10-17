@@ -24,6 +24,7 @@ import urllib.parse
 import urllib.request
 import uuid
 from concurrent.futures import ThreadPoolExecutor
+from html.parser import HTMLParser
 from pathlib import Path
 
 try:
@@ -33,7 +34,7 @@ except ImportError:  # pragma: no cover - direct script fallback
     from emo_argus.profiles import allowed_modes as _allowed_modes
     from emo_argus.profiles import get_profile as _get_profile
 
-VERSION = "1.2.1"
+VERSION = "1.2.2"
 
 # --- Structured logging ---
 _logger = logging.getLogger("argus")
@@ -301,14 +302,16 @@ def build_report(query: str, mode: str, langs: str, waves: list[str],
     else:
         forums_note = "_Skipped - no consent._"
 
-    # YAML frontmatter
+    # YAML frontmatter — sanitize the query: a raw query could break out of the
+    # double-quoted title (frontmatter injection) via quotes or newlines.
+    safe_title = query.replace('"', "'").replace("\n", " ").replace("\r", " ")
     waves_yaml = "\n".join(f"  - {w}" for w in waves)
     consents_yaml = "\n".join(
         f"  {k}: {'true' if v else 'false'}" for k, v in consents.items()
     )
     frontmatter = (
         "---\n"
-        f"title: \"ARGUS: {query}\"\n"
+        f"title: \"ARGUS: {safe_title}\"\n"
         f"date: {date}\n"
         f"mode: {mode}\n"
         f"languages: {langs}\n"
@@ -341,6 +344,50 @@ def build_report(query: str, mode: str, langs: str, waves: list[str],
 Consent log: {consent_log}. Tool: argus v{VERSION}.
 """
     return frontmatter + body
+
+
+class _TgmeMessageParser(HTMLParser):
+    """Extract message text from t.me/s/ widget markup without regex.
+
+    The old regex broke on nested markup; a real parser tracks element
+    depth, so nested <div>/<a> tags no longer truncate messages early.
+    <br> becomes a newline; char references are decoded by the parser.
+    """
+
+    _VOID = {"br", "img", "hr", "input", "meta", "link", "source"}
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self._depth = 0
+        self._buf: list[str] = []
+        self.messages: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if self._depth:
+            if tag == "br":
+                self._buf.append("\n")
+            elif tag not in self._VOID:
+                self._depth += 1
+            return
+        if "tgme_widget_message_text" in dict(attrs).get("class", ""):
+            self._depth = 1
+            self._buf = []
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if self._depth and tag == "br":
+            self._buf.append("\n")
+
+    def handle_endtag(self, tag: str) -> None:
+        if self._depth:
+            self._depth -= 1
+            if self._depth == 0:
+                text = "".join(self._buf).strip()
+                if text:
+                    self.messages.append(text)
+
+    def handle_data(self, data: str) -> None:
+        if self._depth:
+            self._buf.append(data)
 
 
 def fetch_telegram_preview(channel: str, limit: int = 20) -> list[str]:
@@ -378,15 +425,12 @@ def fetch_telegram_preview(channel: str, limit: int = 20) -> list[str]:
     except (urllib.error.URLError, urllib.error.HTTPError,
             TimeoutError, OSError) as e:
         raise RuntimeError(f"fetch failed for t.me/s/{channel}: {e}") from e
-    raw = re.findall(r"tgme_widget_message_text[^>]*>(.*?)</div>", page, re.DOTALL)
+    parser = _TgmeMessageParser()
+    parser.feed(page)
     out = []
-    for m in raw[:limit]:
-        text = re.sub(r"<br\s*/?>", "\n", m)
-        text = re.sub(r"<[^>]+>", "", text)
-        text = htmlmod.unescape(text).strip()
-        if text:
-            # escape before embedding in Markdown output files
-            out.append(htmlmod.escape(text))
+    for text in parser.messages[:limit]:
+        # escape before embedding in Markdown output files
+        out.append(htmlmod.escape(text))
     return out
 
 

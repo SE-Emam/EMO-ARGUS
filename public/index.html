@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
+<script>try{var _m=localStorage.getItem("argus_theme")||"system";var _r=_m==="system"?((window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark"):_m;document.documentElement.dataset.theme=_r;}catch(e){document.documentElement.dataset.theme="dark";}</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>ARGUS — محرك البحث الخاص</title>
@@ -31,14 +32,172 @@
     }
   @layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": {"surface-canvas": "#060b17", "surface-subtle": "#0c1322", "surface-elevated": "#17233d", "surface-border": "#1e2c4a", "surface-border-subtle": "#162238", "primary-hover": "#2563eb", "primary-muted": "#1e3a8a", "text-dim": "#64748b",  "on-surface-variant": "#c2c6d6", "surface-container-high": "#182033", "surface-variant": "#1c253b", "on-tertiary": "#002682", "on-error": "#690005", "tertiary-fixed-dim": "#b7c4ff", "on-secondary": "#003640", "on-tertiary-fixed-variant": "#0039b5", "on-primary-fixed": "#001a42", "surface-container-lowest": "#050811", "on-primary-fixed-variant": "#004395", "on-secondary-container": "#00424e", "outline": "#8c909f", "secondary-fixed-dim": "#4cd7f6", "on-primary": "#ffffff", "primary-container": "#2563eb", "error": "#ffb4ab", "primary-fixed-dim": "#adc6ff", "surface": "#060b17", "secondary-fixed": "#acedff", "inverse-surface": "#dde2f5", "secondary-container": "#03b5d3", "error-container": "#93000a", "secondary": "#38bdf8", "surface-bright": "#222c44", "surface-container-low": "#0b1222", "background": "#060b17", "tertiary-fixed": "#dce1ff", "on-tertiary-container": "#002072", "on-surface": "#dde2f5", "primary-fixed": "#d8e2ff", "inverse-primary": "#005ac2", "on-error-container": "#ffdad6", "surface-dim": "#060b17", "on-secondary-fixed-variant": "#004e5c", "surface-tint": "#3b82f6", "surface-container": "#10192e", "on-primary-container": "#dbeafe", "primary": "#3b82f6", "tertiary-container": "#6989ff", "tertiary": "#b7c4ff", "outline-variant": "#2a3754", "on-background": "#dde2f5", "surface-container-highest": "#222c44", "on-tertiary-fixed": "#001551", "inverse-on-surface": "#2a303f", "on-secondary-fixed": "#001f26" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xs": "0.25rem", "margin": "2rem", "space-md": "1rem", "gutter": "1.25rem", "gutter-mobile": "0.75rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-lg": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "headline-sm": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "body-lg": ["Noto Sans Arabic", "sans-serif"], "body-md": ["Noto Sans Arabic", "sans-serif"], "code-telemetry": ["JetBrains Mono", "monospace"], "display-hero-mobile": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "body-sm": ["Noto Sans Arabic", "sans-serif"], "display-hero": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "headline-lg-mobile": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "badge-label": ["JetBrains Mono", "monospace"], "label-caps": ["Space Grotesk", "monospace"], "headline-md": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"] }, "fontSize": { "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }], "code-telemetry": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "display-hero-mobile": ["36px", { "lineHeight": "44px", "fontWeight": "700" }], "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }], "display-hero": ["56px", { "lineHeight": "68px", "fontWeight": "700" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }], "badge-label": ["11px", { "lineHeight": "14px", "fontWeight": "600" }], "label-caps": ["11px", { "lineHeight": "16px", "fontWeight": "700" }], "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }] } } } };</script>
+<script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": {"surface-canvas": "var(--a-surface-canvas)", "surface-subtle": "var(--a-surface-subtle)", "surface-elevated": "var(--a-surface-elevated)", "surface-border": "var(--a-surface-border)", "surface-border-subtle": "var(--a-surface-border-subtle)", "primary-hover": "var(--a-primary-hover)", "primary-muted": "var(--a-primary-muted)", "text-dim": "var(--a-text-dim)",  "on-surface-variant": "var(--a-on-surface-variant)", "surface-container-high": "var(--a-surface-container-high)", "surface-variant": "var(--a-surface-variant)", "on-tertiary": "var(--a-on-tertiary)", "on-error": "var(--a-on-error)", "tertiary-fixed-dim": "var(--a-tertiary-fixed-dim)", "on-secondary": "var(--a-on-secondary)", "on-tertiary-fixed-variant": "var(--a-on-tertiary-fixed-variant)", "on-primary-fixed": "var(--a-on-primary-fixed)", "surface-container-lowest": "var(--a-surface-container-lowest)", "on-primary-fixed-variant": "var(--a-on-primary-fixed-variant)", "on-secondary-container": "var(--a-on-secondary-container)", "outline": "var(--a-outline)", "secondary-fixed-dim": "var(--a-secondary-fixed-dim)", "on-primary": "var(--a-on-primary)", "primary-container": "var(--a-primary-container)", "error": "var(--a-error)", "primary-fixed-dim": "var(--a-primary-fixed-dim)", "surface": "var(--a-surface)", "secondary-fixed": "var(--a-secondary-fixed)", "inverse-surface": "var(--a-inverse-surface)", "secondary-container": "var(--a-secondary-container)", "error-container": "var(--a-error-container)", "secondary": "var(--a-secondary)", "surface-bright": "var(--a-surface-bright)", "surface-container-low": "var(--a-surface-container-low)", "background": "var(--a-background)", "tertiary-fixed": "var(--a-tertiary-fixed)", "on-tertiary-container": "var(--a-on-tertiary-container)", "on-surface": "var(--a-on-surface)", "primary-fixed": "var(--a-primary-fixed)", "inverse-primary": "var(--a-inverse-primary)", "on-error-container": "var(--a-on-error-container)", "surface-dim": "var(--a-surface-dim)", "on-secondary-fixed-variant": "var(--a-on-secondary-fixed-variant)", "surface-tint": "var(--a-surface-tint)", "surface-container": "var(--a-surface-container)", "on-primary-container": "var(--a-on-primary-container)", "primary": "var(--a-primary)", "tertiary-container": "var(--a-tertiary-container)", "tertiary": "var(--a-tertiary)", "outline-variant": "var(--a-outline-variant)", "on-background": "var(--a-on-background)", "surface-container-highest": "var(--a-surface-container-highest)", "on-tertiary-fixed": "var(--a-on-tertiary-fixed)", "inverse-on-surface": "var(--a-inverse-on-surface)", "on-secondary-fixed": "var(--a-on-secondary-fixed)" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xs": "0.25rem", "margin": "2rem", "space-md": "1rem", "gutter": "1.25rem", "gutter-mobile": "0.75rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-lg": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "headline-sm": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "body-lg": ["Noto Sans Arabic", "sans-serif"], "body-md": ["Noto Sans Arabic", "sans-serif"], "code-telemetry": ["JetBrains Mono", "monospace"], "display-hero-mobile": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "body-sm": ["Noto Sans Arabic", "sans-serif"], "display-hero": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "headline-lg-mobile": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"], "badge-label": ["JetBrains Mono", "monospace"], "label-caps": ["Space Grotesk", "monospace"], "headline-md": ["Space Grotesk", "Noto Sans Arabic", "sans-serif"] }, "fontSize": { "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }], "code-telemetry": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "display-hero-mobile": ["36px", { "lineHeight": "44px", "fontWeight": "700" }], "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }], "display-hero": ["56px", { "lineHeight": "68px", "fontWeight": "700" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }], "badge-label": ["11px", { "lineHeight": "14px", "fontWeight": "600" }], "label-caps": ["11px", { "lineHeight": "16px", "fontWeight": "700" }], "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }] } } } };</script>
 <style>.font-argus{font-family:"Archivo Black","Inter",sans-serif!important;letter-spacing:.015em}</style>
+<style>
+:root{
+  --a-background:#060b17;
+  --a-error:#ffb4ab;
+  --a-error-container:#93000a;
+  --a-inverse-on-surface:#2a303f;
+  --a-inverse-primary:#005ac2;
+  --a-inverse-surface:#dde2f5;
+  --a-on-background:#dde2f5;
+  --a-on-error:#690005;
+  --a-on-error-container:#ffdad6;
+  --a-on-primary:#ffffff;
+  --a-on-primary-container:#dbeafe;
+  --a-on-primary-fixed:#001a42;
+  --a-on-primary-fixed-variant:#004395;
+  --a-on-secondary:#003640;
+  --a-on-secondary-container:#00424e;
+  --a-on-secondary-fixed:#001f26;
+  --a-on-secondary-fixed-variant:#004e5c;
+  --a-on-surface:#dde2f5;
+  --a-on-surface-variant:#c2c6d6;
+  --a-on-tertiary:#002682;
+  --a-on-tertiary-container:#002072;
+  --a-on-tertiary-fixed:#001551;
+  --a-on-tertiary-fixed-variant:#0039b5;
+  --a-outline:#8c909f;
+  --a-outline-variant:#2a3754;
+  --a-primary:#3b82f6;
+  --a-primary-container:#2563eb;
+  --a-primary-fixed:#d8e2ff;
+  --a-primary-fixed-dim:#adc6ff;
+  --a-primary-hover:#2563eb;
+  --a-primary-muted:#1e3a8a;
+  --a-secondary:#38bdf8;
+  --a-secondary-container:#03b5d3;
+  --a-secondary-fixed:#acedff;
+  --a-secondary-fixed-dim:#4cd7f6;
+  --a-surface:#060b17;
+  --a-surface-border:#1e2c4a;
+  --a-surface-border-subtle:#162238;
+  --a-surface-bright:#222c44;
+  --a-surface-canvas:#060b17;
+  --a-surface-container:#10192e;
+  --a-surface-container-high:#182033;
+  --a-surface-container-highest:#222c44;
+  --a-surface-container-low:#0b1222;
+  --a-surface-container-lowest:#050811;
+  --a-surface-dim:#060b17;
+  --a-surface-elevated:#17233d;
+  --a-surface-subtle:#0c1322;
+  --a-surface-tint:#3b82f6;
+  --a-surface-variant:#1c253b;
+  --a-tertiary:#b7c4ff;
+  --a-tertiary-container:#6989ff;
+  --a-tertiary-fixed:#dce1ff;
+  --a-tertiary-fixed-dim:#b7c4ff;
+  --a-text-dim:#64748b;
+color-scheme:dark;
+}
+html[data-theme="light"]{
+  --a-background:#edf1f7;
+  --a-error:#ba1a1a;
+  --a-error-container:#f7dcd9;
+  --a-inverse-on-surface:#edf0f7;
+  --a-inverse-primary:#3b82f6;
+  --a-inverse-surface:#17202f;
+  --a-on-background:#0f1c31;
+  --a-on-error:#ffffff;
+  --a-on-error-container:#5f1410;
+  --a-on-primary:#ffffff;
+  --a-on-primary-container:#143a8c;
+  --a-on-primary-fixed:#0f2c5f;
+  --a-on-primary-fixed-variant:#1e4fae;
+  --a-on-secondary:#074652;
+  --a-on-secondary-container:#074652;
+  --a-on-secondary-fixed:#083e49;
+  --a-on-secondary-fixed-variant:#0b5b6a;
+  --a-on-surface:#0f1c31;
+  --a-on-surface-variant:#43536b;
+  --a-on-tertiary:#1e3a9e;
+  --a-on-tertiary-container:#1c358c;
+  --a-on-tertiary-fixed:#1a2f7d;
+  --a-on-tertiary-fixed-variant:#2c4fc4;
+  --a-outline:#98a2b5;
+  --a-outline-variant:#bfcbdd;
+  --a-primary:#1d4ed8;
+  --a-primary-container:#d7e5fd;
+  --a-primary-fixed:#d7e5fd;
+  --a-primary-fixed-dim:#a9c2f7;
+  --a-primary-hover:#1e40af;
+  --a-primary-muted:#c3d6f8;
+  --a-secondary:#0284c7;
+  --a-secondary-container:#c8edf9;
+  --a-secondary-fixed:#bfe9fa;
+  --a-secondary-fixed-dim:#7fd8f2;
+  --a-surface:#edf1f7;
+  --a-surface-border:#c6d2e4;
+  --a-surface-border-subtle:#dbe3ef;
+  --a-surface-bright:#d3dcea;
+  --a-surface-canvas:#edf1f7;
+  --a-surface-container:#e8eef6;
+  --a-surface-container-high:#dde6f1;
+  --a-surface-container-highest:#d3dcea;
+  --a-surface-container-low:#f6f8fb;
+  --a-surface-container-lowest:#ffffff;
+  --a-surface-dim:#e2e9f2;
+  --a-surface-elevated:#ffffff;
+  --a-surface-subtle:#ffffff;
+  --a-surface-tint:#1d4ed8;
+  --a-surface-variant:#e0e8f2;
+  --a-tertiary:#4d68f0;
+  --a-tertiary-container:#d3dcfd;
+  --a-tertiary-fixed:#d3dcfd;
+  --a-tertiary-fixed-dim:#a9baf7;
+  --a-text-dim:#67788f;
+color-scheme:light;
+}
+html[data-theme="light"] .bg-\[\#02050c\]{background-color:#ffffff!important}
+html[data-theme="light"] .bg-\[\#050811\]{background-color:#ffffff!important}
+html[data-theme="light"] .bg-\[\#060b17\]{background-color:#edf1f7!important}
+html[data-theme="light"] .bg-\[\#080e1e\]{background-color:#f6f8fb!important}
+html[data-theme="light"] .bg-\[\#080f21\]{background-color:#f6f8fb!important}
+html[data-theme="light"] .bg-\[\#091024\]{background-color:#ffffff!important}
+html[data-theme="light"] .bg-\[\#0b1222\]{background-color:#f6f8fb!important}
+html[data-theme="light"] .bg-\[\#0b1326\]{background-color:#eef2f8!important}
+html[data-theme="light"] .bg-\[\#0c192e\]{background-color:#e9eff7!important}
+html[data-theme="light"] .bg-\[\#0d162b\]{background-color:#eef2f8!important}
+html[data-theme="light"] .bg-\[\#0e172e\]{background-color:#eef2f8!important}
+html[data-theme="light"] .bg-\[\#0e1d3d\]{background-color:#e9eff7!important}
+html[data-theme="light"] .bg-\[\#0f1a34\]{background-color:#f2f6fb!important}
+html[data-theme="light"] .bg-\[\#0f1a36\]{background-color:#ffffff!important}
+html[data-theme="light"] .bg-\[\#10192e\]{background-color:#e9eff7!important}
+html[data-theme="light"] .bg-\[\#101a30\]{background-color:#e9eff7!important}
+html[data-theme="light"] .bg-\[\#111a33\]{background-color:#e9eff7!important}
+html[data-theme="light"] .bg-\[\#182547\]{background-color:#dfe7f2!important}
+html[data-theme="light"] .bg-\[\#1d4ed8\]{background-color:#1e40af!important}
+html[data-theme="light"] .bg-\[\#1e40af\]{background-color:#1e3a8a!important}
+html[data-theme="light"] .bg-\[\#2563eb\]{background-color:#1d4ed8!important}
+html[data-theme="light"] .bg-\[\#38bdf8\]{background-color:#0284c7!important}
+html[data-theme="light"] .border-\[\#1b2640\]{border-color:#c9d5e8!important}
+html[data-theme="light"] .border-\[\#1b2742\]{border-color:#c9d5e8!important}
+html[data-theme="light"] .border-\[\#1e2f52\]{border-color:#b9c8e0!important}
+html[data-theme="light"] .border-\[\#1e3a5f\]{border-color:#b9c8e0!important}
+html[data-theme="light"] .border-\[\#23355b\]{border-color:#b9c8e0!important}
+html[data-theme="light"] .border-\[\#2a3f6a\]{border-color:#b9c8e0!important}
+html[data-theme="light"] .text-\[\#223152\]{color:#8a97a8!important}
+html[data-theme="light"] .text-\[\#38bdf8\]{color:#0284c7!important}
+html[data-theme="light"] .text-\[\#60a5fa\]{color:#2563eb!important}
+html[data-theme="light"] .text-\[\#93c5fd\]{color:#1d4ed8!important}
+html[data-theme="light"] .text-\[\#bfdbfe\]{color:#1e40af!important}
+html[data-theme="light"] .bg-\[\#02050c\]\/80{background-color:rgb(255 255 255 / .8)!important}
+html[data-theme="light"] .bg-\[\#060b17\]\/85{background-color:rgb(237 241 247 / .85)!important}
+html[data-theme="light"] .bg-\[\#091024\]\/90{background-color:rgb(255 255 255 / .9)!important}
+html[data-theme="light"] .bg-\[\#2563eb\]\/85{background-color:rgb(29 78 216 / .85)!important}
+html[data-theme="light"] .bg-\[\#38bdf8\]\/85{background-color:rgb(2 132 199 / .85)!important}
+html[data-theme="light"] .mesh-overlay svg{color:#25407a!important}
+
+</style>
 </head>
 <body class="bg-surface-canvas text-body font-body text-on-surface min-h-screen flex flex-col antialiased selection:bg-primary/25 selection:text-white relative">
 <div id="splash" class="fixed inset-0 z-[100] overflow-y-auto bg-[#060b17] font-body-md text-body-md text-on-surface">
 
 <!-- Subtle White Network Topology Spiderweb / Mesh Overlay Vector Layer -->
-<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.14]">
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.14] mesh-overlay">
 <svg class="w-full h-full text-white" fill="none" height="100%" stroke="currentColor" width="100%" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <pattern height="60" id="subtle-network-mesh" patternunits="userSpaceOnUse" width="60">
@@ -97,7 +256,18 @@
 <rect fill="url(#topology-glow)" height="100%" width="100%"></rect>
 </svg>
 </div>
-<header class="fixed top-0 left-0 right-0 z-40 bg-[#060b17]/85 backdrop-blur-xl border-b border-[#1b2640]"><div class="h-16 w-full px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs cursor-pointer select-none"><span class="font-headline-sm text-headline-sm text-primary tracking-wider font-bold font-argus">ARGUS</span><span class="font-code-telemetry text-[11px] text-[#38bdf8] px-1.5 py-0.5 rounded border border-[#1e3a5f] bg-[#0c192e]">100-EYE</span></div><div class="hidden sm:flex items-center gap-space-xs px-space-sm py-1 rounded bg-[#0b1222] border border-[#1b2640]"><span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span><span class="font-code-telemetry text-[11px] text-primary" data-i18n="hdr_vpn">مشفر بالكامل / VPN Active</span></div></div><nav class="hidden md:flex items-center gap-space-sm" data-active-classes="bg-surface-container text-primary font-bold rounded"><a aria-current="page" class="px-space-md py-space-xs transition-colors bg-[#101a30] text-primary border border-blue-500/20 font-bold rounded" data-path="search" href="#" data-i18n="nav_search">البحث الأمني</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="threat-recon" href="#" data-i18n="nav_threats">استطلاع التهديدات</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="vault" href="#" data-i18n="nav_vault">الخزينة المشفرة</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="privacy-audit" href="#" data-i18n="nav_privacy">فحص الخصوصية</a></nav><div class="flex items-center gap-space-md"><select id="uilang" title="Language / اللغة" class="bg-[#0b1222] border border-[#1b2640] rounded text-on-surface-variant text-xs px-2 py-1.5 focus:outline-none focus:border-primary cursor-pointer max-w-[110px]"><option value="ar">العربية</option><option value="en">English</option><option value="ru">Русский</option><option value="zh">中文</option><option value="es">Español</option><option value="fr">Français</option></select><button class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" title="وضع الإضاءة" data-i18n-tip="tip_theme" type="button"><span class="material-symbols-outlined text-[20px]">dark_mode</span></button><a class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" data-path="settings" href="#" title="إعدادات الخصوصية" data-i18n-tip="tip_settings"><span class="material-symbols-outlined text-[20px]">settings</span></a><div class="w-8 h-8 rounded bg-[#10192e] border border-[#1b2640] flex items-center justify-center font-code-telemetry text-[11px] text-primary font-bold">AG</div></div></div></header><main class="w-full pt-16 flex-1 bg-transparent relative z-10"><div class="flex flex-col w-full relative">
+<header class="fixed top-0 left-0 right-0 z-40 bg-[#060b17]/85 backdrop-blur-xl border-b border-[#1b2640]"><div class="h-16 w-full px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs cursor-pointer select-none"><span class="font-headline-sm text-headline-sm text-primary tracking-wider font-bold font-argus">ARGUS</span><span class="font-code-telemetry text-[11px] text-[#38bdf8] px-1.5 py-0.5 rounded border border-[#1e3a5f] bg-[#0c192e]">100-EYE</span></div><div class="hidden sm:flex items-center gap-space-xs px-space-sm py-1 rounded bg-[#0b1222] border border-[#1b2640]"><span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span><span class="font-code-telemetry text-[11px] text-primary" data-i18n="hdr_vpn">مشفر بالكامل / VPN Active</span></div></div><nav class="hidden md:flex items-center gap-space-sm" data-active-classes="bg-surface-container text-primary font-bold rounded"><a aria-current="page" class="px-space-md py-space-xs transition-colors bg-[#101a30] text-primary border border-blue-500/20 font-bold rounded" data-path="search" href="#" data-i18n="nav_search">البحث الأمني</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="threat-recon" href="#" data-i18n="nav_threats">استطلاع التهديدات</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="vault" href="#" data-i18n="nav_vault">الخزينة المشفرة</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="privacy-audit" href="#" data-i18n="nav_privacy">فحص الخصوصية</a></nav><div class="flex items-center gap-space-md"><button id="theme-quick" class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" title="وضع الإضاءة" data-i18n-tip="tip_theme" type="button"><span class="material-symbols-outlined text-[20px]">dark_mode</span></button><div class="relative" id="settings-wrap">
+<button id="settings-btn" class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" data-i18n-tip="tip_settings" title="إعدادات الخصوصية" type="button" aria-haspopup="true" aria-expanded="false">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<div id="settings-menu" class="hidden absolute end-0 top-full mt-2 w-60 rounded-[6px] border border-surface-border bg-surface-elevated shadow-[0_12px_40px_rgba(0,0,0,0.45)] z-50 p-2">
+<div class="px-2 pt-1 pb-1.5 font-code-telemetry text-[10px] text-text-dim" data-i18n="set_language">اللغة</div>
+<div id="set-langs" class="grid grid-cols-2 gap-1"></div>
+<div class="my-2 border-t border-surface-border-subtle"></div>
+<div class="px-2 pt-1 pb-1.5 font-code-telemetry text-[10px] text-text-dim" data-i18n="set_theme">المظهر</div>
+<div id="set-themes" class="flex flex-col gap-1"></div>
+</div>
+</div><div class="w-8 h-8 rounded bg-[#10192e] border border-[#1b2640] flex items-center justify-center font-code-telemetry text-[11px] text-primary font-bold">AG</div></div></div></header><main class="w-full pt-16 flex-1 bg-transparent relative z-10"><div class="flex flex-col w-full relative">
 <!-- High-Craft Utilitarian Security Attestation Modal in Deep Midnight Navy -->
 <div class="fixed inset-0 z-50 flex items-center justify-center p-space-md bg-[#02050c]/80 backdrop-blur-md transition-all duration-300" id="argus-splash-modal">
 <div class="relative w-full max-w-2xl bg-[#080e1e] border border-[#1b2742] shadow-[0_20px_50px_rgba(3,7,18,0.85)] rounded-lg p-6 md:p-8 flex flex-col gap-6 text-right relative overflow-hidden">
@@ -773,6 +943,7 @@
 <script>
 /* ARGUS UI language engine — 6 languages, browser detection */
 /* ARGUS UI translations: ar, en, ru, zh, es, fr */
+/* ARGUS UI translations: ar, en, ru, zh, es, fr */
 const I18N = {
 ar: {
 nav_search:"البحث الأمني", nav_threats:"استطلاع التهديدات", nav_vault:"الخزينة المشفرة", nav_privacy:"فحص الخصوصية",
@@ -802,7 +973,8 @@ rep_find:"أبرز النتائج من المصادر الحية", rep_src:"ال
 rep_method_body:"المقتطفات مستخرجة آليًا؛ تحقق من الادعاءات المهمة في الصفحات الأصلية قبل النشر.",
 rep_src_link:"المصدر", ui_lang_label:"🌐 اللغة",
 hdr_vpn:"مشفر بالكامل / VPN Active", page_title:"ARGUS — محرك البحث الخاص", no_title:"بدون عنوان",
-tip_theme:"وضع الإضاءة", tip_settings:"إعدادات الخصوصية"
+tip_theme:"وضع الإضاءة", tip_settings:"إعدادات الخصوصية",
+set_language:"اللغة", set_theme:"المظهر", theme_system:"حسب النظام", theme_dark:"داكن", theme_light:"فاتح"
 },
 en: {
 nav_search:"Secure Search", nav_threats:"Threat Intel", nav_vault:"Encrypted Vault", nav_privacy:"Privacy Audit",
@@ -832,7 +1004,8 @@ rep_find:"Top findings from live sources", rep_src:"Key Sources", rep_method:"Me
 rep_method_body:"Excerpts are machine-extracted; verify key claims against the original pages before publishing.",
 rep_src_link:"Source", ui_lang_label:"🌐 Language",
 hdr_vpn:"Fully encrypted / VPN Active", page_title:"ARGUS — Private Search Engine", no_title:"Untitled",
-tip_theme:"Theme", tip_settings:"Privacy settings"
+tip_theme:"Theme", tip_settings:"Privacy settings",
+set_language:"Language", set_theme:"Appearance", theme_system:"System", theme_dark:"Dark", theme_light:"Light"
 },
 ru: {
 nav_search:"Безопасный поиск", nav_threats:"Разведка угроз", nav_vault:"Шифрованное хранилище", nav_privacy:"Аудит приватности",
@@ -862,7 +1035,8 @@ rep_find:"Главные находки", rep_src:"Ключевые источн
 rep_method_body:"Фрагменты извлечены автоматически; проверьте ключевые факты по оригиналам перед публикацией.",
 rep_src_link:"Источник", ui_lang_label:"🌐 Язык",
 hdr_vpn:"Полное шифрование / VPN Active", page_title:"ARGUS — Приватная поисковая система", no_title:"Без названия",
-tip_theme:"Тема", tip_settings:"Настройки приватности"
+tip_theme:"Тема", tip_settings:"Настройки приватности",
+set_language:"Язык", set_theme:"Оформление", theme_system:"Системная", theme_dark:"Тёмная", theme_light:"Светлая"
 },
 zh: {
 nav_search:"安全搜索", nav_threats:"威胁情报", nav_vault:"加密保险库", nav_privacy:"隐私审计",
@@ -892,7 +1066,8 @@ rep_find:"主要发现", rep_src:"关键来源", rep_method:"方法说明",
 rep_method_body:"摘录由机器自动提取;发布前请对照原始页面核实关键论断。",
 rep_src_link:"来源", ui_lang_label:"🌐 语言",
 hdr_vpn:"完全加密 / VPN Active", page_title:"ARGUS — 私人搜索引擎", no_title:"无标题",
-tip_theme:"主题", tip_settings:"隐私设置"
+tip_theme:"主题", tip_settings:"隐私设置",
+set_language:"语言", set_theme:"外观", theme_system:"跟随系统", theme_dark:"深色", theme_light:"浅色"
 },
 es: {
 nav_search:"Búsqueda segura", nav_threats:"Inteligencia de amenazas", nav_vault:"Bóveda cifrada", nav_privacy:"Auditoría de privacidad",
@@ -922,7 +1097,8 @@ rep_find:"Hallazgos principales", rep_src:"Fuentes clave", rep_method:"Metodolog
 rep_method_body:"Extractos automáticos; verifica los datos clave en las páginas originales antes de publicar.",
 rep_src_link:"Fuente", ui_lang_label:"🌐 Idioma",
 hdr_vpn:"Cifrado total / VPN Active", page_title:"ARGUS — Motor de búsqueda privado", no_title:"Sin título",
-tip_theme:"Tema", tip_settings:"Ajustes de privacidad"
+tip_theme:"Tema", tip_settings:"Ajustes de privacidad",
+set_language:"Idioma", set_theme:"Apariencia", theme_system:"Sistema", theme_dark:"Oscuro", theme_light:"Claro"
 },
 fr: {
 nav_search:"Recherche sécurisée", nav_threats:"Renseignement menaces", nav_vault:"Coffre chiffré", nav_privacy:"Audit confidentialité",
@@ -952,12 +1128,12 @@ rep_find:"Principales découvertes", rep_src:"Sources clés", rep_method:"Métho
 rep_method_body:"Extraits automatiques ; vérifiez les faits clés sur les pages d'origine avant publication.",
 rep_src_link:"Source", ui_lang_label:"🌐 Langue",
 hdr_vpn:"Chiffrement total / VPN Active", page_title:"ARGUS — Moteur de recherche privé", no_title:"Sans titre",
-tip_theme:"Thème", tip_settings:"Paramètres de confidentialité"
+tip_theme:"Thème", tip_settings:"Paramètres de confidentialité",
+set_language:"Langue", set_theme:"Apparence", theme_system:"Système", theme_dark:"Sombre", theme_light:"Clair"
 }
 };
 const UI_LANGS = ["ar","en","ru","zh","es","fr"];
 const UI_NAMES = {ar:"العربية", en:"English", ru:"Русский", zh:"中文", es:"Español", fr:"Français"};
-
 let _ul = "ar";
 function t(k){ const d = I18N[_ul]||{}; return d[k]!==undefined ? d[k] : (I18N.en[k]!==undefined ? I18N.en[k] : k); }
 window.t = t;
@@ -971,10 +1147,86 @@ function setLang(l){
   document.documentElement.dir = (l === "ar") ? "rtl" : "ltr";
   document.documentElement.lang = l;
   try{ document.title = t("page_title"); }catch(e){}
-  const sel = document.getElementById("uilang"); if(sel) sel.value = l;
   try{ localStorage.setItem("argus_ui_lang", l); }catch(e){}
   if(window.refreshDynamicUI) window.refreshDynamicUI();
+  try{ renderSettingsMenu(); }catch(e){}
 }
+
+/* ---- theme: system / dark / light ---- */
+function resolveTheme(mode){
+  if(mode === "system"){
+    try{ return (window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark"; }
+    catch(e){ return "dark"; }
+  }
+  return mode;
+}
+function applyTheme(mode){
+  let m = mode || "system";
+  if(m !== "system" && m !== "dark" && m !== "light") m = "system";
+  try{ localStorage.setItem("argus_theme", m); }catch(e){}
+  document.documentElement.dataset.theme = resolveTheme(m);
+  renderSettingsMenu();
+}
+window.setTheme = applyTheme;
+try{
+  const _mm = window.matchMedia && matchMedia("(prefers-color-scheme: light)");
+  if(_mm && _mm.addEventListener) _mm.addEventListener("change", function(){
+    let cur = "system";
+    try{ cur = localStorage.getItem("argus_theme") || "system"; }catch(e){}
+    if(cur === "system") document.documentElement.dataset.theme = resolveTheme("system");
+  });
+}catch(e){}
+/* ---- settings menu ---- */
+function currentThemeMode(){ try{ return localStorage.getItem("argus_theme") || "system"; }catch(e){ return "system"; } }
+function renderSettingsMenu(){
+  const langs = document.getElementById("set-langs");
+  if(langs){
+    langs.innerHTML = UI_LANGS.map(function(l){
+      const on = (l === _ul);
+      return '<button type="button" data-setlang="'+l+'" class="flex items-center justify-between px-2.5 py-1.5 rounded-[4px] text-xs transition-colors '+(on?'bg-primary/15 text-secondary font-bold':'text-on-surface-variant hover:bg-surface-container hover:text-on-surface')+'"><span>'+UI_NAMES[l]+'</span>'+(on?'<span class="material-symbols-outlined text-[16px]">check</span>':"")+'</button>';
+    }).join("");
+    langs.querySelectorAll("[data-setlang]").forEach(function(b){
+      b.addEventListener("click", function(){ setLang(b.getAttribute("data-setlang")); });
+    });
+  }
+  const themes = document.getElementById("set-themes");
+  if(themes){
+    const cur = currentThemeMode();
+    const items = [["system","theme_system","settings_suggest"],["dark","theme_dark","dark_mode"],["light","theme_light","light_mode"]];
+    themes.innerHTML = items.map(function(it){
+      const on = (it[0] === cur);
+      return '<button type="button" data-settheme="'+it[0]+'" class="flex items-center justify-between px-2.5 py-1.5 rounded-[4px] text-xs transition-colors '+(on?'bg-primary/15 text-secondary font-bold':'text-on-surface-variant hover:bg-surface-container hover:text-on-surface')+'"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">'+it[2]+'</span>'+t(it[1])+'</span>'+(on?'<span class="material-symbols-outlined text-[16px]">check</span>':"")+'</button>';
+    }).join("");
+    themes.querySelectorAll("[data-settheme]").forEach(function(b){
+      b.addEventListener("click", function(){ applyTheme(b.getAttribute("data-settheme")); });
+    });
+  }
+}
+(function(){
+  const btn = document.getElementById("settings-btn"), menu = document.getElementById("settings-menu");
+  if(btn && menu){
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      const open = menu.classList.toggle("hidden");
+      btn.setAttribute("aria-expanded", String(!open));
+    });
+    document.addEventListener("click", function(e){
+      if(!menu.classList.contains("hidden") && !document.getElementById("settings-wrap").contains(e.target)){
+        menu.classList.add("hidden"); btn.setAttribute("aria-expanded","false");
+      }
+    });
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && !menu.classList.contains("hidden")){ menu.classList.add("hidden"); btn.setAttribute("aria-expanded","false"); }
+    });
+  }
+  renderSettingsMenu();
+  const _tq = document.getElementById("theme-quick");
+  if(_tq) _tq.addEventListener("click", function(){
+    const cur = document.documentElement.dataset.theme || "dark";
+    applyTheme(cur === "dark" ? "light" : "dark");
+  });
+})();
+
 window.setLang = setLang;
 function detectLang(){
   try{ const sv = localStorage.getItem("argus_ui_lang"); if(sv && I18N[sv]) return sv; }catch(e){}
@@ -982,9 +1234,10 @@ function detectLang(){
   return I18N[b] ? b : "en";
 }
 (function(){
-  const sel = document.getElementById("uilang");
-  if(sel) sel.addEventListener("change", function(e){ setLang(e.target.value); });
   setLang(detectLang());
+  var _tm = "system";
+  try{ _tm = localStorage.getItem("argus_theme") || "system"; }catch(e){}
+  applyTheme(_tm);
 })();
 </script>
 <script>

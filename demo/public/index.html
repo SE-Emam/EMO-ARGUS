@@ -72,6 +72,7 @@ h2.sec{font-size:20px;margin:34px 0 14px}
       <option value="usa">USA</option><option value="uk">UK</option></select></div>
   </div>
   <button id="lgo" onclick="liveSearch()">Search live</button>
+  <button id="lreport" style="display:none;margin-left:10px" onclick="genReportFromSearch()">Generate investigation report</button>
   <div id="lstatus" style="margin-top:12px"></div>
   <div id="lresults"></div>
 </div>
@@ -140,10 +141,12 @@ async function run(){
   btn.disabled=false;
 }
 renderHistory();
+var lastLive=null;
 async function liveSearch(){
   var q=document.getElementById('lq').value.trim();
   var st=document.getElementById('lstatus'), res=document.getElementById('lresults'), btn=document.getElementById('lgo');
-  res.innerHTML='';
+  res.innerHTML=''; lastLive=null;
+  document.getElementById('lreport').style.display='none';
   if(!q){st.innerHTML='<span class="err">Type a question first.</span>';return;}
   btn.disabled=true; st.textContent='\uD83D\uDD0E Searching the live web\u2026';
   var payload={query:q,
@@ -159,6 +162,8 @@ async function liveSearch(){
     if(!r.ok) throw new Error(d.error||'request failed');
     var items=d.results||[];
     if(!items.length){st.textContent='No results found.';return;}
+    lastLive={q:q,items:items,controls:payload,translated:d.translated_query};
+    document.getElementById('lreport').style.display='inline-block';
     var note='\u26A1 Reading '+items.length+' live sources\u2026 ('+d.took_ms+'ms)';
     if(d.translated_query) note+=' \u2014 translated query: \u201C'+d.translated_query+'\u201D';
     st.textContent=note;
@@ -176,6 +181,47 @@ async function liveSearch(){
     });
   }catch(e){st.innerHTML='<span class="err">'+esc(e.message)+'</span>';}
   btn.disabled=false;
+}
+
+function genReportFromSearch(){
+  if(!lastLive||!lastLive.items.length) return;
+  var q=lastLive.q, items=lastLive.items, c=lastLive.controls;
+  var date=new Date().toISOString().slice(0,10);
+  var safeQ=q.replace(/"/g,'').replace(/\n/g,' ').slice(0,120);
+  var md='---\ntitle: "ARGUS: '+safeQ+'"\ndate: '+date+'\nmode: live-search\nsources: '+items.length+'\n---\n';
+  md+='# ARGUS: '+q+'\n**Date**: '+date+' | **Mode**: Live search | **Sources**: '+items.length+'\n\n';
+  md+='## 1. Executive Summary\n(TODO: 3-5 sentences, every claim cited from the sources below)\n\n';
+  md+='## 2. Background and Definitions\n(TODO)\n\n';
+  md+='## 3. Key Actors / Items Compared\n(TODO)\n\n';
+  md+='## 4. Findings seeded from live sources\n';
+  var n=0;
+  items.forEach(function(it){
+    (it.highlights||[]).forEach(function(h){
+      if(n>=12) return;
+      md+='- \u201C'+h.replace(/\n/g,' ').slice(0,280)+'\u201D \u2014 ['+String(it.title||it.url).slice(0,60)+']('+it.url+')\n';
+      n++;
+    });
+  });
+  if(!n) md+='(no highlights extracted)\n';
+  md+='\n## 5. Contested Claims and Disagreements\n(TODO)\n\n';
+  md+='## 11. Key Sources ('+items.length+')\n';
+  items.forEach(function(it){
+    var host=''; try{host=new URL(it.url).hostname;}catch(e){}
+    md+='- ['+String(it.title||host||'untitled').slice(0,80)+']('+it.url+')'+(host?' \u2014 '+host:'')+'\n';
+  });
+  md+='\n## 12. Methodology Notes\n';
+  md+='Live web search via Exa. Controls: count='+c.count+', category='+c.category+', method='+c.method+', lang='+c.lang+', region='+c.region+'.';
+  if(lastLive.translated) md+=' Translated query: \u201C'+lastLive.translated+'\u201D.';
+  md+=' Excerpts are machine-extracted; verify key claims against the original pages before publishing.\n';
+  var out=document.getElementById('out'), share=document.getElementById('share');
+  var id=uid(), all=loadDemos();
+  all.unshift({id:id,query:q,mode:'live-search',markdown:md,ts:new Date().toISOString()});
+  saveDemos(all); renderHistory();
+  out.style.display='block';
+  out.innerHTML='<h3>Investigation report (from '+items.length+' live sources)</h3>'+esc(md).slice(0,6000);
+  share.style.display='block';
+  share.innerHTML='\uD83D\uDD17 Saved in this browser: <a href="/share.html?id='+encodeURIComponent(id)+'">'+location.origin+'/share.html?id='+encodeURIComponent(id)+'</a>';
+  out.scrollIntoView();
 }
 </script>
 </body></html>

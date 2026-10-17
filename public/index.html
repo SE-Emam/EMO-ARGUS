@@ -269,7 +269,7 @@ details#settings-wrap > summary::marker{display:none}
 <rect fill="url(#topology-glow)" height="100%" width="100%"></rect>
 </svg>
 </div>
-<header class="fixed top-0 left-0 right-0 z-40 bg-[#060b17]/85 backdrop-blur-xl border-b border-[#1b2640]"><div class="h-16 w-full px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs cursor-pointer select-none"><span class="font-headline-sm text-headline-sm text-primary tracking-wider font-bold font-argus">ARGUS</span><span class="font-code-telemetry text-[11px] text-[#38bdf8] px-1.5 py-0.5 rounded border border-[#1e3a5f] bg-[#0c192e]">100-EYE</span></div><div class="hidden sm:flex items-center gap-space-xs px-space-sm py-1 rounded bg-[#0b1222] border border-[#1b2640]"><span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span><span class="font-code-telemetry text-[11px] text-primary" data-i18n="hdr_vpn">مشفر بالكامل / VPN Active</span></div></div><nav class="hidden md:flex items-center gap-space-sm" data-active-classes="bg-surface-container text-primary font-bold rounded"><a aria-current="page" class="px-space-md py-space-xs transition-colors bg-[#101a30] text-primary border border-blue-500/20 font-bold rounded" data-path="search" href="#" data-i18n="nav_search">البحث الأمني</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="threat-recon" href="#" data-i18n="nav_threats">استطلاع التهديدات</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="vault" href="#" data-i18n="nav_vault">الخزينة المشفرة</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="privacy-audit" href="#" data-i18n="nav_privacy">فحص الخصوصية</a></nav><div class="flex items-center gap-space-md"><button id="theme-quick" class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" title="وضع الإضاءة" data-i18n-tip="tip_theme" type="button"><span class="material-symbols-outlined text-[20px]">dark_mode</span></button><details class="relative" id="settings-wrap">
+<header class="fixed top-0 left-0 right-0 z-40 bg-[#060b17]/85 backdrop-blur-xl border-b border-[#1b2640]"><div class="h-16 w-full px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs cursor-pointer select-none"><span class="font-headline-sm text-headline-sm text-primary tracking-wider font-bold font-argus">ARGUS</span><span class="font-code-telemetry text-[11px] text-[#38bdf8] px-1.5 py-0.5 rounded border border-[#1e3a5f] bg-[#0c192e]">100-EYE</span></div><div class="hidden sm:flex items-center gap-space-xs px-space-sm py-1 rounded bg-[#0b1222] border border-[#1b2640]"><span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span><span class="font-code-telemetry text-[11px] text-primary" data-i18n="hdr_vpn">مشفر بالكامل / VPN Active</span></div></div><nav class="hidden md:flex items-center gap-space-sm" data-active-classes="bg-surface-container text-primary font-bold rounded"><a aria-current="page" class="px-space-md py-space-xs transition-colors bg-[#101a30] text-primary border border-blue-500/20 font-bold rounded" data-path="search" href="#" data-i18n="nav_search">البحث الأمني</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="threat-recon" href="#" data-i18n="nav_threats">استطلاع التهديدات</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="vault" href="#" data-i18n="nav_vault">الخزينة المشفرة</a><a class="px-space-md py-space-xs text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="privacy-audit" href="#" data-i18n="nav_privacy">فحص الخصوصية</a></nav><div class="flex items-center gap-space-md"><button onclick="window.__toggleTheme&&window.__toggleTheme()" id="theme-quick" class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors cursor-pointer" title="وضع الإضاءة" data-i18n-tip="tip_theme" type="button"><span class="material-symbols-outlined text-[20px]">dark_mode</span></button><details class="relative" id="settings-wrap">
 <summary id="settings-btn" class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors cursor-pointer" data-i18n-tip="tip_settings" title="إعدادات الخصوصية" style="list-style:none">
 <span class="material-symbols-outlined text-[20px] pointer-events-none">settings</span>
 </summary>
@@ -704,9 +704,19 @@ details#settings-wrap > summary::marker{display:none}
 <button class="w-7 h-7 flex items-center justify-center rounded-[4px] border border-surface-border bg-surface-subtle text-on-surface-variant hover:text-on-surface hover:border-text-dim transition-colors" title="وضع الإضاءة" data-i18n-tip="tip_theme" type="button">
 <span class="material-symbols-outlined text-[15px]">dark_mode</span>
 </button>
-<button class="w-7 h-7 flex items-center justify-center rounded-[4px] border border-surface-border bg-surface-subtle text-on-surface-variant hover:text-on-surface hover:border-text-dim transition-colors" title="إعدادات الخصوصية" data-i18n-tip="tip_settings" type="button">
-<span class="material-symbols-outlined text-[15px]">settings</span>
-</button>
+<details class="relative" id="settings-wrap-2">
+<summary id="settings-btn-2" class="w-7 h-7 flex items-center justify-center rounded-[4px] border border-surface-border bg-surface-subtle text-on-surface-variant hover:text-on-surface hover:border-text-dim transition-colors cursor-pointer" data-i18n-tip="tip_settings" title="إعدادات الخصوصية" style="list-style:none">
+<span class="material-symbols-outlined text-[20px] pointer-events-none">settings</span>
+</summary>
+<div id="settings-menu" class="absolute end-0 top-full mt-2 w-60 rounded-[6px] border border-surface-border bg-surface-elevated shadow-[0_12px_40px_rgba(0,0,0,0.45)] z-50 p-2">
+<div class="px-2 pt-1 pb-1.5 font-code-telemetry text-[10px] text-text-dim" data-i18n="set_language">اللغة</div>
+<div id="set-langs" class="grid grid-cols-2 gap-1"><button type="button" data-setlang="ar" onclick="pickLang('ar')" class="set-opt"><span>العربية</span></button><button type="button" data-setlang="en" onclick="pickLang('en')" class="set-opt"><span>English</span></button><button type="button" data-setlang="ru" onclick="pickLang('ru')" class="set-opt"><span>Русский</span></button><button type="button" data-setlang="zh" onclick="pickLang('zh')" class="set-opt"><span>中文</span></button><button type="button" data-setlang="es" onclick="pickLang('es')" class="set-opt"><span>Español</span></button><button type="button" data-setlang="fr" onclick="pickLang('fr')" class="set-opt"><span>Français</span></button></div>
+<div class="my-2 border-t border-surface-border-subtle"></div>
+<div class="px-2 pt-1 pb-1.5 font-code-telemetry text-[10px] text-text-dim" data-i18n="set_theme">المظهر</div>
+<div id="set-themes" class="flex flex-col gap-1"><button type="button" data-settheme="system" onclick="pickTheme('system')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">settings_suggest</span><span data-i18n="theme_system" class="pointer-events-none">حسب النظام</span></span></button><button type="button" data-settheme="dark" onclick="pickTheme('dark')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">dark_mode</span><span data-i18n="theme_dark" class="pointer-events-none">داكن</span></span></button><button type="button" data-settheme="light" onclick="pickTheme('light')" class="set-opt"><span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] pointer-events-none">light_mode</span><span data-i18n="theme_light" class="pointer-events-none">فاتح</span></span></button></div>
+</div>
+<div class="px-3 py-1.5 text-[10px] text-text-dim font-code-telemetry border-t border-surface-border" dir="ltr">build 2026-10-17-v4</div>
+</details>
 <div class="w-7 h-7 rounded-[4px] border border-primary/40 bg-surface-elevated flex items-center justify-center text-xs font-code-telemetry text-primary font-medium shadow-[0_0_8px_rgba(59,130,246,0.25)]">
           OP
         </div>
@@ -1207,7 +1217,7 @@ function markSettingsActive(){
     b.setAttribute("data-active", b.getAttribute("data-settheme") === cur ? "1" : "0");
   });
 }
-function closeSettings(){ var d = document.getElementById("settings-wrap"); if(d) d.open = false; }
+function closeSettings(){ ["settings-wrap","settings-wrap-2"].forEach(function(id){ var d=document.getElementById(id); if(d) d.open=false; }); }
 function pickLang(l){ setLang(l); markSettingsActive(); closeSettings(); }
 function pickTheme(m){ applyTheme(m); markSettingsActive(); closeSettings(); }
 window.pickLang = pickLang; window.pickTheme = pickTheme;
@@ -1224,10 +1234,11 @@ function detectLang(){
   applyTheme(_tm);
   try{ markSettingsActive(); }catch(e){}
   var _tq = document.getElementById("theme-quick");
-  if(_tq) _tq.addEventListener("click", function(){
-    var cur = document.documentElement.dataset.theme || "dark";
-    applyTheme(cur === "dark" ? "light" : "dark");
-  });
+  window.__toggleTheme=function(){
+    var cur=document.documentElement.dataset.theme||"dark";
+    applyTheme(cur==="dark"?"light":"dark");
+  };
+  if(_tq) _tq.addEventListener("click",window.__toggleTheme);
 })();
 </script>
 <script>

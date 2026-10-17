@@ -1,33 +1,31 @@
-# ARGUS live demo — Vercel + Supabase
+# ARGUS live demo — Vercel
 
 Public demo of the [emo-argus](https://pypi.org/project/emo-argus/) core.
 Exposes **only** `plan` and `report` (pure local computation). The network
 features (`verify --live-links`, Telegram `preview`) are intentionally not
 exposed — they would let strangers make the server fetch arbitrary URLs.
 
+Generated reports are stored in the **visitor's browser** (`localStorage`,
+capped at 20). Nothing is stored server-side — no database, no accounts,
+no tracking.
+
 ## Structure
 
 ```
-api/_core.py    shared: validation, Supabase save (service_role, server-side only)
 api/plan.py     POST /api/plan   -> plan JSON
-api/report.py   POST /api/report -> report skeleton + share_id
-api/config.py   GET  /api/config -> public Supabase URL + anon key (RLS-safe)
-public/         static frontend (index.html demo, share.html shared reports)
-supabase/schema.sql  demos table + RLS (public read, no public insert)
+api/report.py   POST /api/report -> report skeleton markdown
+public/         static frontend (index.html demo + history, share.html viewer)
 ```
 
-## Setup
+Each file in `api/` is self-contained (no sibling imports — Vercel-safe).
 
-1. **Supabase**: create a project → SQL editor → run `supabase/schema.sql`.
-2. **Vercel**: import this folder (or the repo) → set env vars:
-   - `SUPABASE_URL` — e.g. `https://xyz.supabase.co`
-   - `SUPABASE_ANON_KEY` — public, used by share.html via `/api/config`
-   - `SUPABASE_SERVICE_ROLE_KEY` — **server-side only**, used by `api/_core.py`
-3. Deploy. The demo is at `/`, shared reports at `/share.html?id=<uuid>`.
+## Deploy
+
+Import this folder on Vercel (or deploy the files via the API, see
+`DEPLOY_RUNBOOK.md`). No env vars needed.
 
 ## Security notes
 
-- `service_role` key never touches the browser (only `_core.save_demo`).
-- RLS: anon can `select`, cannot `insert` — writes go through the API.
 - Query capped at 500 chars, mode allowlist enforced server-side.
+- Report markdown is rendered with `textContent`/escaping — no HTML injection.
 - For production traffic, add Vercel Firewall / rate limiting on `/api/*`.

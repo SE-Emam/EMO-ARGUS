@@ -9,29 +9,29 @@ body{background:#0b0f17;color:#e8edf5;font-family:-apple-system,"Segoe UI",Robot
 .wrap{max-width:760px;margin:0 auto}
 pre{white-space:pre-wrap;background:#101724;border:1px solid #1e293b;border-radius:14px;padding:24px;font-size:14px}
 a{color:#38bdf8}
+.note{color:#93a1b8;font-size:13px;margin-top:16px}
 </style>
 </head>
 <body><div class="wrap">
 <h2>🔍 ARGUS report</h2>
 <p id="meta" style="color:#93a1b8"></p>
 <pre id="body">Loading…</pre>
+<p class="note">Reports are stored in the browser they were created in — this link only opens on that device.</p>
 <p><a href="/">← Try your own question</a></p>
 </div>
 <script>
-function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-(async()=>{
-  const id=new URLSearchParams(location.search).get('id');
-  if(!id){document.getElementById('body').textContent='Missing id.';return;}
-  try{
-    const cfg=await (await fetch('/api/config')).json();
-    const r=await fetch(`${cfg.supabase_url}/rest/v1/demos?id=eq.${id}&select=query,mode,report_md,created_at`,
-      {headers:{apikey:cfg.anon_key,Authorization:'Bearer '+cfg.anon_key}});
-    const rows=await r.json();
-    if(!rows.length) throw new Error('not found');
-    const d=rows[0];
-    document.getElementById('meta').textContent=`"${d.query}" · mode: ${d.mode} · ${d.created_at.slice(0,10)}`;
-    document.getElementById('body').textContent=d.report_md;
-  }catch(e){document.getElementById('body').textContent='Could not load this report.';}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+(function(){
+  var id=new URLSearchParams(location.search).get('id');
+  var body=document.getElementById('body'), meta=document.getElementById('meta');
+  if(!id){body.textContent='Missing id.';return;}
+  var all=[];
+  try{all=JSON.parse(localStorage.getItem('argus_demos'))||[]}catch(e){}
+  var d=null;
+  for(var i=0;i<all.length;i++){if(all[i].id===id){d=all[i];break;}}
+  if(!d){body.textContent='This report was not created in this browser (or was deleted).';meta.textContent='';return;}
+  meta.textContent='\u201C'+d.query+'\u201D · mode: '+d.mode+' · '+String(d.ts).slice(0,10);
+  body.textContent=d.markdown;
 })();
 </script>
 </body></html>

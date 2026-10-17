@@ -16,17 +16,26 @@ label{display:block;font-size:14px;color:var(--muted);margin-bottom:8px}
 input[type=text],select{width:100%;background:#060a12;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px 14px;font-size:16px;margin-bottom:16px}
 button{background:linear-gradient(135deg,#38bdf8,#22d3ee);border:none;border-radius:10px;color:#04121c;font-weight:700;font-size:16px;padding:12px 28px;cursor:pointer}
 button:disabled{opacity:.5;cursor:wait}
+button.small{font-size:13px;padding:7px 14px}
 #out{white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;font-size:14px;background:#060a12;border:1px solid var(--line);border-radius:14px;padding:22px;display:none;overflow-x:auto}
 #out h3{color:var(--accent);font-size:15px;margin:14px 0 6px;font-family:inherit}
 #share{display:none;margin-top:14px;font-size:14px}
 .err{color:#f87171}
 .note{font-size:13px;color:var(--muted);margin-top:20px}
 a{color:var(--accent)}
+h2.sec{font-size:20px;margin:34px 0 14px}
+.hist-item{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:10px;font-size:14px}
+.hist-item .q{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist-item .m{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--accent);border:1px solid var(--line);border-radius:6px;padding:2px 8px;white-space:nowrap}
+.hist-item .d{font-size:12px;color:var(--muted);white-space:nowrap}
+.hist-item .del{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
+.hist-item .del:hover{color:#f87171;border-color:#f87171}
+#hist-empty{color:var(--muted);font-size:14px}
 </style>
 </head>
 <body><div class="wrap">
 <h1>Try ARGUS 🔍</h1>
-<p class="sub">Type a research question — get a structured investigation plan and a report skeleton. Free, no signup.</p>
+<p class="sub">Type a research question — get a structured investigation plan and a report skeleton. Free, no signup. Reports stay in <b>your browser only</b>.</p>
 <div class="card">
   <label>Research question</label>
   <input type="text" id="q" maxlength="500" placeholder="e.g. solid-state battery supply chains">
@@ -44,23 +53,52 @@ a{color:var(--accent)}
 </div>
 <div id="out"></div>
 <div id="share"></div>
-<p class="note">Demo runs the real <a href="https://pypi.org/project/emo-argus/">emo-argus</a> core. Network features (live link checks, Telegram preview) are disabled in the public demo for safety.</p>
+
+<h2 class="sec">Your recent reports <span style="font-size:13px;color:var(--muted);font-weight:400">(this browser only)</span></h2>
+<div id="hist"></div>
+
+<p class="note">Demo runs the real <a href="https://pypi.org/project/emo-argus/">emo-argus</a> core. Network features (live link checks, Telegram preview) are disabled in the public demo for safety. Nothing you generate leaves your device.</p>
 </div>
 <script>
-function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+var LS_KEY='argus_demos';
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function loadDemos(){try{return JSON.parse(localStorage.getItem(LS_KEY))||[]}catch(e){return[]}}
+function saveDemos(a){try{localStorage.setItem(LS_KEY,JSON.stringify(a.slice(0,20)))}catch(e){}}
+function uid(){return (crypto.randomUUID?crypto.randomUUID():'id-'+Date.now()+'-'+Math.floor(Math.random()*1e6));}
+function renderHistory(){
+  var h=document.getElementById('hist'), all=loadDemos();
+  if(!all.length){h.innerHTML='<div id="hist-empty">Nothing yet — your generated reports will appear here.</div>';return;}
+  h.innerHTML=all.map(function(d){
+    return '<div class="hist-item"><span class="q">'+esc(d.query)+'</span>'+
+      '<span class="m">'+esc(d.mode)+'</span>'+
+      '<span class="d">'+esc(d.ts.slice(0,10))+'</span>'+
+      '<a href="/share.html?id='+encodeURIComponent(d.id)+'"><button class="small">Open</button></a>'+
+      '<button class="del" onclick="delDemo(\''+d.id+'\')">Delete</button></div>';
+  }).join('');
+}
+function delDemo(id){
+  saveDemos(loadDemos().filter(function(d){return d.id!==id;}));
+  renderHistory();
+}
 async function run(){
-  const q=document.getElementById('q').value.trim(), m=document.getElementById('m').value;
-  const out=document.getElementById('out'), btn=document.getElementById('go'), share=document.getElementById('share');
+  var q=document.getElementById('q').value.trim(), m=document.getElementById('m').value;
+  var out=document.getElementById('out'), btn=document.getElementById('go'), share=document.getElementById('share');
   if(!q){out.style.display='block';out.innerHTML='<span class="err">Type a question first.</span>';return;}
   btn.disabled=true; out.style.display='block'; out.textContent='Planning…'; share.style.display='none';
   try{
-    const r=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,mode:m})});
-    const d=await r.json();
+    var r=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,mode:m})});
+    var d=await r.json();
     if(!r.ok) throw new Error(d.error||'request failed');
+    var id=uid();
+    var all=loadDemos();
+    all.unshift({id:id,query:q,mode:m,markdown:d.markdown,ts:new Date().toISOString()});
+    saveDemos(all); renderHistory();
     out.innerHTML='<h3>Report skeleton</h3>'+esc(d.markdown).slice(0,4000)+(d.markdown.length>4000?'\n…(truncated in demo)':'');
-    if(d.share_id){share.style.display='block';share.innerHTML='🔗 Shareable link: <a href="/share.html?id='+d.share_id+'">'+location.origin+'/share.html?id='+d.share_id+'</a>';}
+    share.style.display='block';
+    share.innerHTML='🔗 Saved in this browser: <a href="/share.html?id='+encodeURIComponent(id)+'">'+location.origin+'/share.html?id='+encodeURIComponent(id)+'</a>';
   }catch(e){out.innerHTML='<span class="err">'+esc(e.message)+'</span>';}
   btn.disabled=false;
 }
+renderHistory();
 </script>
 </body></html>
